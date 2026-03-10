@@ -3,3 +3,5 @@ target
 .gitignore
 node_modules
 README.md
+.env
+wallet

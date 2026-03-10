@@ -12,3 +12,5 @@ services:
 
     volumes:
       - ./wallet:/opt/oracle/wallet
+
+    restart: unless-stopped
