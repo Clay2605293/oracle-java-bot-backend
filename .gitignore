@@ -1,0 +1,107 @@
+############################
+# OS FILES
+############################
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+############################
+# IDEs
+############################
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VSCode
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+############################
+# BUILD OUTPUT
+############################
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Compiled classes
+*.class
+
+############################
+# LOGS
+############################
+
+*.log
+logs/
+
+############################
+# ENVIRONMENT VARIABLES
+############################
+
+.env
+.env.local
+.env.*.local
+
+############################
+# SECRETS / CREDENTIALS
+############################
+
+# Oracle wallet (sensitive)
+wallet/
+
+# Certificates / keystores
+*.p12
+*.jks
+*.pem
+*.key
+
+############################
+# DOCKER
+############################
+
+# Docker temp files
+docker-data/
+docker-volumes/
+
+############################
+# NODE (por si hay frontend)
+############################
+
+node_modules/
+dist/
+build/
+
+############################
+# TEST / COVERAGE
+############################
+
+coverage/
+*.lcov
+
+############################
+# TEMP FILES
+############################
+
+tmp/
+temp/
+*.tmp
+*.swp
+*.swo
