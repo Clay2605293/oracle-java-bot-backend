@@ -1,9 +1,12 @@
-package com.oraclejavabot.controller;
+package com.oraclejavabot.features.users.controller;
 
-import com.oraclejavabot.dto.UserRequestDTO;
-import com.oraclejavabot.dto.UserResponseDTO;
-import com.oraclejavabot.model.UserEntity;
-import com.oraclejavabot.service.UserService;
+
+import com.oraclejavabot.features.users.dto.UserRequestDTO;
+import com.oraclejavabot.features.users.dto.UserResponseDTO;
+import com.oraclejavabot.features.users.model.UserEntity;
+import com.oraclejavabot.features.users.service.UserService;
+
+
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;

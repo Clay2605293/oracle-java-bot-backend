@@ -1,4 +1,4 @@
-package com.oraclejavabot.model;
+package com.oraclejavabot.features.users.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

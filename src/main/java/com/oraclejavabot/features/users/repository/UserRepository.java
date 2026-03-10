@@ -1,6 +1,6 @@
-package com.oraclejavabot.repository;
+package com.oraclejavabot.features.users.repository;
 
-import com.oraclejavabot.model.UserEntity;
+import com.oraclejavabot.features.users.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

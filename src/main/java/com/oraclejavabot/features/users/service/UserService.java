@@ -1,9 +1,11 @@
-package com.oraclejavabot.service;
+package com.oraclejavabot.features.users.service;
 
-import com.oraclejavabot.dto.UserRequestDTO;
-import com.oraclejavabot.dto.UserResponseDTO;
-import com.oraclejavabot.model.UserEntity;
-import com.oraclejavabot.repository.UserRepository;
+
+import com.oraclejavabot.features.users.model.UserEntity;
+import com.oraclejavabot.features.users.repository.UserRepository;
+import com.oraclejavabot.features.users.dto.UserRequestDTO;
+import com.oraclejavabot.features.users.dto.UserResponseDTO;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;

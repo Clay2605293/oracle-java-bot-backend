@@ -1,4 +1,4 @@
-package com.oraclejavabot.dto;
+package com.oraclejavabot.features.users.dto;
 
 public class UserResponseDTO {
 
