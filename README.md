@@ -1,3 +1,6 @@
+Link a Frontend
+https://github.com/emihdz1209/Practica_React_Frontend
+
 # Oracle Java Bot – Backend
 
 Backend API for **Oracle Java Bot**, a cloud-native system designed to improve development team productivity and visibility through automated workflows and Telegram bot integration.
