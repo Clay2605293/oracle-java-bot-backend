@@ -1,5 +1,5 @@
 Link a Frontend
-https://github.com/emihdz1209/Practica_React_Frontend
+https://github.com/emihdz1209/oracle-java-bot-frontend
 
 # Oracle Java Bot – Backend
 
