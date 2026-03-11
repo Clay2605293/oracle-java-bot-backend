@@ -18,11 +18,23 @@ public class TaskStatusController {
     }
 
     @GetMapping
+    /**
+     * Recupera la lista de estados de tarea disponibles.
+     *
+     * @return lista de {@link TaskStatusResponseDTO} con los estados almacenados
+     */
     public List<TaskStatusResponseDTO> getTaskStatuses() {
         return taskStatusService.getTaskStatuses();
     }
 
     @PostMapping
+    /**
+     * Crea un nuevo estado de tarea a partir de los datos recibidos.
+     *
+     * @param request DTO con los datos para crear el estado
+     * @return DTO con los datos del estado creado
+     * @throws IllegalArgumentException si ya existe un estado con el mismo nombre
+     */
     public TaskStatusResponseDTO createTaskStatus(@RequestBody TaskStatusRequestDTO request) {
         return taskStatusService.createTaskStatus(request);
     }

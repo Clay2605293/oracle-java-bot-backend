@@ -18,6 +18,12 @@ public class TaskStatusService {
         this.taskStatusRepository = taskStatusRepository;
     }
 
+    /**
+     * Recupera todos los estados de tarea desde la base de datos y los mapea
+     * a DTOs de respuesta.
+     *
+     * @return lista de {@link TaskStatusResponseDTO}
+     */
     public List<TaskStatusResponseDTO> getTaskStatuses() {
 
         return taskStatusRepository.findAll()
@@ -31,6 +37,14 @@ public class TaskStatusService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Crea un nuevo estado de tarea. Valida que no exista un estado con el
+     * mismo nombre antes de persistir.
+     *
+     * @param request DTO con los datos del estado a crear
+     * @return DTO con los datos del estado creado
+     * @throws IllegalArgumentException si ya existe un estado con el mismo nombre
+     */
     public TaskStatusResponseDTO createTaskStatus(TaskStatusRequestDTO request) {
 
         if (taskStatusRepository.existsByNombre(request.getNombre())) {

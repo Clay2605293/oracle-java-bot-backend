@@ -27,6 +27,11 @@ public class TaskStatusEntity {
         this.estadoId = estadoId;
     }
 
+    /**
+     * Obtiene el nombre del estado de la tarea.
+     *
+     * @return nombre (no nulo)
+     */
     public String getNombre() {
         return nombre;
     }
@@ -35,6 +40,11 @@ public class TaskStatusEntity {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene la descripción del estado.
+     *
+     * @return descripción (puede ser nula)
+     */
     public String getDescripcion() {
         return descripcion;
     }
@@ -43,6 +53,11 @@ public class TaskStatusEntity {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Indica si el estado está activo (1) o inactivo (0).
+     *
+     * @return 1 si activo, 0 si inactivo
+     */
     public Integer getEsActivo() {
         return esActivo;
     }
