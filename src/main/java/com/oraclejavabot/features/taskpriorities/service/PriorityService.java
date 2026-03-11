@@ -18,6 +18,12 @@ public class PriorityService {
         this.priorityRepository = priorityRepository;
     }
 
+    /**
+     * Recupera todas las prioridades desde la base de datos y las mapea
+     * a DTOs de respuesta.
+     *
+     * @return lista de {@link PriorityResponseDTO}
+     */
     public List<PriorityResponseDTO> getPriorities() {
 
         return priorityRepository.findAll()
@@ -26,11 +32,19 @@ public class PriorityService {
                         p.getPrioridadId(),
                         p.getNombre(),
                         p.getDescripcion(),
-                        p.getOrden()
-                ))
+                        p.getOrden()))
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Crea una nueva prioridad. Valida que no exista una prioridad con el
+     * mismo nombre antes de persistir.
+     *
+     * @param request DTO con los datos de la prioridad a crear
+     * @return DTO con los datos de la prioridad creada
+     * @throws IllegalArgumentException si ya existe una prioridad con el mismo
+     *                                  nombre
+     */
     public PriorityResponseDTO createPriority(PriorityRequestDTO request) {
 
         if (priorityRepository.existsByNombre(request.getNombre())) {
@@ -49,7 +63,6 @@ public class PriorityService {
                 priority.getPrioridadId(),
                 priority.getNombre(),
                 priority.getDescripcion(),
-                priority.getOrden()
-        );
+                priority.getOrden());
     }
 }

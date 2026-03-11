@@ -15,6 +15,11 @@ public class UserResponseDTO {
         this.telegramId = telegramId;
     }
 
+    /**
+     * Obtiene el mensaje de respuesta.
+     *
+     * @return mensaje de respuesta
+     */
     public String getMessage() {
         return message;
     }
@@ -23,6 +28,11 @@ public class UserResponseDTO {
         this.message = message;
     }
 
+    /**
+     * Obtiene el correo electrónico del usuario.
+     *
+     * @return email del usuario
+     */
     public String getEmail() {
         return email;
     }
@@ -31,6 +41,11 @@ public class UserResponseDTO {
         this.email = email;
     }
 
+    /**
+     * Obtiene el identificador de Telegram del usuario.
+     *
+     * @return telegramId del usuario
+     */
     public String getTelegramId() {
         return telegramId;
     }

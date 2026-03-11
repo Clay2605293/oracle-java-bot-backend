@@ -27,6 +27,11 @@ public class PriorityEntity {
         this.prioridadId = prioridadId;
     }
 
+    /**
+     * Obtiene el nombre de la prioridad.
+     *
+     * @return nombre (no nulo)
+     */
     public String getNombre() {
         return nombre;
     }
@@ -35,6 +40,11 @@ public class PriorityEntity {
         this.nombre = nombre;
     }
 
+    /**
+     * Obtiene la descripción de la prioridad.
+     *
+     * @return descripción (puede ser nula)
+     */
     public String getDescripcion() {
         return descripcion;
     }
@@ -43,6 +53,11 @@ public class PriorityEntity {
         this.descripcion = descripcion;
     }
 
+    /**
+     * Obtiene el orden de visualización de la prioridad.
+     *
+     * @return orden (no nulo)
+     */
     public Integer getOrden() {
         return orden;
     }

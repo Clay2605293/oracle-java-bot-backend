@@ -1,6 +1,5 @@
 package com.oraclejavabot.features.users.dto;
 
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,6 +26,11 @@ public class UserRequestDTO {
     @Size(max = 50, message = "El telegramId no puede exceder 50 caracteres")
     private String telegramId;
 
+    /**
+     * Obtiene el primer nombre del usuario.
+     *
+     * @return primer nombre del usuario
+     */
     public String getPrimerNombre() {
         return primerNombre;
     }
@@ -35,6 +39,11 @@ public class UserRequestDTO {
         this.primerNombre = primerNombre;
     }
 
+    /**
+     * Obtiene el apellido del usuario.
+     *
+     * @return apellido del usuario
+     */
     public String getApellido() {
         return apellido;
     }
@@ -43,6 +52,11 @@ public class UserRequestDTO {
         this.apellido = apellido;
     }
 
+    /**
+     * Obtiene el teléfono del usuario.
+     *
+     * @return teléfono del usuario
+     */
     public String getTelefono() {
         return telefono;
     }
@@ -51,6 +65,11 @@ public class UserRequestDTO {
         this.telefono = telefono;
     }
 
+    /**
+     * Obtiene el correo electrónico del usuario.
+     *
+     * @return email del usuario
+     */
     public String getEmail() {
         return email;
     }
@@ -59,6 +78,11 @@ public class UserRequestDTO {
         this.email = email;
     }
 
+    /**
+     * Obtiene el identificador de Telegram del usuario.
+     *
+     * @return telegramId del usuario
+     */
     public String getTelegramId() {
         return telegramId;
     }
