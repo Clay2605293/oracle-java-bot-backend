@@ -23,5 +23,6 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
      *         contrario
      */
     boolean existsByTelegramId(String telegramId);
+    
 
 }
