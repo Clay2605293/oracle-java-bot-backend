@@ -34,7 +34,7 @@ public class TaskEntity {
     @Column(name = "PRIORIDAD_ID")
     private Integer prioridadId;
 
-    @Column(name = "PROYECT_ID")
+    @Column(name = "PROJECT_ID")
     private UUID projectId;
 
     @Column(name = "SPRINT_ID")

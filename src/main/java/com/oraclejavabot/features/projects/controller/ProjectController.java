@@ -6,7 +6,7 @@ import com.oraclejavabot.features.projects.service.ProjectService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/projects")
+@RequestMapping("/api/projects")
 public class ProjectController {
 
     private final ProjectService service;
