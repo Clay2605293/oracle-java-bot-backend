@@ -4,8 +4,7 @@ import com.oraclejavabot.features.kpis.dto.SprintKpiResponseDTO;
 import com.oraclejavabot.features.kpis.repository.SprintKpiRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.UUID;
+import java.util.List;
 
 @Service
 public class SprintKpiService {
@@ -16,17 +15,37 @@ public class SprintKpiService {
         this.repository = repository;
     }
 
-    public SprintKpiResponseDTO getSprintKpis(UUID sprintId) {
+    private int toInt(Object value) {
+        if (value == null) {
+            return 0;
+        }
+        return Integer.parseInt(value.toString());
+    }
 
-        Map<String, Object> result = repository.getSprintKpis(sprintId);
+    private double toDouble(Object value) {
+        if (value == null) {
+            return 0.0;
+        }
+        return Double.parseDouble(value.toString());
+    }
+
+    public SprintKpiResponseDTO getSprintKpis(String sprintId) {
+
+        List<Object[]> rows = repository.getSprintKpis(sprintId);
+
+        if (rows == null || rows.isEmpty()) {
+            return new SprintKpiResponseDTO(0,0,0,0,0.0,0.0);
+        }
+
+        Object[] result = rows.get(0);
 
         return new SprintKpiResponseDTO(
-                ((Number) result.get("TOTAL_TAREAS")).intValue(),
-                ((Number) result.get("TAREAS_COMPLETADAS")).intValue(),
-                ((Number) result.get("A_TIEMPO")).intValue(),
-                ((Number) result.get("CON_RETRASO")).intValue(),
-                ((Number) result.get("TOTAL_ESTIMADO_HRS")).doubleValue(),
-                ((Number) result.get("TOTAL_REAL_HRS")).doubleValue()
+                toInt(result[0]),
+                toInt(result[1]),
+                toInt(result[2]),
+                toInt(result[3]),
+                toDouble(result[4]),
+                toDouble(result[5])
         );
     }
 }

@@ -5,8 +5,6 @@ import com.oraclejavabot.features.kpis.service.SprintKpiService;
 
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping("/api/sprints")
 public class SprintKpiController {
@@ -18,7 +16,7 @@ public class SprintKpiController {
     }
 
     @GetMapping("/{sprintId}/kpis")
-    public SprintKpiResponseDTO getSprintKpis(@PathVariable UUID sprintId) {
+    public SprintKpiResponseDTO getSprintKpis(@PathVariable String sprintId) {
         return service.getSprintKpis(sprintId);
     }
 }
