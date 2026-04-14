@@ -1,0 +1,81 @@
+package com.oraclejavabot.features.teams.service;
+
+import com.oraclejavabot.features.teams.dto.TeamMemberDTO;
+import com.oraclejavabot.features.teams.model.TeamMemberEntity;
+import com.oraclejavabot.features.teams.model.TeamMemberId;
+import com.oraclejavabot.features.teams.repository.TeamMemberRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Service
+public class TeamMemberService {
+
+    private final TeamMemberRepository repository;
+
+    public TeamMemberService(TeamMemberRepository repository) {
+        this.repository = repository;
+    }
+
+    public List<TeamMemberDTO> getMembers(String teamId) {
+
+        UUID teamUuid = hexToUuid(teamId);
+
+        return repository.findByIdTeamId(teamUuid)
+                .stream()
+                .map(this::mapToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public void addMember(String teamId, String userId) {
+
+        UUID teamUuid = hexToUuid(teamId);
+        UUID userUuid = hexToUuid(userId);
+
+        if (repository.existsByIdUserIdAndIdTeamId(userUuid, teamUuid)) {
+            throw new IllegalArgumentException("User already in team");
+        }
+
+        TeamMemberId id = new TeamMemberId(userUuid, teamUuid);
+        repository.save(new TeamMemberEntity(id));
+    }
+
+    public void removeMember(String teamId, String userId) {
+
+        UUID teamUuid = hexToUuid(teamId);
+        UUID userUuid = hexToUuid(userId);
+
+        TeamMemberId id = new TeamMemberId(userUuid, teamUuid);
+
+        if (!repository.existsById(id)) {
+            throw new IllegalArgumentException("Member not found in team");
+        }
+
+        repository.deleteById(id);
+    }
+
+    private TeamMemberDTO mapToDTO(TeamMemberEntity entity) {
+
+        TeamMemberDTO dto = new TeamMemberDTO();
+
+        dto.setUserId(uuidToHex(entity.getId().getUserId()));
+        dto.setTeamId(uuidToHex(entity.getId().getTeamId()));
+
+        return dto;
+    }
+
+    private UUID hexToUuid(String hex) {
+        return UUID.fromString(
+                hex.replaceFirst(
+                        "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                        "$1-$2-$3-$4-$5"
+                )
+        );
+    }
+
+    private String uuidToHex(UUID uuid) {
+        return uuid.toString().replace("-", "").toUpperCase();
+    }
+}
