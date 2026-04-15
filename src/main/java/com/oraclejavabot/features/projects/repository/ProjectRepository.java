@@ -36,4 +36,13 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, UUID> {
     """, nativeQuery = true)
     int existsUserInProjectTeam(@Param("projectId") String projectId,
                                 @Param("userId") String userId);
+
+    @Query(value = """
+        SELECT p.*
+        FROM PROYECTO p
+        JOIN USUARIO_A_EQUIPO uae ON uae.TEAM_ID = p.TEAM_ID
+        WHERE uae.USER_ID = HEXTORAW(:userId)
+        ORDER BY p.NOMBRE
+    """, nativeQuery = true)
+    List<ProjectEntity> findProjectsByUserTeam(@Param("userId") String userId);
 }

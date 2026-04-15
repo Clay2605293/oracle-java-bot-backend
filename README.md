@@ -83,6 +83,16 @@ SERVER_PORT=8080
 DB_URL=jdbc:oracle:thin:@team43_tp?TNS_ADMIN=/opt/oracle/wallet
 DB_USER=XXXXX
 DB_PASSWORD=XXXXXx
+TELEGRAM_BOT_ENABLED=false
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_BOT_NAME=oracle-java-bot
+TELEGRAM_BOT_DEFAULT_PRIORITY_ID=2
+TELEGRAM_BOT_DEFAULT_STATUS_ID=1
+TELEGRAM_BOT_DEFAULT_DUE_DAYS=7
+
+Notes:
+- Keep TELEGRAM_BOT_ENABLED=false if you do not want to run the bot.
+- Set TELEGRAM_BOT_ENABLED=true and provide TELEGRAM_BOT_TOKEN to enable long polling.
 
 
 ---
@@ -216,4 +226,12 @@ docker compose down
 
 View logs:
 docker compose logs -f
+
+
+Telegram bot core commands:
+- /start
+- /project
+- /tasklist
+- /addtask
+- /hide
 

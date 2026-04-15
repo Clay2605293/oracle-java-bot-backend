@@ -29,4 +29,14 @@ public interface UserRepository extends JpaRepository<UserEntity, UUID> {
      * Busca un usuario por su email.
      */
     Optional<UserEntity> findByEmail(String email);
+
+    /**
+     * Busca un usuario por su identificador de Telegram.
+     */
+    Optional<UserEntity> findByTelegramId(String telegramId);
+
+    /**
+     * Busca un usuario por su identificador de Telegram ignorando mayúsculas.
+     */
+    Optional<UserEntity> findByTelegramIdIgnoreCase(String telegramId);
 }

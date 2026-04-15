@@ -8,6 +8,7 @@ import com.oraclejavabot.features.users.dto.UserResponseDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -62,5 +63,36 @@ public class UserService {
      */
     public List<UserEntity> getUsers() {
         return userRepository.findAll();
+    }
+
+    /**
+     * Busca un usuario por su telegramId.
+     *
+     * @param telegramId identificador de Telegram
+     * @return usuario encontrado, si existe
+     */
+    public Optional<UserEntity> findByTelegramId(String telegramId) {
+        return userRepository.findByTelegramId(telegramId);
+    }
+
+    /**
+     * Busca un usuario por telegramId haciendo trim y fallback case-insensitive.
+     *
+     * @param telegramId identificador de Telegram
+     * @return usuario encontrado, si existe
+     */
+    public Optional<UserEntity> findByTelegramIdFlexible(String telegramId) {
+        if (telegramId == null || telegramId.isBlank()) {
+            return Optional.empty();
+        }
+
+        String candidate = telegramId.trim();
+
+        Optional<UserEntity> exact = userRepository.findByTelegramId(candidate);
+        if (exact.isPresent()) {
+            return exact;
+        }
+
+        return userRepository.findByTelegramIdIgnoreCase(candidate);
     }
 }

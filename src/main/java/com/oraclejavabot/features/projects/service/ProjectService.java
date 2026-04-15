@@ -55,6 +55,17 @@ public class ProjectService {
     }
 
     // =============================
+    // GET PROJECTS BY USER
+    // =============================
+    public List<ProjectResponseDTO> getProjectsByUser(String userId) {
+
+        return repository.findProjectsByUserTeam(userId)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // =============================
     // GET BY ID
     // =============================
     public ProjectResponseDTO getProjectById(String projectId) {

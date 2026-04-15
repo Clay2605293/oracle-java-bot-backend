@@ -117,6 +117,13 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
+    public List<TaskResponseDTO> getAssignedTasksByUserAndProject(String userId, String projectId) {
+        return repository.findAssignedTasksByUserAndProject(userId, projectId)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
     public TaskResponseDTO getTaskById(String taskId) {
         TaskEntity task = repository.findById(hexToUuid(taskId))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
