@@ -7,6 +7,7 @@ import com.oraclejavabot.features.tasks.model.TaskUserId;
 import com.oraclejavabot.features.tasks.repository.TaskRepository;
 import com.oraclejavabot.features.tasks.repository.TaskUserRepository;
 import com.oraclejavabot.features.projects.repository.ProjectRepository;
+import com.oraclejavabot.features.users.repository.UserRepository; // 🔹 NUEVO
 
 import org.springframework.stereotype.Service;
 
@@ -20,13 +21,16 @@ public class TaskUserService {
     private final TaskUserRepository taskUserRepository;
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository; // 🔹 NUEVO
 
     public TaskUserService(TaskUserRepository taskUserRepository,
                            TaskRepository taskRepository,
-                           ProjectRepository projectRepository) {
+                           ProjectRepository projectRepository,
+                           UserRepository userRepository) { // 🔹 NUEVO
         this.taskUserRepository = taskUserRepository;
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     // =============================
@@ -36,13 +40,29 @@ public class TaskUserService {
 
         return taskUserRepository.findByIdTaskId(hexToUuid(taskId))
                 .stream()
-                .map(entity -> {
-                    TaskUserDTO dto = new TaskUserDTO();
-                    dto.setTaskId(uuidToHex(entity.getId().getTaskId()));
-                    dto.setUserId(uuidToHex(entity.getId().getUserId()));
-                    return dto;
-                })
+                .map(this::mapToDTO)
                 .collect(Collectors.toList());
+    }
+
+    private TaskUserDTO mapToDTO(TaskUserEntity entity) {
+
+        TaskUserDTO dto = new TaskUserDTO();
+
+        UUID userId = entity.getId().getUserId();
+
+        dto.setTaskId(uuidToHex(entity.getId().getTaskId()));
+        dto.setUserId(uuidToHex(userId));
+
+        // 🔹 NUEVO: nombre del usuario
+        userRepository.findById(userId)
+                .ifPresentOrElse(
+                        user -> dto.setNombre(
+                                user.getPrimerNombre() + " " + user.getApellido()
+                        ),
+                        () -> dto.setNombre("—")
+                );
+
+        return dto;
     }
 
     // =============================
@@ -52,19 +72,14 @@ public class TaskUserService {
 
         System.out.println("========== ASSIGN USER TO TASK ==========");
 
-        // 1. Validar task
         TaskEntity task = taskRepository.findById(hexToUuid(taskId))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
         UUID userUUID = hexToUuid(userId);
 
-        // 2. Obtener project
         var project = projectRepository.findById(task.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
-        UUID teamId = project.getTeamId();
-
-        // 3. Validar user pertenece al team (USANDO TU QUERY EXISTENTE)
         int exists = projectRepository.existsUserInProjectTeam(
                 uuidToHex(task.getProjectId()),
                 userId
@@ -74,14 +89,12 @@ public class TaskUserService {
             throw new IllegalArgumentException("User does not belong to the project's team");
         }
 
-        // 4. Evitar duplicados
         TaskUserId id = new TaskUserId(userUUID, task.getTaskId());
 
         if (taskUserRepository.existsById(id)) {
             throw new IllegalArgumentException("User already assigned to task");
         }
 
-        // 5. Guardar
         TaskUserEntity entity = new TaskUserEntity(id);
         taskUserRepository.save(entity);
 

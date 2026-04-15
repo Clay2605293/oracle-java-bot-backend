@@ -5,6 +5,9 @@ public class TaskUserDTO {
     private String taskId;
     private String userId;
 
+    // 🔹 NUEVO
+    private String nombre;
+
     public String getTaskId() {
         return taskId;
     }
@@ -19,5 +22,14 @@ public class TaskUserDTO {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    // 🔹 NUEVO
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }
