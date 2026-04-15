@@ -16,6 +16,9 @@ public class TaskResponseDTO {
     private String projectId;
     private String sprintId;
 
+    // 🔹 NUEVO
+    private String sprintNombre;
+
     private Double tiempoEstimado;
     private Double tiempoReal;
 
@@ -97,6 +100,15 @@ public class TaskResponseDTO {
 
     public void setSprintId(String sprintId) {
         this.sprintId = sprintId;
+    }
+
+    // 🔹 NUEVO
+    public String getSprintNombre() {
+        return sprintNombre;
+    }
+
+    public void setSprintNombre(String sprintNombre) {
+        this.sprintNombre = sprintNombre;
     }
 
     public Double getTiempoEstimado() {

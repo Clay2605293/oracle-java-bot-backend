@@ -4,6 +4,8 @@ import com.oraclejavabot.features.tasks.dto.TaskRequestDTO;
 import com.oraclejavabot.features.tasks.dto.TaskResponseDTO;
 import com.oraclejavabot.features.tasks.model.TaskEntity;
 import com.oraclejavabot.features.tasks.repository.TaskRepository;
+import com.oraclejavabot.features.sprints.repository.SprintRepository; // 🔹 NUEVO
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,9 +17,12 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository repository;
+    private final SprintRepository sprintRepository; // 🔹 NUEVO
 
-    public TaskService(TaskRepository repository) {
+    public TaskService(TaskRepository repository,
+                       SprintRepository sprintRepository) { // 🔹 NUEVO
         this.repository = repository;
+        this.sprintRepository = sprintRepository;
     }
 
     public TaskResponseDTO createTask(String projectId, TaskRequestDTO request) {
@@ -45,12 +50,10 @@ public class TaskService {
 
                 if (exists == 0) {
                     System.out.println("⚠ Sprint NO pertenece al proyecto (se ignora en DEBUG)");
-                    // 🔥 NO lanzamos excepción en debug
                 }
             }
         } catch (Exception e) {
             System.out.println("❌ Error validando sprint: " + e.getMessage());
-            // seguimos para no bloquear flujo
         }
 
         // =============================
@@ -192,7 +195,7 @@ public class TaskService {
     }
 
     // =============================
-    // MAPPERS
+    // MAPPER
     // =============================
     private TaskResponseDTO mapToResponse(TaskEntity task) {
 
@@ -212,8 +215,18 @@ public class TaskService {
         dto.setPrioridadId(task.getPrioridadId());
         dto.setProjectId(uuidToHex(task.getProjectId()));
 
+        // 🔥 NUEVO: Sprint + nombre
         if (task.getSprintId() != null) {
-            dto.setSprintId(uuidToHex(task.getSprintId()));
+
+            UUID sprintId = task.getSprintId();
+
+            dto.setSprintId(uuidToHex(sprintId));
+
+            sprintRepository.findById(sprintId)
+                    .ifPresentOrElse(
+                            sprint -> dto.setSprintNombre(sprint.getNombre()),
+                            () -> dto.setSprintNombre("—")
+                    );
         }
 
         dto.setTiempoEstimado(task.getTiempoEstimado());
@@ -222,6 +235,9 @@ public class TaskService {
         return dto;
     }
 
+    // =============================
+    // UTILS
+    // =============================
     private UUID hexToUuid(String hex) {
         return UUID.fromString(
                 hex.replaceFirst(
