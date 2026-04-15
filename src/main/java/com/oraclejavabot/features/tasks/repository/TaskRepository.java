@@ -24,4 +24,17 @@ public interface TaskRepository extends JpaRepository<TaskEntity, UUID> {
             @Param("sprintId") String sprintId,
             @Param("projectId") String projectId
     );
+
+    @Query(value = """
+        SELECT t.*
+        FROM TAREA t
+        JOIN USUARIO_A_TAREA ut ON ut.TASK_ID = t.TASK_ID
+        WHERE ut.USER_ID = HEXTORAW(:userId)
+          AND t.PROJECT_ID = HEXTORAW(:projectId)
+        ORDER BY t.FECHA_CREACION DESC
+        """, nativeQuery = true)
+    List<TaskEntity> findAssignedTasksByUserAndProject(
+            @Param("userId") String userId,
+            @Param("projectId") String projectId
+    );
 }
