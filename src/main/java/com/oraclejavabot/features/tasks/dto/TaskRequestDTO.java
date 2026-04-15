@@ -20,6 +20,11 @@ public class TaskRequestDTO {
 
     private Double tiempoEstimado;
 
+    // 🔹 NUEVOS CAMPOS
+    private Double tiempoReal;
+    private Integer estadoId;
+    private String fechaFinalizacion;
+
     public String getTitulo() {
         return titulo;
     }
@@ -66,5 +71,31 @@ public class TaskRequestDTO {
 
     public void setTiempoEstimado(Double tiempoEstimado) {
         this.tiempoEstimado = tiempoEstimado;
+    }
+
+    // 🔹 NUEVOS GETTERS/SETTERS
+
+    public Double getTiempoReal() {
+        return tiempoReal;
+    }
+
+    public void setTiempoReal(Double tiempoReal) {
+        this.tiempoReal = tiempoReal;
+    }
+
+    public Integer getEstadoId() {
+        return estadoId;
+    }
+
+    public void setEstadoId(Integer estadoId) {
+        this.estadoId = estadoId;
+    }
+
+    public String getFechaFinalizacion() {
+        return fechaFinalizacion;
+    }
+
+    public void setFechaFinalizacion(String fechaFinalizacion) {
+        this.fechaFinalizacion = fechaFinalizacion;
     }
 }

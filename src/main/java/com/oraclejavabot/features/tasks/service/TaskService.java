@@ -4,7 +4,7 @@ import com.oraclejavabot.features.tasks.dto.TaskRequestDTO;
 import com.oraclejavabot.features.tasks.dto.TaskResponseDTO;
 import com.oraclejavabot.features.tasks.model.TaskEntity;
 import com.oraclejavabot.features.tasks.repository.TaskRepository;
-import com.oraclejavabot.features.sprints.repository.SprintRepository; // 🔹 NUEVO
+import com.oraclejavabot.features.sprints.repository.SprintRepository;
 
 import org.springframework.stereotype.Service;
 
@@ -17,48 +17,16 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository repository;
-    private final SprintRepository sprintRepository; // 🔹 NUEVO
+    private final SprintRepository sprintRepository;
 
     public TaskService(TaskRepository repository,
-                       SprintRepository sprintRepository) { // 🔹 NUEVO
+                       SprintRepository sprintRepository) {
         this.repository = repository;
         this.sprintRepository = sprintRepository;
     }
 
     public TaskResponseDTO createTask(String projectId, TaskRequestDTO request) {
 
-        System.out.println("========== CREATE TASK ==========");
-        System.out.println("ProjectId (HEX): " + projectId);
-        System.out.println("Titulo: " + request.getTitulo());
-        System.out.println("SprintId: " + request.getSprintId());
-        System.out.println("FechaLimite: " + request.getFechaLimite());
-
-        // =============================
-        // VALIDACIÓN SPRINT (DEBUG SAFE)
-        // =============================
-        try {
-            if (request.getSprintId() != null && !request.getSprintId().isBlank()) {
-
-                System.out.println("Validando sprint...");
-
-                int exists = repository.validateSprintInProject(
-                        request.getSprintId(),
-                        projectId
-                );
-
-                System.out.println("Resultado validación sprint: " + exists);
-
-                if (exists == 0) {
-                    System.out.println("⚠ Sprint NO pertenece al proyecto (se ignora en DEBUG)");
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error validando sprint: " + e.getMessage());
-        }
-
-        // =============================
-        // VALIDACIÓN FECHAS
-        // =============================
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime fechaLimite;
 
@@ -72,9 +40,6 @@ public class TaskService {
             throw new IllegalArgumentException("fechaLimite must be after fechaCreacion");
         }
 
-        // =============================
-        // BUILD ENTITY
-        // =============================
         TaskEntity task = new TaskEntity();
 
         task.setTitulo(request.getTitulo());
@@ -91,24 +56,23 @@ public class TaskService {
         }
 
         if (request.getSprintId() != null && !request.getSprintId().isBlank()) {
-            try {
-                task.setSprintId(hexToUuid(request.getSprintId()));
-            } catch (Exception e) {
-                System.out.println("⚠ SprintId inválido, se ignora");
+
+            int exists = repository.validateSprintInProject(
+                    request.getSprintId(),
+                    projectId
+            );
+
+            if (exists == 0) {
+                throw new IllegalArgumentException("Sprint does not belong to project");
             }
+
+            task.setSprintId(hexToUuid(request.getSprintId()));
         }
 
         task.setTiempoEstimado(request.getTiempoEstimado());
         task.setTiempoReal(0.0);
 
-        // =============================
-        // SAVE
-        // =============================
-        System.out.println("Intentando guardar task...");
-
         TaskEntity saved = repository.save(task);
-
-        System.out.println("✅ Task guardada con ID: " + saved.getTaskId());
 
         return mapToResponse(saved);
     }
@@ -134,29 +98,103 @@ public class TaskService {
         return mapToResponse(task);
     }
 
+    // 🔥 MÉTODO ACTUALIZADO
     public TaskResponseDTO updateTask(String taskId, TaskRequestDTO request) {
 
         TaskEntity task = repository.findById(hexToUuid(taskId))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
 
-        System.out.println("Actualizando task: " + taskId);
+        System.out.println("========== UPDATE TASK ==========");
+        System.out.println("TaskId: " + taskId);
 
-        task.setTitulo(request.getTitulo());
-        task.setDescripcion(request.getDescripcion());
-
-        LocalDateTime fechaLimite = LocalDateTime.parse(request.getFechaLimite());
-
-        if (!fechaLimite.isAfter(task.getFechaCreacion())) {
-            throw new IllegalArgumentException("fechaLimite must be after fechaCreacion");
+        // TITULO / DESCRIPCION
+        if (request.getTitulo() != null) {
+            task.setTitulo(request.getTitulo());
         }
 
-        task.setFechaLimite(fechaLimite);
-        task.setPrioridadId(request.getPrioridadId());
-        task.setTiempoEstimado(request.getTiempoEstimado());
+        if (request.getDescripcion() != null) {
+            task.setDescripcion(request.getDescripcion());
+        }
+
+        // FECHA LIMITE
+        if (request.getFechaLimite() != null) {
+
+            LocalDateTime fechaLimite;
+
+            try {
+                fechaLimite = LocalDateTime.parse(request.getFechaLimite());
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Formato de fecha inválido");
+            }
+
+            if (!fechaLimite.isAfter(task.getFechaCreacion())) {
+                throw new IllegalArgumentException("fechaLimite must be after fechaCreacion");
+            }
+
+            task.setFechaLimite(fechaLimite);
+        }
+
+        // PRIORIDAD
+        if (request.getPrioridadId() != null) {
+            task.setPrioridadId(request.getPrioridadId());
+        }
+
+        // SPRINT
+        if (request.getSprintId() != null) {
+
+            if (!request.getSprintId().isBlank()) {
+
+                int exists = repository.validateSprintInProject(
+                        request.getSprintId(),
+                        uuidToHex(task.getProjectId())
+                );
+
+                if (exists == 0) {
+                    throw new IllegalArgumentException("Sprint does not belong to project");
+                }
+
+                task.setSprintId(hexToUuid(request.getSprintId()));
+
+            } else {
+                task.setSprintId(null);
+            }
+        }
+
+        // TIEMPOS
+        if (request.getTiempoEstimado() != null) {
+            task.setTiempoEstimado(request.getTiempoEstimado());
+        }
+
+        if (request.getTiempoReal() != null) {
+            task.setTiempoReal(request.getTiempoReal());
+        }
+
+        // ESTADO + FECHA FINALIZACION
+        if (request.getEstadoId() != null) {
+
+            Integer estado = request.getEstadoId();
+            task.setEstadoId(estado);
+
+            if (estado == 3) {
+
+                if (request.getFechaFinalizacion() != null) {
+                    try {
+                        task.setFechaFinalizacion(
+                                LocalDateTime.parse(request.getFechaFinalizacion())
+                        );
+                    } catch (Exception e) {
+                        throw new IllegalArgumentException("Formato de fechaFinalizacion inválido");
+                    }
+                } else {
+                    task.setFechaFinalizacion(LocalDateTime.now());
+                }
+
+            } else {
+                task.setFechaFinalizacion(null);
+            }
+        }
 
         TaskEntity updated = repository.save(task);
-
-        System.out.println("✅ Task actualizada");
 
         return mapToResponse(updated);
     }
@@ -170,16 +208,12 @@ public class TaskService {
         }
 
         repository.delete(task);
-
-        System.out.println("🗑 Task eliminada: " + taskId);
     }
 
     public TaskResponseDTO changeStatus(String taskId, Integer estadoId) {
 
         TaskEntity task = repository.findById(hexToUuid(taskId))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
-
-        System.out.println("Cambiando estado a: " + estadoId);
 
         task.setEstadoId(estadoId);
 
@@ -194,9 +228,6 @@ public class TaskService {
         return mapToResponse(updated);
     }
 
-    // =============================
-    // MAPPER
-    // =============================
     private TaskResponseDTO mapToResponse(TaskEntity task) {
 
         TaskResponseDTO dto = new TaskResponseDTO();
@@ -215,7 +246,6 @@ public class TaskService {
         dto.setPrioridadId(task.getPrioridadId());
         dto.setProjectId(uuidToHex(task.getProjectId()));
 
-        // 🔥 NUEVO: Sprint + nombre
         if (task.getSprintId() != null) {
 
             UUID sprintId = task.getSprintId();
@@ -235,9 +265,6 @@ public class TaskService {
         return dto;
     }
 
-    // =============================
-    // UTILS
-    // =============================
     private UUID hexToUuid(String hex) {
         return UUID.fromString(
                 hex.replaceFirst(
