@@ -5,6 +5,9 @@ public class TeamMemberDTO {
     private String userId;
     private String teamId;
 
+    // 🔹 NUEVO
+    private String nombre;
+
     public String getUserId() {
         return userId;
     }
@@ -19,5 +22,14 @@ public class TeamMemberDTO {
 
     public void setTeamId(String teamId) {
         this.teamId = teamId;
+    }
+
+    // 🔹 NUEVO
+    public String getNombre() {
+        return nombre;
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }

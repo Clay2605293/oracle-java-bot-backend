@@ -7,6 +7,10 @@ public class TeamResponseDTO {
     private String descripcion;
     private String ownerId;
 
+    // 🔹 NUEVOS
+    private String ownerNombre;
+    private int totalMembers;
+
     public String getTeamId() {
         return teamId;
     }
@@ -37,5 +41,22 @@ public class TeamResponseDTO {
 
     public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
+    }
+
+    // 🔹 NUEVOS getters/setters
+    public String getOwnerNombre() {
+        return ownerNombre;
+    }
+
+    public void setOwnerNombre(String ownerNombre) {
+        this.ownerNombre = ownerNombre;
+    }
+
+    public int getTotalMembers() {
+        return totalMembers;
+    }
+
+    public void setTotalMembers(int totalMembers) {
+        this.totalMembers = totalMembers;
     }
 }

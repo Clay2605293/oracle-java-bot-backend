@@ -7,6 +7,9 @@ import com.oraclejavabot.features.teams.model.TeamMemberEntity;
 import com.oraclejavabot.features.teams.model.TeamMemberId;
 import com.oraclejavabot.features.teams.repository.TeamMemberRepository;
 import com.oraclejavabot.features.teams.repository.TeamRepository;
+import com.oraclejavabot.features.users.model.UserEntity;
+import com.oraclejavabot.features.users.repository.UserRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +21,14 @@ public class TeamService {
 
     private final TeamRepository teamRepository;
     private final TeamMemberRepository teamMemberRepository;
+    private final UserRepository userRepository; // 🔹 NUEVO
 
     public TeamService(TeamRepository teamRepository,
-                       TeamMemberRepository teamMemberRepository) {
+                       TeamMemberRepository teamMemberRepository,
+                       UserRepository userRepository) { // 🔹 NUEVO
         this.teamRepository = teamRepository;
         this.teamMemberRepository = teamMemberRepository;
+        this.userRepository = userRepository;
     }
 
     public TeamResponseDTO createTeam(TeamRequestDTO request) {
@@ -69,7 +75,25 @@ public class TeamService {
         response.setTeamId(uuidToHex(team.getTeamId()));
         response.setNombre(team.getNombre());
         response.setDescripcion(team.getDescripcion());
-        response.setOwnerId(uuidToHex(team.getOwnerId()));
+
+        String ownerIdHex = uuidToHex(team.getOwnerId());
+        response.setOwnerId(ownerIdHex);
+
+        // 🔹 OWNER NOMBRE
+        userRepository.findById(team.getOwnerId())
+                .ifPresentOrElse(
+                        user -> response.setOwnerNombre(
+                                user.getPrimerNombre() + " " + user.getApellido()
+                        ),
+                        () -> response.setOwnerNombre("—")
+                );
+
+        // 🔹 TOTAL MEMBERS
+        int totalMembers = teamMemberRepository
+                .findByIdTeamId(team.getTeamId())
+                .size();
+
+        response.setTotalMembers(totalMembers);
 
         return response;
     }

@@ -4,6 +4,8 @@ import com.oraclejavabot.features.teams.dto.TeamMemberDTO;
 import com.oraclejavabot.features.teams.model.TeamMemberEntity;
 import com.oraclejavabot.features.teams.model.TeamMemberId;
 import com.oraclejavabot.features.teams.repository.TeamMemberRepository;
+import com.oraclejavabot.features.users.repository.UserRepository; // 🔹 NUEVO
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +16,12 @@ import java.util.stream.Collectors;
 public class TeamMemberService {
 
     private final TeamMemberRepository repository;
+    private final UserRepository userRepository; // 🔹 NUEVO
 
-    public TeamMemberService(TeamMemberRepository repository) {
+    public TeamMemberService(TeamMemberRepository repository,
+                             UserRepository userRepository) { // 🔹 NUEVO
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
     public List<TeamMemberDTO> getMembers(String teamId) {
@@ -60,8 +65,19 @@ public class TeamMemberService {
 
         TeamMemberDTO dto = new TeamMemberDTO();
 
-        dto.setUserId(uuidToHex(entity.getId().getUserId()));
+        UUID userId = entity.getId().getUserId();
+
+        dto.setUserId(uuidToHex(userId));
         dto.setTeamId(uuidToHex(entity.getId().getTeamId()));
+
+        // 🔹 NUEVO: nombre del usuario
+        userRepository.findById(userId)
+                .ifPresentOrElse(
+                        user -> dto.setNombre(
+                                user.getPrimerNombre() + " " + user.getApellido()
+                        ),
+                        () -> dto.setNombre("—")
+                );
 
         return dto;
     }
