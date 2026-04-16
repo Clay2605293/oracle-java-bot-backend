@@ -42,12 +42,32 @@ public class TelegramBotCommandService {
     private final UserService userService;
     private final TelegramBotProperties botProperties;
 
+    /**
+     * Estado persistente simple por chat.
+     */
+    private final Map<Long, ConversationState> stateByChat = new ConcurrentHashMap<>();
+
+    /**
+     * Proyecto activo por chat.
+     */
     private final Map<Long, String> activeProjectByChat = new ConcurrentHashMap<>();
+
+    /**
+     * Opciones de proyecto cargadas para selección.
+     */
     private final Map<Long, List<ProjectResponseDTO>> projectOptionsByChat = new ConcurrentHashMap<>();
+
+    /**
+     * Última lista de tareas mostrada en el chat.
+     * Se usa para resolver acciones tipo "1-DONE".
+     */
     private final Map<Long, List<TaskResponseDTO>> listedTasksByChat = new ConcurrentHashMap<>();
 
-    private final Set<Long> waitingProjectSelection = ConcurrentHashMap.newKeySet();
-    private final Set<Long> waitingTaskTitle = ConcurrentHashMap.newKeySet();
+    /**
+     * Indica si la selección de proyecto actual viene del flujo de crear tarea
+     * o solo de cambiar/seleccionar proyecto.
+     */
+    private final Map<Long, Boolean> creatingTaskFlowByChat = new ConcurrentHashMap<>();
 
     public TelegramBotCommandService(TaskService taskService,
                                      ProjectService projectService,
@@ -83,8 +103,10 @@ public class TelegramBotCommandService {
         }
 
         String userId = uuidToHex(userOpt.get().getUserId());
+        ConversationState currentState = stateByChat.getOrDefault(chatId, ConversationState.IDLE);
 
         if (isStartCommand(requestText)) {
+            stateByChat.put(chatId, ConversationState.IDLE);
             sendMainMenu(chatId, client);
             return;
         }
@@ -95,16 +117,35 @@ public class TelegramBotCommandService {
             return;
         }
 
+        if (isCancelIntent(requestText)) {
+            clearTransientChatState(chatId);
+            BotHelper.sendMessage(chatId, "Operación cancelada. Usa el menú para continuar.", client, buildMainMenuKeyboard());
+            return;
+        }
+
+        /**
+         * Flujo conversacional en progreso.
+         */
+        if (currentState == ConversationState.SELECTING_PROJECT) {
+            handleProjectSelectionStep(chatId, userId, requestText, client);
+            return;
+        }
+
+        if (currentState == ConversationState.ENTERING_TASK_TITLE) {
+            createTaskFromTitle(chatId, userId, requestText, client);
+            return;
+        }
+
+        /**
+         * Acciones explícitas.
+         */
         if (isProjectCommand(requestText)) {
             handleProjectCommand(chatId, userId, requestText, client);
             return;
         }
 
-        if (waitingProjectSelection.contains(chatId)) {
-            if (trySelectProjectFromInput(chatId, userId, requestText, client)) {
-                return;
-            }
-            BotHelper.sendMessage(chatId, BotMessages.PROJECT_SELECTION_PROMPT.getMessage(), client);
+        if (isCreateTaskIntent(requestText) || isAddCommand(requestText)) {
+            startTaskCreationFlow(chatId, userId, client);
             return;
         }
 
@@ -113,21 +154,11 @@ public class TelegramBotCommandService {
             return;
         }
 
-        if (isAddCommand(requestText)) {
-            handleAddCommand(chatId, client);
-            return;
-        }
-
-        if (waitingTaskTitle.contains(chatId)) {
-            createTaskFromTitle(chatId, userId, requestText, client);
-            return;
-        }
-
         if (handleTaskAction(chatId, requestText, client)) {
             return;
         }
 
-        BotHelper.sendMessage(chatId, BotMessages.UNKNOWN_COMMAND.getMessage(), client);
+        BotHelper.sendMessage(chatId, BotMessages.UNKNOWN_COMMAND.getMessage(), client, buildMainMenuKeyboard());
     }
 
     private Optional<UserEntity> resolveBotUser(Long telegramUserId, String telegramUsername) {
@@ -163,7 +194,30 @@ public class TelegramBotCommandService {
     }
 
     private void sendMainMenu(Long chatId, TelegramClient client) {
-        ReplyKeyboardMarkup keyboard = ReplyKeyboardMarkup.builder()
+        stateByChat.put(chatId, ConversationState.IDLE);
+
+        String activeProject = activeProjectByChat.get(chatId);
+
+        if (activeProject == null || activeProject.isBlank()) {
+            BotHelper.sendMessage(
+                    chatId,
+                    BotMessages.HELLO_BOT.getMessage() + "\n\nNo active project selected yet.",
+                    client,
+                    buildMainMenuKeyboard()
+            );
+            return;
+        }
+
+        BotHelper.sendMessage(
+                chatId,
+                BotMessages.HELLO_BOT.getMessage() + "\n\nActive project: " + activeProject,
+                client,
+                buildMainMenuKeyboard()
+        );
+    }
+
+    private ReplyKeyboardMarkup buildMainMenuKeyboard() {
+        return ReplyKeyboardMarkup.builder()
                 .resizeKeyboard(true)
                 .oneTimeKeyboard(false)
                 .selective(true)
@@ -171,45 +225,47 @@ public class TelegramBotCommandService {
                 .keyboardRow(new KeyboardRow(BotLabels.SELECT_PROJECT.getLabel()))
                 .keyboardRow(new KeyboardRow(BotLabels.SHOW_MAIN_SCREEN.getLabel(), BotLabels.HIDE_MAIN_SCREEN.getLabel()))
                 .build();
-
-        String activeProject = activeProjectByChat.get(chatId);
-        if (activeProject == null) {
-            BotHelper.sendMessage(chatId, BotMessages.HELLO_BOT.getMessage(), client, keyboard);
-            return;
-        }
-
-        BotHelper.sendMessage(
-                chatId,
-                BotMessages.HELLO_BOT.getMessage() + "\nActive project: " + activeProject,
-                client,
-                keyboard
-        );
     }
 
     private void handleProjectCommand(Long chatId, String userId, String requestText, TelegramClient client) {
+        creatingTaskFlowByChat.put(chatId, false);
+
         String payload = extractCommandPayload(requestText, BotCommands.PROJECT.getCommand());
 
         if (payload == null || payload.isBlank()) {
-            promptProjectSelection(chatId, userId, client);
+            promptProjectSelection(chatId, userId, client, false);
             return;
         }
 
         if (!trySelectProjectFromInput(chatId, userId, payload, client)) {
-            BotHelper.sendMessage(chatId, BotMessages.PROJECT_SELECTION_PROMPT.getMessage(), client);
+            BotHelper.sendMessage(chatId, BotMessages.PROJECT_SELECTION_PROMPT.getMessage(), client, buildProjectSelectionKeyboard(chatId));
         }
     }
 
-    private void promptProjectSelection(Long chatId, String userId, TelegramClient client) {
+    private void startTaskCreationFlow(Long chatId, String userId, TelegramClient client) {
+        creatingTaskFlowByChat.put(chatId, true);
+        promptProjectSelection(chatId, userId, client, true);
+    }
+
+    private void promptProjectSelection(Long chatId,
+                                        String userId,
+                                        TelegramClient client,
+                                        boolean continueToTaskTitleAfterSelection) {
         List<ProjectResponseDTO> projects = projectService.getProjectsByUser(userId);
+
         if (projects.isEmpty()) {
-            BotHelper.sendMessage(chatId, BotMessages.NO_PROJECT_FOUND.getMessage(), client);
+            BotHelper.sendMessage(chatId, BotMessages.NO_PROJECT_FOUND.getMessage(), client, buildMainMenuKeyboard());
             return;
         }
 
         projectOptionsByChat.put(chatId, projects);
-        waitingProjectSelection.add(chatId);
+        stateByChat.put(chatId, ConversationState.SELECTING_PROJECT);
 
         StringBuilder sb = new StringBuilder();
+        if (continueToTaskTitleAfterSelection) {
+            sb.append("Let's create a task.\n\n");
+        }
+
         sb.append(BotMessages.PROJECT_SELECTION_PROMPT.getMessage()).append("\n\n");
 
         for (int i = 0; i < projects.size(); i++) {
@@ -222,7 +278,72 @@ public class TelegramBotCommandService {
                     .append("]\n");
         }
 
-        BotHelper.sendMessage(chatId, sb.toString(), client);
+        if (continueToTaskTitleAfterSelection) {
+            sb.append("\nYou can reply with the number or the project id.");
+        }
+
+        BotHelper.sendMessage(chatId, sb.toString(), client, buildProjectSelectionKeyboard(chatId));
+    }
+
+    private ReplyKeyboardMarkup buildProjectSelectionKeyboard(Long chatId) {
+        List<KeyboardRow> rows = new ArrayList<>();
+        List<ProjectResponseDTO> projects = projectOptionsByChat.get(chatId);
+
+        if (projects != null) {
+            for (int i = 0; i < projects.size(); i++) {
+                KeyboardRow row = new KeyboardRow();
+                row.add(String.valueOf(i + 1));
+                row.add(projects.get(i).getNombre());
+                rows.add(row);
+            }
+        }
+
+        rows.add(new KeyboardRow("Cancel"));
+
+        return ReplyKeyboardMarkup.builder()
+                .keyboard(rows)
+                .resizeKeyboard(true)
+                .oneTimeKeyboard(false)
+                .selective(true)
+                .build();
+    }
+
+    private void handleProjectSelectionStep(Long chatId,
+                                            String userId,
+                                            String requestText,
+                                            TelegramClient client) {
+        if (!trySelectProjectFromInput(chatId, userId, requestText, client)) {
+            BotHelper.sendMessage(
+                    chatId,
+                    "I couldn't identify that project. Reply with the project number or tap one of the buttons.",
+                    client,
+                    buildProjectSelectionKeyboard(chatId)
+            );
+            return;
+        }
+
+        boolean isCreatingTask = creatingTaskFlowByChat.getOrDefault(chatId, false);
+
+        if (isCreatingTask) {
+            stateByChat.put(chatId, ConversationState.ENTERING_TASK_TITLE);
+
+            BotHelper.sendMessage(
+                    chatId,
+                    BotMessages.PROJECT_SELECTED.getMessage() + "\n\nNow send me the task title.",
+                    client
+            );
+
+            BotHelper.sendMessage(chatId, BotMessages.TYPE_NEW_TASK.getMessage(), client);
+        } else {
+            stateByChat.put(chatId, ConversationState.IDLE);
+
+            BotHelper.sendMessage(
+                    chatId,
+                    "Project selected successfully. You can now manage your tasks.",
+                    client,
+                    buildMainMenuKeyboard()
+            );
+        }
     }
 
     private boolean trySelectProjectFromInput(Long chatId, String userId, String selectionInput, TelegramClient client) {
@@ -231,13 +352,15 @@ public class TelegramBotCommandService {
         if (projects == null || projects.isEmpty()) {
             projects = projectService.getProjectsByUser(userId);
             if (projects.isEmpty()) {
-                BotHelper.sendMessage(chatId, BotMessages.NO_PROJECT_FOUND.getMessage(), client);
+                BotHelper.sendMessage(chatId, BotMessages.NO_PROJECT_FOUND.getMessage(), client, buildMainMenuKeyboard());
                 return true;
             }
             projectOptionsByChat.put(chatId, projects);
         }
 
         String candidate = selectionInput.trim();
+        String candidateLower = candidate.toLowerCase();
+
         ProjectResponseDTO selected = null;
 
         if (isInteger(candidate)) {
@@ -247,7 +370,13 @@ public class TelegramBotCommandService {
             }
         } else {
             for (ProjectResponseDTO project : projects) {
-                if (project.getProjectId().equalsIgnoreCase(candidate)) {
+                boolean matchesId = project.getProjectId() != null
+                        && project.getProjectId().equalsIgnoreCase(candidate);
+
+                boolean matchesName = project.getNombre() != null
+                        && project.getNombre().trim().equalsIgnoreCase(candidateLower);
+
+                if (matchesId || matchesName) {
                     selected = project;
                     break;
                 }
@@ -259,8 +388,6 @@ public class TelegramBotCommandService {
         }
 
         activeProjectByChat.put(chatId, selected.getProjectId());
-        waitingProjectSelection.remove(chatId);
-        waitingTaskTitle.remove(chatId);
         listedTasksByChat.remove(chatId);
 
         BotHelper.sendMessage(
@@ -271,29 +398,24 @@ public class TelegramBotCommandService {
         return true;
     }
 
-    private void handleAddCommand(Long chatId, TelegramClient client) {
-        if (!activeProjectByChat.containsKey(chatId)) {
-            BotHelper.sendMessage(chatId, BotMessages.PROJECT_REQUIRED.getMessage(), client);
+    private void createTaskFromTitle(Long chatId, String userId, String taskTitle, TelegramClient client) {
+        String normalizedTitle = taskTitle == null ? "" : taskTitle.trim();
+
+        if (normalizedTitle.isBlank()) {
+            BotHelper.sendMessage(chatId, "The task title cannot be empty. Please send a valid title.", client);
             return;
         }
 
-        waitingTaskTitle.add(chatId);
-        waitingProjectSelection.remove(chatId);
-
-        BotHelper.sendMessage(chatId, BotMessages.TYPE_NEW_TASK.getMessage(), client);
-    }
-
-    private void createTaskFromTitle(Long chatId, String userId, String taskTitle, TelegramClient client) {
         String projectId = activeProjectByChat.get(chatId);
         if (projectId == null || projectId.isBlank()) {
-            waitingTaskTitle.remove(chatId);
-            BotHelper.sendMessage(chatId, BotMessages.PROJECT_REQUIRED.getMessage(), client);
+            clearTransientChatState(chatId);
+            BotHelper.sendMessage(chatId, BotMessages.PROJECT_REQUIRED.getMessage(), client, buildMainMenuKeyboard());
             return;
         }
 
         try {
             TaskRequestDTO request = new TaskRequestDTO();
-            request.setTitulo(taskTitle);
+            request.setTitulo(normalizedTitle);
             request.setFechaLimite(LocalDateTime.now()
                     .plusDays(botProperties.getDefaultDueDays())
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
@@ -302,26 +424,36 @@ public class TelegramBotCommandService {
             TaskResponseDTO createdTask = taskService.createTask(projectId, request);
             taskUserService.assignUser(createdTask.getTaskId(), userId);
 
-            waitingTaskTitle.remove(chatId);
+            stateByChat.put(chatId, ConversationState.IDLE);
             listedTasksByChat.remove(chatId);
+            projectOptionsByChat.remove(chatId);
+            creatingTaskFlowByChat.remove(chatId);
 
-            BotHelper.sendMessage(chatId, BotMessages.NEW_ITEM_ADDED.getMessage(), client);
+            BotHelper.sendMessage(
+                    chatId,
+                    "Task created successfully ✅\n\nTitle: " + normalizedTitle + "\nProject: " + projectId,
+                    client,
+                    buildMainMenuKeyboard()
+            );
 
         } catch (Exception e) {
             logger.error("Error creating task from bot", e);
-            BotHelper.sendMessage(chatId, "Task could not be created. Try again.", client);
+            BotHelper.sendMessage(chatId, "Task could not be created. Try again.", client, buildMainMenuKeyboard());
+            stateByChat.put(chatId, ConversationState.IDLE);
+            creatingTaskFlowByChat.remove(chatId);
         }
     }
 
     private void handleListTasks(Long chatId, String userId, TelegramClient client) {
         String activeProjectId = activeProjectByChat.get(chatId);
         if (activeProjectId == null || activeProjectId.isBlank()) {
-            BotHelper.sendMessage(chatId, BotMessages.PROJECT_REQUIRED.getMessage(), client);
+            BotHelper.sendMessage(chatId, BotMessages.PROJECT_REQUIRED.getMessage(), client, buildMainMenuKeyboard());
             return;
         }
 
         List<TaskResponseDTO> tasks = taskService.getAssignedTasksByUserAndProject(userId, activeProjectId);
         listedTasksByChat.put(chatId, tasks);
+        stateByChat.put(chatId, ConversationState.IDLE);
 
         ReplyKeyboardMarkup keyboard = buildTaskKeyboard(tasks);
 
@@ -346,13 +478,13 @@ public class TelegramBotCommandService {
 
         List<TaskResponseDTO> cachedTasks = listedTasksByChat.get(chatId);
         if (cachedTasks == null || cachedTasks.isEmpty()) {
-            BotHelper.sendMessage(chatId, BotMessages.TASK_NOT_FOUND.getMessage(), client);
+            BotHelper.sendMessage(chatId, BotMessages.TASK_NOT_FOUND.getMessage(), client, buildMainMenuKeyboard());
             return true;
         }
 
         int taskNumber = Integer.parseInt(possibleIndex);
         if (taskNumber < 1 || taskNumber > cachedTasks.size()) {
-            BotHelper.sendMessage(chatId, BotMessages.TASK_NOT_FOUND.getMessage(), client);
+            BotHelper.sendMessage(chatId, BotMessages.TASK_NOT_FOUND.getMessage(), client, buildMainMenuKeyboard());
             return true;
         }
 
@@ -381,7 +513,7 @@ public class TelegramBotCommandService {
 
         } catch (Exception e) {
             logger.error("Error handling task action from bot", e);
-            BotHelper.sendMessage(chatId, "Task action failed. Use /tasklist to refresh.", client);
+            BotHelper.sendMessage(chatId, "Task action failed. Use the task list to refresh.", client, buildMainMenuKeyboard());
             return true;
         }
     }
@@ -443,7 +575,8 @@ public class TelegramBotCommandService {
         return matchesCommand(requestText, BotCommands.TODO_LIST.getCommand())
                 || matchesCommand(requestText, BotCommands.TASK_LIST.getCommand())
                 || requestText.equalsIgnoreCase(BotLabels.LIST_ALL_ITEMS.getLabel())
-                || requestText.equalsIgnoreCase(BotLabels.MY_TASK_LIST.getLabel());
+                || requestText.equalsIgnoreCase(BotLabels.MY_TASK_LIST.getLabel())
+                || isListIntent(requestText);
     }
 
     private boolean isAddCommand(String requestText) {
@@ -454,7 +587,45 @@ public class TelegramBotCommandService {
 
     private boolean isProjectCommand(String requestText) {
         return startsWithCommand(requestText, BotCommands.PROJECT.getCommand())
-                || requestText.equalsIgnoreCase(BotLabels.SELECT_PROJECT.getLabel());
+                || requestText.equalsIgnoreCase(BotLabels.SELECT_PROJECT.getLabel())
+                || isProjectIntent(requestText);
+    }
+
+    private boolean isCreateTaskIntent(String text) {
+        String normalized = normalizeText(text);
+        return normalized.contains("crear tarea")
+                || normalized.contains("crea tarea")
+                || normalized.contains("nueva tarea")
+                || normalized.contains("agregar tarea")
+                || normalized.contains("anadir tarea")
+                || normalized.contains("añadir tarea");
+    }
+
+    private boolean isListIntent(String text) {
+        String normalized = normalizeText(text);
+        return normalized.contains("ver tareas")
+                || normalized.contains("mis tareas")
+                || normalized.contains("listar tareas")
+                || normalized.contains("lista de tareas");
+    }
+
+    private boolean isProjectIntent(String text) {
+        String normalized = normalizeText(text);
+        return normalized.contains("seleccionar proyecto")
+                || normalized.contains("cambiar proyecto")
+                || normalized.equals("proyecto")
+                || normalized.equals("project");
+    }
+
+    private boolean isCancelIntent(String text) {
+        String normalized = normalizeText(text);
+        return normalized.equals("cancel")
+                || normalized.equals("cancelar")
+                || normalized.equals("salir");
+    }
+
+    private String normalizeText(String text) {
+        return text == null ? "" : text.trim().toLowerCase();
     }
 
     private boolean matchesCommand(String requestText, String command) {
@@ -512,10 +683,10 @@ public class TelegramBotCommandService {
     }
 
     private void clearTransientChatState(Long chatId) {
-        waitingProjectSelection.remove(chatId);
-        waitingTaskTitle.remove(chatId);
+        stateByChat.remove(chatId);
         listedTasksByChat.remove(chatId);
         projectOptionsByChat.remove(chatId);
+        creatingTaskFlowByChat.remove(chatId);
     }
 
     private String uuidToHex(UUID uuid) {
