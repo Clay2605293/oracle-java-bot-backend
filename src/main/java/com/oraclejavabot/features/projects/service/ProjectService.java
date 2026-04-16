@@ -55,7 +55,18 @@ public class ProjectService {
     }
 
     // =============================
-    // GET PROJECTS BY USER
+    // 🔥 NUEVO — GET PROJECTS BY MANAGER
+    // =============================
+    public List<ProjectResponseDTO> getProjectsByManager(String managerId) {
+
+        return repository.findProjectsByManager(managerId)
+                .stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // =============================
+    // GET PROJECTS BY USER (YA EXISTÍA)
     // =============================
     public List<ProjectResponseDTO> getProjectsByUser(String userId) {
 
@@ -107,7 +118,7 @@ public class ProjectService {
     }
 
     // =============================
-    // PROGRESS (ya lo tenías)
+    // PROGRESS
     // =============================
     public ProjectProgressResponseDTO getProjectProgress(String projectId) {
 
