@@ -17,17 +17,26 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(List.of(
-            "http://159.54.133.243:8080", // tu frontend
-            "http://localhost:5173"
-        ));
+        // 🔥 Permite múltiples orígenes (local + OCI + futuros dominios)
+        config.setAllowedOriginPatterns(List.of("*"));
 
+        // 🔥 IMPORTANTE: incluir PATCH y OPTIONS
         config.setAllowedMethods(List.of(
-            "GET", "POST", "PUT", "DELETE", "OPTIONS"
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "PATCH",
+                "OPTIONS"
         ));
 
+        // 🔥 Permitir todos los headers
         config.setAllowedHeaders(List.of("*"));
 
+        // 🔥 Exponer headers (por si usas Authorization/JWT en response)
+        config.setExposedHeaders(List.of("*"));
+
+        // 🔥 Necesario si usas JWT / cookies / auth headers
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
