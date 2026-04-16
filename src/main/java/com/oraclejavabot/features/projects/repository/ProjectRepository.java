@@ -45,4 +45,14 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, UUID> {
         ORDER BY p.NOMBRE
     """, nativeQuery = true)
     List<ProjectEntity> findProjectsByUserTeam(@Param("userId") String userId);
+
+    // 🔥 NUEVO — PROYECTOS DEL MANAGER (OWNER DEL EQUIPO)
+    @Query(value = """
+        SELECT p.*
+        FROM PROYECTO p
+        JOIN EQUIPO e ON e.TEAM_ID = p.TEAM_ID
+        WHERE e.USER_ID = HEXTORAW(:managerId)
+        ORDER BY p.NOMBRE
+    """, nativeQuery = true)
+    List<ProjectEntity> findProjectsByManager(@Param("managerId") String managerId);
 }

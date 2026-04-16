@@ -42,6 +42,14 @@ public class ProjectController {
     }
 
     // =============================
+    // 🔥 NUEVO — PROJECTS BY MANAGER
+    // =============================
+    @GetMapping("/users/{managerId}/managed-projects")
+    public List<ProjectResponseDTO> getProjectsByManager(@PathVariable String managerId) {
+        return service.getProjectsByManager(managerId);
+    }
+
+    // =============================
     // GET PROJECT BY ID
     // =============================
     @GetMapping("/projects/{projectId}")
@@ -70,7 +78,7 @@ public class ProjectController {
     }
 
     // =============================
-    // PROGRESS (YA EXISTÍA)
+    // PROGRESS
     // =============================
     @GetMapping("/projects/{projectId}/progress")
     public ProjectProgressResponseDTO getProjectProgress(@PathVariable String projectId) {
