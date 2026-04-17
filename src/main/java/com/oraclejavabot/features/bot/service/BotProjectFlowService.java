@@ -52,6 +52,7 @@ public class BotProjectFlowService {
                                        String userId,
                                        TelegramClient client,
                                        boolean continueToTaskTitleAfterSelection) {
+
         List<ProjectResponseDTO> projects = projectService.getProjectsByUser(userId);
 
         if (projects.isEmpty()) {
@@ -68,33 +69,39 @@ public class BotProjectFlowService {
         botConversationStateService.setState(chatId, ConversationState.SELECTING_PROJECT);
 
         StringBuilder sb = new StringBuilder();
+
         if (continueToTaskTitleAfterSelection) {
             sb.append("Let's create a task.\n\n");
         }
 
         sb.append(BotMessages.PROJECT_SELECTION_PROMPT.getMessage()).append("\n\n");
 
+        // 🔥 CAMBIO: ya NO mostramos IDs
         for (int i = 0; i < projects.size(); i++) {
             ProjectResponseDTO project = projects.get(i);
             sb.append(i + 1)
                     .append(". ")
                     .append(project.getNombre())
-                    .append(" [")
-                    .append(project.getProjectId())
-                    .append("]\n");
+                    .append("\n");
         }
 
         if (continueToTaskTitleAfterSelection) {
-            sb.append("\nYou can reply with the number or the project id.");
+            sb.append("\nReply with the project number.");
         }
 
-        BotHelper.sendMessage(chatId, sb.toString(), client, botKeyboardService.buildProjectSelectionKeyboard(projects));
+        BotHelper.sendMessage(
+                chatId,
+                sb.toString(),
+                client,
+                botKeyboardService.buildProjectSelectionKeyboard(projects)
+        );
     }
 
     public void handleProjectSelectionStep(Long chatId,
                                            String userId,
                                            String requestText,
                                            TelegramClient client) {
+
         if (!trySelectProjectFromInput(chatId, userId, requestText, client)) {
             BotHelper.sendMessage(
                     chatId,
@@ -107,12 +114,15 @@ public class BotProjectFlowService {
 
         boolean isCreatingTask = botConversationStateService.isCreatingTaskFlow(chatId);
 
+        ProjectResponseDTO activeProject = botConversationStateService.getActiveProject(chatId);
+
         if (isCreatingTask) {
             botConversationStateService.setState(chatId, ConversationState.ENTERING_TASK_TITLE);
 
             BotHelper.sendMessage(
                     chatId,
-                    BotMessages.PROJECT_SELECTED.getMessage() + "\n\nNow send me the task title.",
+                    BotMessages.PROJECT_SELECTED.getMessage() + " " + activeProject.getNombre()
+                            + "\n\nNow send me the task title.",
                     client
             );
 
@@ -122,18 +132,24 @@ public class BotProjectFlowService {
 
             BotHelper.sendMessage(
                     chatId,
-                    "Project selected successfully. You can now manage your tasks.",
+                    BotMessages.PROJECT_SELECTED.getMessage() + " " + activeProject.getNombre()
+                            + "\nYou can now manage your tasks.",
                     client,
                     botKeyboardService.buildMainMenuKeyboard()
             );
         }
     }
 
-    private boolean trySelectProjectFromInput(Long chatId, String userId, String selectionInput, TelegramClient client) {
+    private boolean trySelectProjectFromInput(Long chatId,
+                                            String userId,
+                                            String selectionInput,
+                                            TelegramClient client) {
+
         List<ProjectResponseDTO> projects = botConversationStateService.getProjectOptions(chatId);
 
         if (projects == null || projects.isEmpty()) {
             projects = projectService.getProjectsByUser(userId);
+
             if (projects.isEmpty()) {
                 BotHelper.sendMessage(
                         chatId,
@@ -143,6 +159,7 @@ public class BotProjectFlowService {
                 );
                 return true;
             }
+
             botConversationStateService.setProjectOptions(chatId, projects);
         }
 
@@ -158,13 +175,14 @@ public class BotProjectFlowService {
             }
         } else {
             for (ProjectResponseDTO project : projects) {
-                boolean matchesId = project.getProjectId() != null
-                        && project.getProjectId().equalsIgnoreCase(candidate);
 
                 boolean matchesName = project.getNombre() != null
                         && project.getNombre().trim().equalsIgnoreCase(candidateLower);
 
-                if (matchesId || matchesName) {
+                boolean matchesId = project.getProjectId() != null
+                        && project.getProjectId().equalsIgnoreCase(candidate);
+
+                if (matchesName || matchesId) {
                     selected = project;
                     break;
                 }
@@ -175,14 +193,10 @@ public class BotProjectFlowService {
             return false;
         }
 
-        botConversationStateService.setActiveProject(chatId, selected.getProjectId());
+        // 🔥 SOLO lógica, sin enviar mensaje
+        botConversationStateService.setActiveProject(chatId, selected);
         botConversationStateService.removeListedTasks(chatId);
 
-        BotHelper.sendMessage(
-                chatId,
-                BotMessages.PROJECT_SELECTED.getMessage() + " " + selected.getNombre(),
-                client
-        );
         return true;
     }
 }

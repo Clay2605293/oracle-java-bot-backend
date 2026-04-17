@@ -2,6 +2,7 @@ package com.oraclejavabot.features.bot.service;
 
 import com.oraclejavabot.features.bot.util.BotHelper;
 import com.oraclejavabot.features.bot.util.BotMessages;
+import com.oraclejavabot.features.projects.dto.ProjectResponseDTO;
 import com.oraclejavabot.features.users.model.UserEntity;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
@@ -34,10 +35,11 @@ public class TelegramBotCommandService {
     }
 
     public void handleTextMessage(Long chatId,
-                                  Long telegramUserId,
-                                  String telegramUsername,
-                                  String rawText,
-                                  TelegramClient client) {
+                                 Long telegramUserId,
+                                 String telegramUsername,
+                                 String rawText,
+                                 TelegramClient client) {
+
         if (chatId == null || rawText == null) {
             return;
         }
@@ -47,7 +49,9 @@ public class TelegramBotCommandService {
             return;
         }
 
-        Optional<UserEntity> userOpt = botUserResolutionService.resolveBotUser(telegramUserId, telegramUsername);
+        Optional<UserEntity> userOpt =
+                botUserResolutionService.resolveBotUser(telegramUserId, telegramUsername);
+
         if (userOpt.isEmpty()) {
             botConversationStateService.clearTransientChatState(chatId);
             BotHelper.sendMessage(chatId, BotMessages.USER_NOT_REGISTERED.getMessage(), client);
@@ -57,29 +61,47 @@ public class TelegramBotCommandService {
         String userId = uuidToHex(userOpt.get().getUserId());
         ConversationState currentState = botConversationStateService.getStateOrIdle(chatId);
 
+        // =============================
+        // START COMMAND (con debounce)
+        // =============================
         if (botCommandParserService.isStartCommand(requestText)) {
+
+            // 🔥 evita doble ejecución de /start
+            if (botConversationStateService.isDuplicateStart(chatId)) {
+                return;
+            }
+
             botConversationStateService.setState(chatId, ConversationState.IDLE);
             sendMainMenu(chatId, client);
             return;
         }
 
+        // =============================
+        // HIDE
+        // =============================
         if (botCommandParserService.isHideCommand(requestText)) {
             botConversationStateService.clearTransientChatState(chatId);
             BotHelper.sendMessage(chatId, BotMessages.BYE.getMessage(), client);
             return;
         }
 
+        // =============================
+        // CANCEL
+        // =============================
         if (botCommandParserService.isCancelIntent(requestText)) {
             botConversationStateService.clearTransientChatState(chatId);
             BotHelper.sendMessage(
                     chatId,
-                    "Operación cancelada. Usa el menú para continuar.",
+                    "Operation cancelled. Use the menu to continue.",
                     client,
                     botKeyboardService.buildMainMenuKeyboard()
             );
             return;
         }
 
+        // =============================
+        // STATE HANDLING
+        // =============================
         if (currentState == ConversationState.SELECTING_PROJECT) {
             botProjectFlowService.handleProjectSelectionStep(chatId, userId, requestText, client);
             return;
@@ -90,6 +112,9 @@ public class TelegramBotCommandService {
             return;
         }
 
+        // =============================
+        // COMMANDS
+        // =============================
         if (botCommandParserService.isProjectCommand(requestText)) {
             botProjectFlowService.handleProjectCommand(chatId, userId, requestText, client);
             return;
@@ -106,10 +131,16 @@ public class TelegramBotCommandService {
             return;
         }
 
+        // =============================
+        // TASK ACTIONS
+        // =============================
         if (botTaskFlowService.handleTaskAction(chatId, requestText, client)) {
             return;
         }
 
+        // =============================
+        // FALLBACK
+        // =============================
         BotHelper.sendMessage(
                 chatId,
                 BotMessages.UNKNOWN_COMMAND.getMessage(),
@@ -119,14 +150,17 @@ public class TelegramBotCommandService {
     }
 
     private void sendMainMenu(Long chatId, TelegramClient client) {
+
         botConversationStateService.setState(chatId, ConversationState.IDLE);
 
-        String activeProject = botConversationStateService.getActiveProject(chatId);
+        ProjectResponseDTO activeProject =
+                botConversationStateService.getActiveProject(chatId);
 
-        if (activeProject == null || activeProject.isBlank()) {
+        if (activeProject == null) {
             BotHelper.sendMessage(
                     chatId,
-                    BotMessages.HELLO_BOT.getMessage() + "\n\nNo active project selected yet.",
+                    BotMessages.HELLO_BOT.getMessage()
+                            + "\n\nNo active project selected yet.",
                     client,
                     botKeyboardService.buildMainMenuKeyboard()
             );
@@ -135,7 +169,8 @@ public class TelegramBotCommandService {
 
         BotHelper.sendMessage(
                 chatId,
-                BotMessages.HELLO_BOT.getMessage() + "\n\nActive project: " + activeProject,
+                BotMessages.HELLO_BOT.getMessage()
+                        + "\n\nActive project: " + activeProject.getNombre(),
                 client,
                 botKeyboardService.buildMainMenuKeyboard()
         );

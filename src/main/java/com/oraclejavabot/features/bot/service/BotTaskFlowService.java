@@ -4,6 +4,7 @@ import com.oraclejavabot.config.TelegramBotProperties;
 import com.oraclejavabot.features.bot.util.BotHelper;
 import com.oraclejavabot.features.bot.util.BotLabels;
 import com.oraclejavabot.features.bot.util.BotMessages;
+import com.oraclejavabot.features.projects.dto.ProjectResponseDTO;
 import com.oraclejavabot.features.tasks.dto.TaskRequestDTO;
 import com.oraclejavabot.features.tasks.dto.TaskResponseDTO;
 import com.oraclejavabot.features.tasks.service.TaskService;
@@ -53,6 +54,7 @@ public class BotTaskFlowService {
     }
 
     public void createTaskFromTitle(Long chatId, String userId, String taskTitle, TelegramClient client) {
+
         String normalizedTitle = taskTitle == null ? "" : taskTitle.trim();
 
         if (normalizedTitle.isBlank()) {
@@ -60,8 +62,9 @@ public class BotTaskFlowService {
             return;
         }
 
-        String projectId = botConversationStateService.getActiveProject(chatId);
-        if (projectId == null || projectId.isBlank()) {
+        ProjectResponseDTO project = botConversationStateService.getActiveProject(chatId);
+
+        if (project == null) {
             botConversationStateService.clearTransientChatState(chatId);
             BotHelper.sendMessage(
                     chatId,
@@ -80,7 +83,8 @@ public class BotTaskFlowService {
                     .format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             request.setPrioridadId(botProperties.getDefaultPriorityId());
 
-            TaskResponseDTO createdTask = taskService.createTask(projectId, request);
+            // 🔥 Usamos ID solo internamente
+            TaskResponseDTO createdTask = taskService.createTask(project.getProjectId(), request);
             taskUserService.assignUser(createdTask.getTaskId(), userId);
 
             botConversationStateService.setState(chatId, ConversationState.IDLE);
@@ -90,27 +94,33 @@ public class BotTaskFlowService {
 
             BotHelper.sendMessage(
                     chatId,
-                    "Task created successfully ✅\n\nTitle: " + normalizedTitle + "\nProject: " + projectId,
+                    "Task created successfully ✅\n\n"
+                            + "Title: " + normalizedTitle
+                            + "\nProject: " + project.getNombre(),
                     client,
                     botKeyboardService.buildMainMenuKeyboard()
             );
 
         } catch (Exception e) {
             logger.error("Error creating task from bot", e);
+
             BotHelper.sendMessage(
                     chatId,
                     "Task could not be created. Try again.",
                     client,
                     botKeyboardService.buildMainMenuKeyboard()
             );
+
             botConversationStateService.setState(chatId, ConversationState.IDLE);
             botConversationStateService.removeCreatingTaskFlow(chatId);
         }
     }
 
     public void handleListTasks(Long chatId, String userId, TelegramClient client) {
-        String activeProjectId = botConversationStateService.getActiveProject(chatId);
-        if (activeProjectId == null || activeProjectId.isBlank()) {
+
+        ProjectResponseDTO project = botConversationStateService.getActiveProject(chatId);
+
+        if (project == null) {
             BotHelper.sendMessage(
                     chatId,
                     BotMessages.PROJECT_REQUIRED.getMessage(),
@@ -120,13 +130,17 @@ public class BotTaskFlowService {
             return;
         }
 
-        List<TaskResponseDTO> tasks = taskService.getAssignedTasksByUserAndProject(userId, activeProjectId);
+        List<TaskResponseDTO> tasks =
+                taskService.getAssignedTasksByUserAndProject(userId, project.getProjectId());
+
         botConversationStateService.setListedTasks(chatId, tasks);
         botConversationStateService.setState(chatId, ConversationState.IDLE);
 
         ReplyKeyboardMarkup keyboard = botKeyboardService.buildTaskKeyboard(tasks);
 
-        String header = BotLabels.MY_TASK_LIST.getLabel() + "\nProject: " + activeProjectId;
+        String header = BotLabels.MY_TASK_LIST.getLabel()
+                + "\nProject: " + project.getNombre();
+
         if (tasks.isEmpty()) {
             header = header + "\n" + BotMessages.EMPTY_TASK_LIST.getMessage();
         }
@@ -135,17 +149,20 @@ public class BotTaskFlowService {
     }
 
     public boolean handleTaskAction(Long chatId, String requestText, TelegramClient client) {
+
         int dashIndex = requestText.indexOf(BotLabels.DASH.getLabel());
         if (dashIndex <= 0) {
             return false;
         }
 
         String possibleIndex = requestText.substring(0, dashIndex).trim();
+
         if (!botCommandParserService.isInteger(possibleIndex)) {
             return false;
         }
 
         List<TaskResponseDTO> cachedTasks = botConversationStateService.getListedTasks(chatId);
+
         if (cachedTasks == null || cachedTasks.isEmpty()) {
             BotHelper.sendMessage(
                     chatId,
@@ -157,6 +174,7 @@ public class BotTaskFlowService {
         }
 
         int taskNumber = Integer.parseInt(possibleIndex);
+
         if (taskNumber < 1 || taskNumber > cachedTasks.size()) {
             BotHelper.sendMessage(
                     chatId,
@@ -171,18 +189,23 @@ public class BotTaskFlowService {
         String action = requestText.substring(dashIndex + 1).trim();
 
         try {
+
             if (action.equalsIgnoreCase(BotLabels.DONE.getLabel())) {
                 taskService.changeStatus(task.getTaskId(), 3);
                 BotHelper.sendMessage(chatId, BotMessages.ITEM_DONE.getMessage(), client);
+
             } else if (action.equalsIgnoreCase(BotLabels.UNDO.getLabel())) {
                 taskService.changeStatus(task.getTaskId(), botProperties.getDefaultStatusId());
                 BotHelper.sendMessage(chatId, BotMessages.ITEM_UNDONE.getMessage(), client);
+
             } else if (action.equalsIgnoreCase(BotLabels.IN_PROGRESS.getLabel())) {
                 taskService.changeStatus(task.getTaskId(), 2);
                 BotHelper.sendMessage(chatId, BotMessages.ITEM_IN_PROGRESS.getMessage(), client);
+
             } else if (action.equalsIgnoreCase(BotLabels.DELETE.getLabel())) {
                 taskService.deleteTask(task.getTaskId());
                 BotHelper.sendMessage(chatId, BotMessages.ITEM_DELETED.getMessage(), client);
+
             } else {
                 return false;
             }
@@ -192,12 +215,14 @@ public class BotTaskFlowService {
 
         } catch (Exception e) {
             logger.error("Error handling task action from bot", e);
+
             BotHelper.sendMessage(
                     chatId,
                     "Task action failed. Use the task list to refresh.",
                     client,
                     botKeyboardService.buildMainMenuKeyboard()
             );
+
             return true;
         }
     }
