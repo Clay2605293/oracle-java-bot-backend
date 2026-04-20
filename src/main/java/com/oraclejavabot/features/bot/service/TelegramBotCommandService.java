@@ -4,6 +4,7 @@ import com.oraclejavabot.features.bot.util.BotHelper;
 import com.oraclejavabot.features.bot.util.BotMessages;
 import com.oraclejavabot.features.projects.dto.ProjectResponseDTO;
 import com.oraclejavabot.features.users.model.UserEntity;
+import com.oraclejavabot.features.users.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
@@ -19,26 +20,29 @@ public class TelegramBotCommandService {
     private final BotConversationStateService botConversationStateService;
     private final BotCommandParserService botCommandParserService;
     private final BotKeyboardService botKeyboardService;
+    private final UserRepository userRepository;
 
     public TelegramBotCommandService(BotUserResolutionService botUserResolutionService,
                                      BotProjectFlowService botProjectFlowService,
                                      BotTaskFlowService botTaskFlowService,
                                      BotConversationStateService botConversationStateService,
                                      BotCommandParserService botCommandParserService,
-                                     BotKeyboardService botKeyboardService) {
+                                     BotKeyboardService botKeyboardService,
+                                     UserRepository userRepository) {
         this.botUserResolutionService = botUserResolutionService;
         this.botProjectFlowService = botProjectFlowService;
         this.botTaskFlowService = botTaskFlowService;
         this.botConversationStateService = botConversationStateService;
         this.botCommandParserService = botCommandParserService;
         this.botKeyboardService = botKeyboardService;
+        this.userRepository = userRepository;
     }
 
     public void handleTextMessage(Long chatId,
-                                 Long telegramUserId,
-                                 String telegramUsername,
-                                 String rawText,
-                                 TelegramClient client) {
+                                  Long telegramUserId,
+                                  String telegramUsername,
+                                  String rawText,
+                                  TelegramClient client) {
 
         if (chatId == null || rawText == null) {
             return;
@@ -58,7 +62,12 @@ public class TelegramBotCommandService {
             return;
         }
 
-        String userId = uuidToHex(userOpt.get().getUserId());
+        UserEntity user = userOpt.get();
+
+        // 🔥 Guardamos/actualizamos el chatId real de Telegram
+        syncTelegramChatId(user, chatId);
+
+        String userId = uuidToHex(user.getUserId());
         ConversationState currentState = botConversationStateService.getStateOrIdle(chatId);
 
         // =============================
@@ -66,7 +75,6 @@ public class TelegramBotCommandService {
         // =============================
         if (botCommandParserService.isStartCommand(requestText)) {
 
-            // 🔥 evita doble ejecución de /start
             if (botConversationStateService.isDuplicateStart(chatId)) {
                 return;
             }
@@ -174,6 +182,17 @@ public class TelegramBotCommandService {
                 client,
                 botKeyboardService.buildMainMenuKeyboard()
         );
+    }
+
+    private void syncTelegramChatId(UserEntity user, Long chatId) {
+        String chatIdValue = String.valueOf(chatId);
+
+        if (chatIdValue.equals(user.getTelegramChatId())) {
+            return;
+        }
+
+        user.setTelegramChatId(chatIdValue);
+        userRepository.save(user);
     }
 
     private String uuidToHex(UUID uuid) {

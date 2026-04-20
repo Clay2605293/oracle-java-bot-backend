@@ -29,8 +29,19 @@ public class UserEntity {
     @Column(name = "EMAIL", nullable = false, length = 320)
     private String email;
 
+    /**
+     * ⚠️ ACTUAL:
+     * Se sigue usando como identificador lógico (username o valor previo)
+     */
     @Column(name = "TELEGRAM_ID", nullable = false, length = 50)
     private String telegramId;
+
+    /**
+     * 🔥 NUEVO:
+     * Chat ID real de Telegram (necesario para enviar mensajes)
+     */
+    @Column(name = "TELEGRAM_CHAT_ID", length = 50)
+    private String telegramChatId;
 
     @Column(name = "ROL_ID", nullable = false)
     private Integer rolId;
@@ -41,6 +52,10 @@ public class UserEntity {
     @Column(name = "MANAGER_ID", columnDefinition = "RAW(16)")
     private UUID managerId;
 
+    // =============================
+    // GETTERS & SETTERS
+    // =============================
+
     public UUID getUserId() {
         return userId;
     }
@@ -49,11 +64,6 @@ public class UserEntity {
         this.userId = userId;
     }
 
-    /**
-     * Obtiene el primer nombre del usuario.
-     *
-     * @return primer nombre (no nulo)
-     */
     public String getPrimerNombre() {
         return primerNombre;
     }
@@ -62,11 +72,6 @@ public class UserEntity {
         this.primerNombre = primerNombre;
     }
 
-    /**
-     * Obtiene el apellido del usuario.
-     *
-     * @return apellido (no nulo)
-     */
     public String getApellido() {
         return apellido;
     }
@@ -75,11 +80,6 @@ public class UserEntity {
         this.apellido = apellido;
     }
 
-    /**
-     * Obtiene el teléfono del usuario.
-     *
-     * @return teléfono (puede ser nulo)
-     */
     public String getTelefono() {
         return telefono;
     }
@@ -88,11 +88,6 @@ public class UserEntity {
         this.telefono = telefono;
     }
 
-    /**
-     * Obtiene el correo electrónico del usuario.
-     *
-     * @return email (no nulo)
-     */
     public String getEmail() {
         return email;
     }
@@ -102,9 +97,7 @@ public class UserEntity {
     }
 
     /**
-     * Obtiene el identificador de Telegram del usuario.
-     *
-     * @return telegramId (no nulo)
+     * Identificador actual (username o valor previo)
      */
     public String getTelegramId() {
         return telegramId;
@@ -115,10 +108,16 @@ public class UserEntity {
     }
 
     /**
-     * Obtiene el identificador del rol asignado al usuario.
-     *
-     * @return rolId (no nulo)
+     * 🔥 Chat ID real de Telegram
      */
+    public String getTelegramChatId() {
+        return telegramChatId;
+    }
+
+    public void setTelegramChatId(String telegramChatId) {
+        this.telegramChatId = telegramChatId;
+    }
+
     public Integer getRolId() {
         return rolId;
     }
@@ -127,11 +126,6 @@ public class UserEntity {
         this.rolId = rolId;
     }
 
-    /**
-     * Obtiene el identificador del estado del usuario.
-     *
-     * @return estadoId (no nulo)
-     */
     public Integer getEstadoId() {
         return estadoId;
     }
@@ -140,11 +134,6 @@ public class UserEntity {
         this.estadoId = estadoId;
     }
 
-    /**
-     * Obtiene el identificador del manager asignado al usuario.
-     *
-     * @return managerId (puede ser nulo)
-     */
     public UUID getManagerId() {
         return managerId;
     }
