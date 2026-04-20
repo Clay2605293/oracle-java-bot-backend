@@ -1,5 +1,6 @@
 package com.oraclejavabot.features.tasks.service;
 
+import com.oraclejavabot.features.projects.model.ProjectEntity;
 import com.oraclejavabot.features.projects.repository.ProjectRepository;
 import com.oraclejavabot.features.tasks.dto.TaskUserDTO;
 import com.oraclejavabot.features.tasks.model.TaskEntity;
@@ -8,7 +9,9 @@ import com.oraclejavabot.features.tasks.model.TaskUserId;
 import com.oraclejavabot.features.tasks.repository.TaskRepository;
 import com.oraclejavabot.features.tasks.repository.TaskUserRepository;
 import com.oraclejavabot.features.users.repository.UserRepository;
+import com.oraclejavabot.features.taskpriorities.repository.PriorityRepository; // 🔥 NUEVO
 import com.oraclejavabot.messaging.producer.TaskEventProducer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -26,20 +29,27 @@ public class TaskUserService {
     private final TaskRepository taskRepository;
     private final ProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final PriorityRepository priorityRepository; // 🔥 NUEVO
     private final TaskEventProducer taskEventProducer;
 
     public TaskUserService(TaskUserRepository taskUserRepository,
                            TaskRepository taskRepository,
                            ProjectRepository projectRepository,
                            UserRepository userRepository,
+                           PriorityRepository priorityRepository, // 🔥 NUEVO
                            TaskEventProducer taskEventProducer) {
+
         this.taskUserRepository = taskUserRepository;
         this.taskRepository = taskRepository;
         this.projectRepository = projectRepository;
         this.userRepository = userRepository;
+        this.priorityRepository = priorityRepository; // 🔥 NUEVO
         this.taskEventProducer = taskEventProducer;
     }
 
+    // =============================
+    // GET USERS BY TASK
+    // =============================
     public List<TaskUserDTO> getUsersByTask(String taskId) {
         return taskUserRepository.findByIdTaskId(hexToUuid(taskId))
                 .stream()
@@ -64,6 +74,9 @@ public class TaskUserService {
         return dto;
     }
 
+    // =============================
+    // ASSIGN USER TO TASK
+    // =============================
     public void assignUser(String taskId, String userId) {
 
         logger.info("Assign user to task requested. taskId={}, userId={}", taskId, userId);
@@ -73,7 +86,7 @@ public class TaskUserService {
 
         UUID userUUID = hexToUuid(userId);
 
-        projectRepository.findById(task.getProjectId())
+        ProjectEntity project = projectRepository.findById(task.getProjectId())
                 .orElseThrow(() -> new IllegalArgumentException("Project not found"));
 
         int exists = projectRepository.existsUserInProjectTeam(
@@ -96,12 +109,40 @@ public class TaskUserService {
 
         logger.info("User assignment persisted successfully. taskId={}, userId={}", taskId, userId);
 
-        taskEventProducer.sendUserAssignedEvent(taskId, userId);
+        // =============================
+        // 🔥 EVENT ENRICHMENT
+        // =============================
 
-        logger.info("Assignment flow completed with Kafka event. taskId={}, userId={}", taskId, userId);
+        String taskTitle = task.getTitulo();
+        String projectName = project.getNombre();
+
+        // 🔥 PRIORIDAD DESDE DB (FIX REAL)
+        String priority = priorityRepository.findById(task.getPrioridadId())
+                .map(p -> p.getNombre())
+                .orElse("Unknown");
+
+        // 🔹 Fecha límite
+        String dueDate = (task.getFechaLimite() != null)
+                ? task.getFechaLimite().toString()
+                : "No due date";
+
+        taskEventProducer.sendUserAssignedEvent(
+                taskId,
+                userId,
+                taskTitle,
+                projectName,
+                priority,
+                dueDate
+        );
+
+        logger.info("Kafka event sent for assignment. taskId={}, userId={}", taskId, userId);
     }
 
+    // =============================
+    // REMOVE USER
+    // =============================
     public void removeUser(String taskId, String userId) {
+
         TaskUserId id = new TaskUserId(hexToUuid(userId), hexToUuid(taskId));
 
         if (!taskUserRepository.existsById(id)) {
@@ -109,8 +150,13 @@ public class TaskUserService {
         }
 
         taskUserRepository.deleteById(id);
+
+        logger.info("User removed from task. taskId={}, userId={}", taskId, userId);
     }
 
+    // =============================
+    // UTILS
+    // =============================
     private UUID hexToUuid(String hex) {
         return UUID.fromString(
                 hex.replaceFirst(
