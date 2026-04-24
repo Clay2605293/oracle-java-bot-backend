@@ -106,4 +106,21 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+
+    @Bean
+    public NewTopic aiTaskGenerationRequestTopic() {
+        return TopicBuilder.name("ai-task-generation-request")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic aiTaskGenerationResponseTopic() {
+        return TopicBuilder.name("ai-task-generation-response")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
 }
