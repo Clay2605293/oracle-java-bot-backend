@@ -1,6 +1,9 @@
 Link a Frontend
 https://github.com/emihdz1209/oracle-java-bot-frontend
 
+Link a AI
+https://github.com/Clay2605293/oracle-java-bot-ai-service/settings
+
 # Oracle Java Bot – Backend
 
 Backend API for **Oracle Java Bot**, a cloud-native system designed to improve development team productivity and visibility through automated workflows and Telegram bot integration.
