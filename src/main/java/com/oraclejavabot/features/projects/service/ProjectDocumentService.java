@@ -6,6 +6,7 @@ import com.oraclejavabot.features.projects.repository.ProjectDocumentRepository;
 import com.oraclejavabot.features.projects.repository.ProjectRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -89,6 +90,18 @@ public class ProjectDocumentService {
                 .map(this::toResponseDTO)
                 .toList();
     }
+
+    @Transactional
+    public void deleteDocument(String documentId) {
+        UUID documentUuid = parseUuid(documentId);
+
+        ProjectDocumentEntity document = documentRepository.findById(documentUuid)
+                .orElseThrow(() -> new IllegalArgumentException("Project document not found: " + documentId));
+
+        storageService.deleteProjectDocument(document.getStoragePath());
+
+        documentRepository.delete(document);
+}
 
     private ProjectDocumentResponseDTO toResponseDTO(ProjectDocumentEntity entity) {
         return new ProjectDocumentResponseDTO(

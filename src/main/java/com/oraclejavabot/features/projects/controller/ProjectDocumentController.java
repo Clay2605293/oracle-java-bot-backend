@@ -37,4 +37,9 @@ public class ProjectDocumentController {
 
         return projectDocumentService.getDocumentsByProjectAndType(projectId, documentType);
     }
+
+    @DeleteMapping("/documents/{documentId}")
+    public void deleteDocument(@PathVariable String documentId) {
+        projectDocumentService.deleteDocument(documentId);
+}
 }

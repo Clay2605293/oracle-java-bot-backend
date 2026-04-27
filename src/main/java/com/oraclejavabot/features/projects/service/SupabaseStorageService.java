@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
 import java.io.IOException;
 import java.text.Normalizer;
@@ -63,6 +64,24 @@ public class SupabaseStorageService {
             throw new RuntimeException("Could not read uploaded file", e);
         } catch (Exception e) {
             throw new RuntimeException("Could not upload file to Supabase Storage", e);
+        }
+    }
+    
+    public void deleteProjectDocument(String storagePath) {
+        if (storagePath == null || storagePath.isBlank()) {
+            throw new IllegalArgumentException("storagePath is required");
+        }
+
+        try {
+            DeleteObjectRequest request = DeleteObjectRequest.builder()
+                    .bucket(bucket)
+                    .key(storagePath)
+                    .build();
+
+            s3Client.deleteObject(request);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Could not delete file from Supabase Storage", e);
         }
     }
 

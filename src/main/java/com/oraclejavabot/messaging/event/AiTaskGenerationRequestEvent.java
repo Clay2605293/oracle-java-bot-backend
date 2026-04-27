@@ -7,13 +7,14 @@ public class AiTaskGenerationRequestEvent {
     private String projectId;
     private String projectName;
     private String projectDescription;
+    private Double maxHours;
 
     private List<Document> documents;
 
     public static class Document {
         private String type;
         private String content;
-        private String url; // <-- nuevo campo
+        private String url;
 
         public String getType() {
             return type;
@@ -40,15 +41,43 @@ public class AiTaskGenerationRequestEvent {
         }
     }
 
-    public String getProjectId() { return projectId; }
-    public void setProjectId(String projectId) { this.projectId = projectId; }
+    public String getProjectId() {
+        return projectId;
+    }
 
-    public String getProjectName() { return projectName; }
-    public void setProjectName(String projectName) { this.projectName = projectName; }
+    public void setProjectId(String projectId) {
+        this.projectId = projectId;
+    }
 
-    public String getProjectDescription() { return projectDescription; }
-    public void setProjectDescription(String projectDescription) { this.projectDescription = projectDescription; }
+    public String getProjectName() {
+        return projectName;
+    }
 
-    public List<Document> getDocuments() { return documents; }
-    public void setDocuments(List<Document> documents) { this.documents = documents; }
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public String getProjectDescription() {
+        return projectDescription;
+    }
+
+    public void setProjectDescription(String projectDescription) {
+        this.projectDescription = projectDescription;
+    }
+
+    public Double getMaxHours() {
+        return maxHours;
+    }
+
+    public void setMaxHours(Double maxHours) {
+        this.maxHours = maxHours;
+    }
+
+    public List<Document> getDocuments() {
+        return documents;
+    }
+
+    public void setDocuments(List<Document> documents) {
+        this.documents = documents;
+    }
 }

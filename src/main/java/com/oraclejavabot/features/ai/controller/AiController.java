@@ -1,13 +1,13 @@
 package com.oraclejavabot.features.ai.controller;
 
+import com.oraclejavabot.features.ai.dto.AiBacklogGenerationRequestDTO;
 import com.oraclejavabot.features.ai.dto.AiBacklogGenerationResponseDTO;
+import com.oraclejavabot.features.ai.dto.AiTaskApprovalRequestDTO;
+import com.oraclejavabot.features.ai.dto.AiTaskApprovalResponseDTO;
 import com.oraclejavabot.features.ai.dto.AiTaskSuggestionResponseDTO;
 import com.oraclejavabot.features.ai.service.AiBacklogGenerationService;
 import com.oraclejavabot.features.ai.service.AiTaskSuggestionService;
 import org.springframework.web.bind.annotation.*;
-
-import com.oraclejavabot.features.ai.dto.AiTaskApprovalRequestDTO;
-import com.oraclejavabot.features.ai.dto.AiTaskApprovalResponseDTO;
 
 import java.util.List;
 
@@ -27,8 +27,11 @@ public class AiController {
     }
 
     @PostMapping("/{projectId}/ai/generate-backlog")
-    public AiBacklogGenerationResponseDTO generateBacklog(@PathVariable String projectId) {
-        return aiBacklogGenerationService.generateBacklog(projectId);
+    public AiBacklogGenerationResponseDTO generateBacklog(
+            @PathVariable String projectId,
+            @RequestBody AiBacklogGenerationRequestDTO request
+    ) {
+        return aiBacklogGenerationService.generateBacklog(projectId, request);
     }
 
     @GetMapping("/{projectId}/ai/suggestions")

@@ -1,5 +1,6 @@
 package com.oraclejavabot.features.ai.service;
 
+import com.oraclejavabot.features.ai.dto.AiBacklogGenerationRequestDTO;
 import com.oraclejavabot.features.ai.dto.AiBacklogGenerationResponseDTO;
 import com.oraclejavabot.features.projects.model.ProjectDocumentEntity;
 import com.oraclejavabot.features.projects.model.ProjectEntity;
@@ -29,8 +30,12 @@ public class AiBacklogGenerationService {
         this.aiTaskProducer = aiTaskProducer;
     }
 
-    public AiBacklogGenerationResponseDTO generateBacklog(String projectId) {
+    public AiBacklogGenerationResponseDTO generateBacklog(
+            String projectId,
+            AiBacklogGenerationRequestDTO request
+    ) {
         UUID projectUuid = parseUuid(projectId);
+        Double maxHours = validateMaxHours(request);
 
         ProjectEntity project = projectRepository.findById(projectUuid)
                 .orElseThrow(() -> new IllegalArgumentException("Project not found: " + projectId));
@@ -45,6 +50,7 @@ public class AiBacklogGenerationService {
         event.setProjectId(projectUuid.toString());
         event.setProjectName(project.getNombre());
         event.setProjectDescription(project.getDescripcion());
+        event.setMaxHours(maxHours);
         event.setDocuments(
                 documents.stream()
                         .map(this::toEventDocument)
@@ -56,7 +62,8 @@ public class AiBacklogGenerationService {
         return new AiBacklogGenerationResponseDTO(
                 "AI task generation event sent to Kafka",
                 projectUuid.toString(),
-                documents.size()
+                documents.size(),
+                maxHours
         );
     }
 
@@ -68,6 +75,26 @@ public class AiBacklogGenerationService {
         document.setUrl(documentEntity.getFileUrl());
 
         return document;
+    }
+
+    private Double validateMaxHours(AiBacklogGenerationRequestDTO request) {
+        if (request == null) {
+            throw new IllegalArgumentException("Request body is required");
+        }
+
+        if (request.getMaxHours() == null) {
+            throw new IllegalArgumentException("maxHours is required");
+        }
+
+        if (request.getMaxHours() <= 0) {
+            throw new IllegalArgumentException("maxHours must be greater than 0");
+        }
+
+        if (request.getMaxHours() > 200) {
+            throw new IllegalArgumentException("maxHours must not exceed 200");
+        }
+
+        return request.getMaxHours();
     }
 
     private UUID parseUuid(String value) {

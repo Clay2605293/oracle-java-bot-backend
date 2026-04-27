@@ -5,13 +5,20 @@ public class AiBacklogGenerationResponseDTO {
     private String message;
     private String projectId;
     private Integer documentsSent;
+    private Double maxHours;
 
     public AiBacklogGenerationResponseDTO() {}
 
-    public AiBacklogGenerationResponseDTO(String message, String projectId, Integer documentsSent) {
+    public AiBacklogGenerationResponseDTO(
+            String message,
+            String projectId,
+            Integer documentsSent,
+            Double maxHours
+    ) {
         this.message = message;
         this.projectId = projectId;
         this.documentsSent = documentsSent;
+        this.maxHours = maxHours;
     }
 
     public String getMessage() {
@@ -26,6 +33,10 @@ public class AiBacklogGenerationResponseDTO {
         return documentsSent;
     }
 
+    public Double getMaxHours() {
+        return maxHours;
+    }
+
     public void setMessage(String message) {
         this.message = message;
     }
@@ -36,5 +47,9 @@ public class AiBacklogGenerationResponseDTO {
 
     public void setDocumentsSent(Integer documentsSent) {
         this.documentsSent = documentsSent;
+    }
+
+    public void setMaxHours(Double maxHours) {
+        this.maxHours = maxHours;
     }
 }
