@@ -1,40 +1,62 @@
 package com.oraclejavabot.features.ai.controller;
 
-import com.oraclejavabot.messaging.event.AiTaskGenerationRequestEvent;
-import com.oraclejavabot.messaging.producer.AiTaskProducer;
-
+import com.oraclejavabot.features.ai.dto.AiBacklogGenerationResponseDTO;
+import com.oraclejavabot.features.ai.dto.AiTaskSuggestionResponseDTO;
+import com.oraclejavabot.features.ai.service.AiBacklogGenerationService;
+import com.oraclejavabot.features.ai.service.AiTaskSuggestionService;
 import org.springframework.web.bind.annotation.*;
+
+import com.oraclejavabot.features.ai.dto.AiTaskApprovalRequestDTO;
+import com.oraclejavabot.features.ai.dto.AiTaskApprovalResponseDTO;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/ai")
+@RequestMapping("/api/projects")
 public class AiController {
 
-    private final AiTaskProducer producer;
+    private final AiBacklogGenerationService aiBacklogGenerationService;
+    private final AiTaskSuggestionService aiTaskSuggestionService;
 
-    public AiController(AiTaskProducer producer) {
-        this.producer = producer;
+    public AiController(
+            AiBacklogGenerationService aiBacklogGenerationService,
+            AiTaskSuggestionService aiTaskSuggestionService
+    ) {
+        this.aiBacklogGenerationService = aiBacklogGenerationService;
+        this.aiTaskSuggestionService = aiTaskSuggestionService;
     }
 
-    @PostMapping("/generate-backlog")
-    public String generateBacklog() {
+    @PostMapping("/{projectId}/ai/generate-backlog")
+    public AiBacklogGenerationResponseDTO generateBacklog(@PathVariable String projectId) {
+        return aiBacklogGenerationService.generateBacklog(projectId);
+    }
 
-        // 🔥 Mock inicial (luego lo conectamos a Project real)
-        AiTaskGenerationRequestEvent event = new AiTaskGenerationRequestEvent();
+    @GetMapping("/{projectId}/ai/suggestions")
+    public List<AiTaskSuggestionResponseDTO> getSuggestions(
+            @PathVariable String projectId,
+            @RequestParam(value = "status", required = false) String status
+    ) {
+        if (status == null || status.isBlank()) {
+            return aiTaskSuggestionService.getSuggestionsByProject(projectId);
+        }
 
-        event.setProjectId("123");
-        event.setProjectName("Oracle Java Bot");
-        event.setProjectDescription("Sistema de productividad");
+        if (status.equalsIgnoreCase("PENDING")) {
+            return aiTaskSuggestionService.getPendingSuggestionsByProject(projectId);
+        }
 
-        AiTaskGenerationRequestEvent.Document doc = new AiTaskGenerationRequestEvent.Document();
-        doc.setType("SRS");
-        doc.setUrl("https://gykofshbdehooqbadjyq.supabase.co/storage/v1/object/public/Test/SRS.pdf");
+        throw new IllegalArgumentException("Invalid status filter: " + status + ". Allowed value: PENDING");
+    }
 
-        event.setDocuments(List.of(doc));
+    @PatchMapping("/ai/suggestions/{aiTaskId}/reject")
+    public AiTaskSuggestionResponseDTO rejectSuggestion(@PathVariable String aiTaskId) {
+        return aiTaskSuggestionService.rejectSuggestion(aiTaskId);
+    }
 
-        producer.sendTaskGenerationRequest(event);
-
-        return "AI task generation event sent to Kafka";
+    @PostMapping("/ai/suggestions/{aiTaskId}/approve")
+    public AiTaskApprovalResponseDTO approveSuggestion(
+            @PathVariable String aiTaskId,
+            @RequestBody AiTaskApprovalRequestDTO request
+    ) {
+        return aiTaskSuggestionService.approveSuggestion(aiTaskId, request);
     }
 }

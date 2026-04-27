@@ -1,49 +1,34 @@
 package com.oraclejavabot.messaging.consumer;
 
+import com.oraclejavabot.features.ai.service.AiTaskSuggestionService;
 import com.oraclejavabot.messaging.event.AiTaskGenerationResponseEvent;
-import com.oraclejavabot.features.tasks.dto.TaskRequestDTO;
-import com.oraclejavabot.features.tasks.service.TaskService;
 
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-
 @Component
 public class AiTaskResponseConsumer {
 
-    private final TaskService taskService;
+    private final AiTaskSuggestionService aiTaskSuggestionService;
 
-    public AiTaskResponseConsumer(TaskService taskService) {
-        this.taskService = taskService;
+    public AiTaskResponseConsumer(AiTaskSuggestionService aiTaskSuggestionService) {
+        this.aiTaskSuggestionService = aiTaskSuggestionService;
     }
 
     @KafkaListener(
-        topics = "ai-task-generation-response",
-        containerFactory = "aiKafkaListenerContainerFactory"
+            topics = "ai-task-generation-response",
+            containerFactory = "aiKafkaListenerContainerFactory"
     )
     public void consume(AiTaskGenerationResponseEvent event) {
         System.out.println("📥 Received AI response for project: " + event.getProjectId());
 
-        for (AiTaskGenerationResponseEvent.Task task : event.getTasks()) {
-            try {
-                TaskRequestDTO dto = new TaskRequestDTO();
-                dto.setTitulo(task.getTitulo());
-                dto.setDescripcion(task.getDescripcion());
-                dto.setTiempoEstimado(task.getTiempoEstimado());
+        try {
+            int savedSuggestions = aiTaskSuggestionService.saveSuggestionsFromAiResponse(event);
 
-                // Defaults que el manager completará después
-                dto.setPrioridadId(2);
-                dto.setEstadoId(1);
-                dto.setFechaLimite(LocalDateTime.now().plusYears(1).toString());
+            System.out.println("✅ AI suggestions saved: " + savedSuggestions);
 
-                taskService.createTask(event.getProjectId(), dto);
-
-                System.out.println("✅ AI task created: " + task.getTitulo());
-
-            } catch (Exception e) {
-                System.err.println("❌ Error creating AI task: " + e.getMessage());
-            }
+        } catch (Exception e) {
+            System.err.println("❌ Error saving AI suggestions: " + e.getMessage());
         }
     }
 }
