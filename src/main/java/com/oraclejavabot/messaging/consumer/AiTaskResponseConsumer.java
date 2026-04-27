@@ -7,6 +7,8 @@ import com.oraclejavabot.features.tasks.service.TaskService;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class AiTaskResponseConsumer {
 
@@ -21,51 +23,27 @@ public class AiTaskResponseConsumer {
         containerFactory = "aiKafkaListenerContainerFactory"
     )
     public void consume(AiTaskGenerationResponseEvent event) {
-
-        System.out.println("📥 Received AI response: " + event);
-
-        // 🔥 MVP: usuario fijo (luego se mejora)
-        String systemUserId = "SYSTEM_AI";
+        System.out.println("📥 Received AI response for project: " + event.getProjectId());
 
         for (AiTaskGenerationResponseEvent.Task task : event.getTasks()) {
-
             try {
-
                 TaskRequestDTO dto = new TaskRequestDTO();
-
                 dto.setTitulo(task.getTitulo());
                 dto.setDescripcion(task.getDescripcion());
+                dto.setTiempoEstimado(task.getTiempoEstimado());
 
-                // prioridad
-                dto.setPrioridadId(mapPriority(task.getPriority()));
-
-                // 🔥 FIX 1: usar Double
-                dto.setTiempoEstimado(
-                        task.getEstimatedHours() != null
-                                ? task.getEstimatedHours()
-                                : 1.0
-                );
-
-                // estado default
+                // Defaults que el manager completará después
+                dto.setPrioridadId(2);
                 dto.setEstadoId(1);
+                dto.setFechaLimite(LocalDateTime.now().plusYears(1).toString());
 
-                // ⚠️ NO seteamos projectId aquí (tu DTO no lo tiene)
+                taskService.createTask(event.getProjectId(), dto);
 
-                // 🔥 FIX 2: método correcto
-                taskService.createTask(systemUserId, dto);
+                System.out.println("✅ AI task created: " + task.getTitulo());
 
             } catch (Exception e) {
-                System.err.println("❌ Error creating task: " + e.getMessage());
+                System.err.println("❌ Error creating AI task: " + e.getMessage());
             }
         }
-    }
-
-    private int mapPriority(String priority) {
-        return switch (priority) {
-            case "HIGH" -> 1;
-            case "MEDIUM" -> 2;
-            case "LOW" -> 3;
-            default -> 2;
-        };
     }
 }

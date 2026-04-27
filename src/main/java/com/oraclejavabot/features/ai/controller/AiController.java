@@ -29,7 +29,7 @@ public class AiController {
 
         AiTaskGenerationRequestEvent.Document doc = new AiTaskGenerationRequestEvent.Document();
         doc.setType("SRS");
-        doc.setContent("El sistema debe generar backlog automáticamente.");
+        doc.setUrl("https://gykofshbdehooqbadjyq.supabase.co/storage/v1/object/public/Test/SRS.pdf");
 
         event.setDocuments(List.of(doc));
 

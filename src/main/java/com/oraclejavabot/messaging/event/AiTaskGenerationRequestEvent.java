@@ -13,12 +13,31 @@ public class AiTaskGenerationRequestEvent {
     public static class Document {
         private String type;
         private String content;
+        private String url; // <-- nuevo campo
 
-        public String getType() { return type; }
-        public void setType(String type) { this.type = type; }
+        public String getType() {
+            return type;
+        }
 
-        public String getContent() { return content; }
-        public void setContent(String content) { this.content = content; }
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
     }
 
     public String getProjectId() { return projectId; }
