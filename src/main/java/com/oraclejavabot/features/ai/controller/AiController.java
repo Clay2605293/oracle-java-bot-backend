@@ -29,7 +29,13 @@ public class AiController {
 
         AiTaskGenerationRequestEvent.Document doc = new AiTaskGenerationRequestEvent.Document();
         doc.setType("SRS");
-        doc.setContent("El sistema debe generar backlog automáticamente.");
+        doc.setContent("""
+            El sistema debe permitir al usuario crear proyectos y asignar miembros.
+            Los usuarios recibirán notificaciones por Telegram al acercarse una fecha límite.
+            El sistema debe generar backlog automáticamente a partir de documentos SRS.
+            Se requiere autenticación con JWT y roles de Manager y Developer.
+            El Manager puede crear sprints y asignar tareas a desarrolladores.
+        """);
 
         event.setDocuments(List.of(doc));
 
