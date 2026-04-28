@@ -123,4 +123,21 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic aiDuplicateDetectionRequestTopic() {
+        return TopicBuilder.name("ai-duplicate-detection-request")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic aiDuplicateDetectionResponseTopic() {
+        return TopicBuilder.name("ai-duplicate-detection-response")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+    
 }

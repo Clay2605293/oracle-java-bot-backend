@@ -1,5 +1,6 @@
 package com.oraclejavabot.messaging.config;
 
+import com.oraclejavabot.messaging.event.AiDuplicateDetectionResponseEvent;
 import com.oraclejavabot.messaging.event.AiTaskGenerationResponseEvent;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -21,7 +22,9 @@ import java.util.Map;
 public class AiKafkaConfig {
 
     private static final String BOOTSTRAP = "kafka:29092";
-    private static final String GROUP_ID = "ai-response-group";
+
+    private static final String AI_TASK_RESPONSE_GROUP_ID = "ai-response-group";
+    private static final String AI_DUPLICATE_RESPONSE_GROUP_ID = "ai-duplicate-response-group";
 
     @Bean
     public ConsumerFactory<String, AiTaskGenerationResponseEvent> aiConsumerFactory() {
@@ -34,7 +37,7 @@ public class AiKafkaConfig {
         Map<String, Object> config = new HashMap<>();
 
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, GROUP_ID);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_TASK_RESPONSE_GROUP_ID);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
         return new DefaultKafkaConsumerFactory<>(
@@ -52,6 +55,39 @@ public class AiKafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(aiConsumerFactory());
+
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, AiDuplicateDetectionResponseEvent> aiDuplicateDetectionConsumerFactory() {
+
+        JsonDeserializer<AiDuplicateDetectionResponseEvent> deserializer =
+                new JsonDeserializer<>(AiDuplicateDetectionResponseEvent.class);
+
+        deserializer.addTrustedPackages("*");
+
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_DUPLICATE_RESPONSE_GROUP_ID);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+
+        return new DefaultKafkaConsumerFactory<>(
+                config,
+                new StringDeserializer(),
+                deserializer
+        );
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, AiDuplicateDetectionResponseEvent>
+    aiDuplicateDetectionKafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, AiDuplicateDetectionResponseEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+
+        factory.setConsumerFactory(aiDuplicateDetectionConsumerFactory());
 
         return factory;
     }
