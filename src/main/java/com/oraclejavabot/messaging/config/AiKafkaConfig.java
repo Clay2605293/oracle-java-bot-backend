@@ -15,6 +15,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import com.oraclejavabot.messaging.event.AiSemanticDuplicateDetectionResponseEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +27,7 @@ public class AiKafkaConfig {
 
     private static final String AI_TASK_RESPONSE_GROUP_ID = "ai-response-group";
     private static final String AI_DUPLICATE_RESPONSE_GROUP_ID = "ai-duplicate-response-group";
+    private static final String AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID = "ai-semantic-duplicate-response-group";
 
     @Bean
     public ConsumerFactory<String, AiTaskGenerationResponseEvent> aiConsumerFactory() {
@@ -88,6 +91,40 @@ public class AiKafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(aiDuplicateDetectionConsumerFactory());
+
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, AiSemanticDuplicateDetectionResponseEvent>
+    semanticDuplicateDetectionConsumerFactory() {
+
+        JsonDeserializer<AiSemanticDuplicateDetectionResponseEvent> deserializer =
+                new JsonDeserializer<>(AiSemanticDuplicateDetectionResponseEvent.class);
+
+        deserializer.addTrustedPackages("*");
+
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+
+        return new DefaultKafkaConsumerFactory<>(
+                config,
+                new StringDeserializer(),
+                deserializer
+        );
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, AiSemanticDuplicateDetectionResponseEvent>
+    semanticDuplicateDetectionKafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, AiSemanticDuplicateDetectionResponseEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+
+        factory.setConsumerFactory(semanticDuplicateDetectionConsumerFactory());
 
         return factory;
     }

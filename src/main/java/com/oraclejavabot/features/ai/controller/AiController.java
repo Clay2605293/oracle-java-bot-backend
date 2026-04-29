@@ -15,6 +15,11 @@ import com.oraclejavabot.features.ai.service.AiTaskSuggestionService;
 import org.springframework.web.bind.annotation.*;
 import com.oraclejavabot.features.ai.dto.AiTaskSuggestionClearResponseDTO;
 
+import com.oraclejavabot.features.ai.dto.AiSemanticDuplicateDetectionLatestResponseDTO;
+import com.oraclejavabot.features.ai.dto.AiSemanticDuplicateDetectionResultResponseDTO;
+import com.oraclejavabot.features.ai.dto.AiSemanticDuplicateDetectionRunResponseDTO;
+import com.oraclejavabot.features.ai.service.AiSemanticDuplicateDetectionService;
+
 import java.util.List;
 
 @RestController
@@ -24,15 +29,18 @@ public class AiController {
     private final AiBacklogGenerationService aiBacklogGenerationService;
     private final AiTaskSuggestionService aiTaskSuggestionService;
     private final AiDuplicateDetectionService aiDuplicateDetectionService;
+    private final AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService;
 
     public AiController(
             AiBacklogGenerationService aiBacklogGenerationService,
             AiTaskSuggestionService aiTaskSuggestionService,
-            AiDuplicateDetectionService aiDuplicateDetectionService
+            AiDuplicateDetectionService aiDuplicateDetectionService,
+            AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService
     ) {
         this.aiBacklogGenerationService = aiBacklogGenerationService;
         this.aiTaskSuggestionService = aiTaskSuggestionService;
         this.aiDuplicateDetectionService = aiDuplicateDetectionService;
+        this.aiSemanticDuplicateDetectionService = aiSemanticDuplicateDetectionService;
     }
 
     @PostMapping("/{projectId}/ai/generate-backlog")
@@ -107,5 +115,35 @@ public class AiController {
             @PathVariable String projectId
     ) {
         return aiTaskSuggestionService.clearSuggestionsByProject(projectId);
+    }
+
+    @PostMapping("/{projectId}/ai/duplicate-detection/semantic")
+public AiSemanticDuplicateDetectionRunResponseDTO startSemanticDuplicateDetection(
+        @PathVariable String projectId,
+        @RequestBody(required = false) AiDuplicateDetectionRequestDTO request
+) {
+    return aiSemanticDuplicateDetectionService.startSemanticDuplicateDetection(projectId, request);
+}
+
+    @GetMapping("/{projectId}/ai/duplicate-detection/semantic/runs")
+    public List<AiSemanticDuplicateDetectionRunResponseDTO> getSemanticDuplicateDetectionRuns(
+            @PathVariable String projectId
+    ) {
+        return aiSemanticDuplicateDetectionService.getRunsByProject(projectId);
+    }
+
+    @GetMapping("/{projectId}/ai/duplicate-detection/semantic/runs/{runId}/results")
+    public List<AiSemanticDuplicateDetectionResultResponseDTO> getSemanticDuplicateDetectionResults(
+            @PathVariable String projectId,
+            @PathVariable String runId
+    ) {
+        return aiSemanticDuplicateDetectionService.getResultsByRun(runId);
+    }
+
+    @GetMapping("/{projectId}/ai/duplicate-detection/semantic/latest")
+    public AiSemanticDuplicateDetectionLatestResponseDTO getLatestSemanticDuplicateDetection(
+            @PathVariable String projectId
+    ) {
+        return aiSemanticDuplicateDetectionService.getLatestByProject(projectId);
     }
 }

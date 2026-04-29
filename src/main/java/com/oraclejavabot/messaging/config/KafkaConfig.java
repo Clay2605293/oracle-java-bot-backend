@@ -139,5 +139,21 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic aiSemanticDuplicateDetectionRequestTopic() {
+        return TopicBuilder.name("ai-semantic-duplicate-detection-request")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic aiSemanticDuplicateDetectionResponseTopic() {
+        return TopicBuilder.name("ai-semantic-duplicate-detection-response")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
     
 }
