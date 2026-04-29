@@ -11,4 +11,8 @@ public interface AiTaskSuggestionRepository extends JpaRepository<AiTaskSuggesti
     List<AiTaskSuggestionEntity> findByProjectId(UUID projectId);
 
     List<AiTaskSuggestionEntity> findByProjectIdAndStatus(UUID projectId, String status);
+
+    Long countByProjectId(UUID projectId);
+
+    void deleteByProjectId(UUID projectId);
 }

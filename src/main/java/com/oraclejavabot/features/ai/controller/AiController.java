@@ -13,6 +13,7 @@ import com.oraclejavabot.features.ai.service.AiBacklogGenerationService;
 import com.oraclejavabot.features.ai.service.AiDuplicateDetectionService;
 import com.oraclejavabot.features.ai.service.AiTaskSuggestionService;
 import org.springframework.web.bind.annotation.*;
+import com.oraclejavabot.features.ai.dto.AiTaskSuggestionClearResponseDTO;
 
 import java.util.List;
 
@@ -99,5 +100,12 @@ public class AiController {
             @PathVariable String projectId
     ) {
         return aiDuplicateDetectionService.getLatestByProject(projectId);
+    }
+
+    @DeleteMapping("/{projectId}/ai/suggestions")
+    public AiTaskSuggestionClearResponseDTO clearSuggestionsByProject(
+            @PathVariable String projectId
+    ) {
+        return aiTaskSuggestionService.clearSuggestionsByProject(projectId);
     }
 }

@@ -14,6 +14,8 @@ import com.oraclejavabot.features.tasks.dto.TaskResponseDTO;
 import com.oraclejavabot.features.tasks.service.TaskService;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.oraclejavabot.features.ai.dto.AiTaskSuggestionClearResponseDTO;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -215,6 +217,25 @@ public class AiTaskSuggestionService {
         return new AiTaskApprovalResponseDTO(
                 toResponseDTO(savedSuggestion),
                 createdTask
+        );
+    }
+
+    @Transactional
+    public AiTaskSuggestionClearResponseDTO clearSuggestionsByProject(String projectId) {
+        UUID projectUuid = parseUuid(projectId);
+
+        if (!projectRepository.existsById(projectUuid)) {
+            throw new IllegalArgumentException("Project not found: " + projectId);
+        }
+
+        Long deletedCount = suggestionRepository.countByProjectId(projectUuid);
+
+        suggestionRepository.deleteByProjectId(projectUuid);
+
+        return new AiTaskSuggestionClearResponseDTO(
+                "AI task suggestions cleared successfully",
+                projectUuid.toString(),
+                deletedCount
         );
     }
 
