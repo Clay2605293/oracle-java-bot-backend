@@ -28,6 +28,12 @@ import com.oraclejavabot.features.ai.dto.AiVectorDuplicateDetectionResultRespons
 import com.oraclejavabot.features.ai.dto.AiVectorDuplicateDetectionRunResponseDTO;
 import com.oraclejavabot.features.ai.service.AiVectorDuplicateDetectionService;
 
+import com.oraclejavabot.features.ai.dto.TaskVectorEmbeddingBackfillResponseDTO;
+import com.oraclejavabot.features.ai.service.TaskVectorEmbeddingBackfillService;
+
+import com.oraclejavabot.features.ai.dto.TaskEmbeddingStatusResponseDTO;
+import com.oraclejavabot.features.ai.service.TaskEmbeddingStatusService;
+
 import java.util.List;
 
 @RestController
@@ -40,6 +46,8 @@ public class AiController {
     private final AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService;
     private final TaskEmbeddingBackfillService taskEmbeddingBackfillService;
     private final AiVectorDuplicateDetectionService aiVectorDuplicateDetectionService;
+    private final TaskVectorEmbeddingBackfillService taskVectorEmbeddingBackfillService;
+    private final TaskEmbeddingStatusService taskEmbeddingStatusService;
 
     public AiController(
             AiBacklogGenerationService aiBacklogGenerationService,
@@ -47,7 +55,9 @@ public class AiController {
             AiDuplicateDetectionService aiDuplicateDetectionService,
             AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService,
             TaskEmbeddingBackfillService taskEmbeddingBackfillService,
-            AiVectorDuplicateDetectionService aiVectorDuplicateDetectionService
+            AiVectorDuplicateDetectionService aiVectorDuplicateDetectionService,
+            TaskVectorEmbeddingBackfillService taskVectorEmbeddingBackfillService,
+            TaskEmbeddingStatusService taskEmbeddingStatusService
     ) {
         this.aiBacklogGenerationService = aiBacklogGenerationService;
         this.aiTaskSuggestionService = aiTaskSuggestionService;
@@ -55,6 +65,8 @@ public class AiController {
         this.aiSemanticDuplicateDetectionService = aiSemanticDuplicateDetectionService;
         this.taskEmbeddingBackfillService = taskEmbeddingBackfillService;
         this.aiVectorDuplicateDetectionService = aiVectorDuplicateDetectionService;
+        this.taskVectorEmbeddingBackfillService = taskVectorEmbeddingBackfillService;
+        this.taskEmbeddingStatusService = taskEmbeddingStatusService;
     }
 
     @PostMapping("/{projectId}/ai/generate-backlog")
@@ -196,6 +208,20 @@ public AiSemanticDuplicateDetectionRunResponseDTO startSemanticDuplicateDetectio
             @PathVariable String projectId
     ) {
         return aiVectorDuplicateDetectionService.getLatestByProject(projectId);
+    }
+
+    @PostMapping("/{projectId}/ai/task-vector-embeddings/backfill")
+    public TaskVectorEmbeddingBackfillResponseDTO backfillProjectTaskVectorEmbeddings(
+            @PathVariable String projectId
+    ) {
+        return taskVectorEmbeddingBackfillService.backfillProjectTaskVectorEmbeddings(projectId);
+    }
+
+    @GetMapping("/{projectId}/ai/task-embeddings/status")
+    public TaskEmbeddingStatusResponseDTO getTaskEmbeddingStatus(
+            @PathVariable String projectId
+    ) {
+        return taskEmbeddingStatusService.getStatus(projectId);
     }
 
 }
