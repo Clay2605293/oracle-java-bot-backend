@@ -23,6 +23,11 @@ import com.oraclejavabot.features.ai.service.AiSemanticDuplicateDetectionService
 import com.oraclejavabot.features.ai.dto.TaskEmbeddingBackfillResponseDTO;
 import com.oraclejavabot.features.ai.service.TaskEmbeddingBackfillService;
 
+import com.oraclejavabot.features.ai.dto.AiVectorDuplicateDetectionLatestResponseDTO;
+import com.oraclejavabot.features.ai.dto.AiVectorDuplicateDetectionResultResponseDTO;
+import com.oraclejavabot.features.ai.dto.AiVectorDuplicateDetectionRunResponseDTO;
+import com.oraclejavabot.features.ai.service.AiVectorDuplicateDetectionService;
+
 import java.util.List;
 
 @RestController
@@ -34,19 +39,22 @@ public class AiController {
     private final AiDuplicateDetectionService aiDuplicateDetectionService;
     private final AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService;
     private final TaskEmbeddingBackfillService taskEmbeddingBackfillService;
+    private final AiVectorDuplicateDetectionService aiVectorDuplicateDetectionService;
 
     public AiController(
             AiBacklogGenerationService aiBacklogGenerationService,
             AiTaskSuggestionService aiTaskSuggestionService,
             AiDuplicateDetectionService aiDuplicateDetectionService,
             AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService,
-            TaskEmbeddingBackfillService taskEmbeddingBackfillService
+            TaskEmbeddingBackfillService taskEmbeddingBackfillService,
+            AiVectorDuplicateDetectionService aiVectorDuplicateDetectionService
     ) {
         this.aiBacklogGenerationService = aiBacklogGenerationService;
         this.aiTaskSuggestionService = aiTaskSuggestionService;
         this.aiDuplicateDetectionService = aiDuplicateDetectionService;
         this.aiSemanticDuplicateDetectionService = aiSemanticDuplicateDetectionService;
         this.taskEmbeddingBackfillService = taskEmbeddingBackfillService;
+        this.aiVectorDuplicateDetectionService = aiVectorDuplicateDetectionService;
     }
 
     @PostMapping("/{projectId}/ai/generate-backlog")
@@ -159,4 +167,35 @@ public AiSemanticDuplicateDetectionRunResponseDTO startSemanticDuplicateDetectio
         ) {
             return taskEmbeddingBackfillService.backfillProjectTaskEmbeddings(projectId);
         }
+
+    @PostMapping("/{projectId}/ai/duplicate-detection/vector")
+    public AiVectorDuplicateDetectionRunResponseDTO startVectorDuplicateDetection(
+            @PathVariable String projectId,
+            @RequestBody(required = false) AiDuplicateDetectionRequestDTO request
+    ) {
+        return aiVectorDuplicateDetectionService.startVectorDuplicateDetection(projectId, request);
+    }
+
+    @GetMapping("/{projectId}/ai/duplicate-detection/vector/runs")
+    public List<AiVectorDuplicateDetectionRunResponseDTO> getVectorDuplicateDetectionRuns(
+            @PathVariable String projectId
+    ) {
+        return aiVectorDuplicateDetectionService.getRunsByProject(projectId);
+    }
+
+    @GetMapping("/{projectId}/ai/duplicate-detection/vector/runs/{runId}/results")
+    public List<AiVectorDuplicateDetectionResultResponseDTO> getVectorDuplicateDetectionResults(
+            @PathVariable String projectId,
+            @PathVariable String runId
+    ) {
+        return aiVectorDuplicateDetectionService.getResultsByRun(runId);
+    }
+
+    @GetMapping("/{projectId}/ai/duplicate-detection/vector/latest")
+    public AiVectorDuplicateDetectionLatestResponseDTO getLatestVectorDuplicateDetection(
+            @PathVariable String projectId
+    ) {
+        return aiVectorDuplicateDetectionService.getLatestByProject(projectId);
+    }
+
 }
