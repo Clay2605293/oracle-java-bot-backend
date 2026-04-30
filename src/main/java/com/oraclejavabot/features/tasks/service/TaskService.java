@@ -6,6 +6,9 @@ import com.oraclejavabot.features.tasks.model.TaskEntity;
 import com.oraclejavabot.features.tasks.repository.TaskRepository;
 import com.oraclejavabot.features.sprints.repository.SprintRepository;
 
+import com.oraclejavabot.messaging.event.AiTaskEmbeddingRequestEvent;
+import com.oraclejavabot.messaging.producer.AiTaskEmbeddingProducer;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,13 +19,18 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService {
 
+    private static final String DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small";
+
     private final TaskRepository repository;
     private final SprintRepository sprintRepository;
+    private final AiTaskEmbeddingProducer taskEmbeddingProducer;
 
     public TaskService(TaskRepository repository,
-                       SprintRepository sprintRepository) {
+                       SprintRepository sprintRepository,
+                       AiTaskEmbeddingProducer taskEmbeddingProducer) {
         this.repository = repository;
         this.sprintRepository = sprintRepository;
+        this.taskEmbeddingProducer = taskEmbeddingProducer;
     }
 
     public TaskResponseDTO createTask(String projectId, TaskRequestDTO request) {
@@ -74,6 +82,8 @@ public class TaskService {
 
         TaskEntity saved = repository.save(task);
 
+        requestEmbeddingSafely(saved);
+
         return mapToResponse(saved);
     }
 
@@ -98,11 +108,12 @@ public class TaskService {
         return mapToResponse(task);
     }
 
-    // 🔥 MÉTODO ACTUALIZADO
     public TaskResponseDTO updateTask(String taskId, TaskRequestDTO request) {
 
         TaskEntity task = repository.findById(hexToUuid(taskId))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found"));
+
+        boolean shouldRegenerateEmbedding = false;
 
         System.out.println("========== UPDATE TASK ==========");
         System.out.println("TaskId: " + taskId);
@@ -110,10 +121,12 @@ public class TaskService {
         // TITULO / DESCRIPCION
         if (request.getTitulo() != null) {
             task.setTitulo(request.getTitulo());
+            shouldRegenerateEmbedding = true;
         }
 
         if (request.getDescripcion() != null) {
             task.setDescripcion(request.getDescripcion());
+            shouldRegenerateEmbedding = true;
         }
 
         // FECHA LIMITE
@@ -196,6 +209,10 @@ public class TaskService {
 
         TaskEntity updated = repository.save(task);
 
+        if (shouldRegenerateEmbedding) {
+            requestEmbeddingSafely(updated);
+        }
+
         return mapToResponse(updated);
     }
 
@@ -226,6 +243,36 @@ public class TaskService {
         TaskEntity updated = repository.save(task);
 
         return mapToResponse(updated);
+    }
+
+    private void requestEmbeddingSafely(TaskEntity task) {
+        try {
+            if (task == null || task.getTaskId() == null || task.getProjectId() == null) {
+                return;
+            }
+
+            if (task.getTitulo() == null || task.getTitulo().isBlank()) {
+                return;
+            }
+
+            AiTaskEmbeddingRequestEvent event = new AiTaskEmbeddingRequestEvent();
+
+            event.setTaskId(uuidToHex(task.getTaskId()));
+            event.setProjectId(uuidToHex(task.getProjectId()));
+            event.setTitulo(task.getTitulo());
+            event.setDescripcion(task.getDescripcion());
+            event.setEmbeddingModel(DEFAULT_EMBEDDING_MODEL);
+
+            taskEmbeddingProducer.sendTaskEmbeddingRequest(event);
+
+            System.out.println("📤 Task embedding request sent for task: " + uuidToHex(task.getTaskId()));
+
+        } catch (Exception e) {
+            System.err.println(
+                    "⚠️ Could not send task embedding request. Task operation was not rolled back: "
+                            + e.getMessage()
+            );
+        }
     }
 
     private TaskResponseDTO mapToResponse(TaskEntity task) {

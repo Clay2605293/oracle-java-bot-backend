@@ -155,5 +155,21 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    public NewTopic aiTaskEmbeddingRequestTopic() {
+        return TopicBuilder.name("ai-task-embedding-request")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic aiTaskEmbeddingResponseTopic() {
+        return TopicBuilder.name("ai-task-embedding-response")
+                .partitions(1)
+                .replicas(1)
+                .build();
+    }
     
 }

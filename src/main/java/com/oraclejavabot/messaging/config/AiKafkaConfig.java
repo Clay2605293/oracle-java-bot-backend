@@ -17,6 +17,8 @@ import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import com.oraclejavabot.messaging.event.AiSemanticDuplicateDetectionResponseEvent;
 
+import com.oraclejavabot.messaging.event.AiTaskEmbeddingResponseEvent;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ public class AiKafkaConfig {
     private static final String AI_TASK_RESPONSE_GROUP_ID = "ai-response-group";
     private static final String AI_DUPLICATE_RESPONSE_GROUP_ID = "ai-duplicate-response-group";
     private static final String AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID = "ai-semantic-duplicate-response-group";
+    private static final String AI_TASK_EMBEDDING_RESPONSE_GROUP_ID = "ai-task-embedding-response-group";
 
     @Bean
     public ConsumerFactory<String, AiTaskGenerationResponseEvent> aiConsumerFactory() {
@@ -125,6 +128,40 @@ public class AiKafkaConfig {
                 new ConcurrentKafkaListenerContainerFactory<>();
 
         factory.setConsumerFactory(semanticDuplicateDetectionConsumerFactory());
+
+        return factory;
+    }
+
+    @Bean
+    public ConsumerFactory<String, AiTaskEmbeddingResponseEvent>
+    taskEmbeddingConsumerFactory() {
+
+        JsonDeserializer<AiTaskEmbeddingResponseEvent> deserializer =
+                new JsonDeserializer<>(AiTaskEmbeddingResponseEvent.class);
+
+        deserializer.addTrustedPackages("*");
+
+        Map<String, Object> config = new HashMap<>();
+
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_TASK_EMBEDDING_RESPONSE_GROUP_ID);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+
+        return new DefaultKafkaConsumerFactory<>(
+                config,
+                new StringDeserializer(),
+                deserializer
+        );
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, AiTaskEmbeddingResponseEvent>
+    taskEmbeddingKafkaListenerContainerFactory() {
+
+        ConcurrentKafkaListenerContainerFactory<String, AiTaskEmbeddingResponseEvent> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+
+        factory.setConsumerFactory(taskEmbeddingConsumerFactory());
 
         return factory;
     }

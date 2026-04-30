@@ -20,6 +20,9 @@ import com.oraclejavabot.features.ai.dto.AiSemanticDuplicateDetectionResultRespo
 import com.oraclejavabot.features.ai.dto.AiSemanticDuplicateDetectionRunResponseDTO;
 import com.oraclejavabot.features.ai.service.AiSemanticDuplicateDetectionService;
 
+import com.oraclejavabot.features.ai.dto.TaskEmbeddingBackfillResponseDTO;
+import com.oraclejavabot.features.ai.service.TaskEmbeddingBackfillService;
+
 import java.util.List;
 
 @RestController
@@ -30,17 +33,20 @@ public class AiController {
     private final AiTaskSuggestionService aiTaskSuggestionService;
     private final AiDuplicateDetectionService aiDuplicateDetectionService;
     private final AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService;
+    private final TaskEmbeddingBackfillService taskEmbeddingBackfillService;
 
     public AiController(
             AiBacklogGenerationService aiBacklogGenerationService,
             AiTaskSuggestionService aiTaskSuggestionService,
             AiDuplicateDetectionService aiDuplicateDetectionService,
-            AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService
+            AiSemanticDuplicateDetectionService aiSemanticDuplicateDetectionService,
+            TaskEmbeddingBackfillService taskEmbeddingBackfillService
     ) {
         this.aiBacklogGenerationService = aiBacklogGenerationService;
         this.aiTaskSuggestionService = aiTaskSuggestionService;
         this.aiDuplicateDetectionService = aiDuplicateDetectionService;
         this.aiSemanticDuplicateDetectionService = aiSemanticDuplicateDetectionService;
+        this.taskEmbeddingBackfillService = taskEmbeddingBackfillService;
     }
 
     @PostMapping("/{projectId}/ai/generate-backlog")
@@ -146,4 +152,11 @@ public AiSemanticDuplicateDetectionRunResponseDTO startSemanticDuplicateDetectio
     ) {
         return aiSemanticDuplicateDetectionService.getLatestByProject(projectId);
     }
+
+    @PostMapping("/{projectId}/ai/task-embeddings/backfill")
+        public TaskEmbeddingBackfillResponseDTO backfillProjectTaskEmbeddings(
+                @PathVariable String projectId
+        ) {
+            return taskEmbeddingBackfillService.backfillProjectTaskEmbeddings(projectId);
+        }
 }
