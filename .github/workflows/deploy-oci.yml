@@ -1,0 +1,25 @@
+name: Deploy Oracle Java Bot to OCI
+
+on:
+  push:
+    branches:
+      - main
+
+workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Build and deploy on OCI VM
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy through SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.OCI_HOST }}
+          username: ${{ secrets.OCI_USER }}
+          key: ${{ secrets.OCI_SSH_KEY }}
+          port: 22
+          script_stop: true
+          script: |
+            /home/opc/deploy.sh
