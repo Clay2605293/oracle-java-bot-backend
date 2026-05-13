@@ -1,0 +1,27 @@
+version: 0.1
+component: build
+timeoutInSeconds: 1200
+shell: bash
+
+steps:
+  - type: Command
+    name: "Show build context"
+    command: |
+      echo "OCI Managed Build - Oracle Java Bot Backend"
+      echo "Repository cloned successfully"
+      pwd
+      ls -la
+
+  - type: Command
+    name: "Validate backend project structure"
+    command: |
+      test -f pom.xml
+      test -f Dockerfile
+      test -d src
+      echo "Backend project structure is valid"
+
+  - type: Command
+    name: "Validate Dockerfile"
+    command: |
+      grep -i "FROM" Dockerfile
+      echo "Dockerfile validation completed"
