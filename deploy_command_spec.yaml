@@ -1,0 +1,35 @@
+version: 0.1
+component: command
+timeoutInSeconds: 1800
+shell: bash
+failImmediatelyOnError: true
+
+env:
+  variables:
+    OCI_VM_HOST: "159.54.133.243"
+    OCI_VM_USER: "opc"
+  vaultVariables:
+    OCI_SSH_KEY: "ocid1.vaultsecret.oc1.mx-queretaro-1.amaaaaaagzuuwzyat4sh2zytkjc5x42imwdmz6o4dwqr37nkqeta4kgco4vq"
+
+steps:
+  - type: Command
+    name: "Run deployment script on OCI VM"
+    timeoutInSeconds: 1800
+    command: |
+      echo "Starting Oracle Java Bot deployment through OCI DevOps"
+      echo "Target VM: ${OCI_VM_USER}@${OCI_VM_HOST}"
+
+      if ! command -v ssh >/dev/null 2>&1; then
+        echo "Installing SSH client..."
+        yum install -y openssh-clients || dnf install -y openssh-clients || microdnf install -y openssh-clients
+      fi
+
+      mkdir -p ~/.ssh
+      printf '%s\n' "${OCI_SSH_KEY}" > ~/.ssh/oci_devops_key
+      chmod 600 ~/.ssh/oci_devops_key
+
+      ssh -o StrictHostKeyChecking=no \
+          -o UserKnownHostsFile=/dev/null \
+          -i ~/.ssh/oci_devops_key \
+          ${OCI_VM_USER}@${OCI_VM_HOST} \
+          "chmod +x /home/opc/deploy.sh && /home/opc/deploy.sh"
