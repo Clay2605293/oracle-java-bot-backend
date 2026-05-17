@@ -31,8 +31,8 @@ public class AiVectorDuplicateDetectionService {
     private static final String STATUS_COMPLETED = "COMPLETED";
     private static final String STATUS_FAILED = "FAILED";
 
-    private static final String DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small";
-    private static final String DETECTION_ENGINE = "ORACLE_VECTOR";
+    private static final String DEFAULT_EMBEDDING_MODEL = "MULTILINGUAL_E5_BASE";
+    private static final String DETECTION_ENGINE = "ORACLE_ONNX_VECTOR";
 
     private final AiVectorDuplicateDetectionRunRepository runRepository;
     private final AiVectorDuplicateResultRepository resultRepository;
@@ -252,7 +252,7 @@ public class AiVectorDuplicateDetectionService {
 
     private Double resolveThreshold(AiDuplicateDetectionRequestDTO request) {
         if (request == null || request.getThreshold() == null) {
-            return 0.80;
+            return 0.90;
         }
 
         Double threshold = request.getThreshold();

@@ -1,13 +1,11 @@
 package com.oraclejavabot.features.tasks.service;
 
+import com.oraclejavabot.features.ai.service.TaskVectorEmbeddingService;
 import com.oraclejavabot.features.tasks.dto.TaskRequestDTO;
 import com.oraclejavabot.features.tasks.dto.TaskResponseDTO;
 import com.oraclejavabot.features.tasks.model.TaskEntity;
 import com.oraclejavabot.features.tasks.repository.TaskRepository;
 import com.oraclejavabot.features.sprints.repository.SprintRepository;
-
-import com.oraclejavabot.messaging.event.AiTaskEmbeddingRequestEvent;
-import com.oraclejavabot.messaging.producer.AiTaskEmbeddingProducer;
 
 import org.springframework.stereotype.Service;
 
@@ -19,18 +17,18 @@ import java.util.stream.Collectors;
 @Service
 public class TaskService {
 
-    private static final String DEFAULT_EMBEDDING_MODEL = "text-embedding-3-small";
-
     private final TaskRepository repository;
     private final SprintRepository sprintRepository;
-    private final AiTaskEmbeddingProducer taskEmbeddingProducer;
+    private final TaskVectorEmbeddingService taskVectorEmbeddingService;
 
-    public TaskService(TaskRepository repository,
-                       SprintRepository sprintRepository,
-                       AiTaskEmbeddingProducer taskEmbeddingProducer) {
+    public TaskService(
+            TaskRepository repository,
+            SprintRepository sprintRepository,
+            TaskVectorEmbeddingService taskVectorEmbeddingService
+    ) {
         this.repository = repository;
         this.sprintRepository = sprintRepository;
-        this.taskEmbeddingProducer = taskEmbeddingProducer;
+        this.taskVectorEmbeddingService = taskVectorEmbeddingService;
     }
 
     public TaskResponseDTO createTask(String projectId, TaskRequestDTO request) {
@@ -255,21 +253,16 @@ public class TaskService {
                 return;
             }
 
-            AiTaskEmbeddingRequestEvent event = new AiTaskEmbeddingRequestEvent();
+            taskVectorEmbeddingService.upsertTaskVectorEmbedding(task);
 
-            event.setTaskId(uuidToHex(task.getTaskId()));
-            event.setProjectId(uuidToHex(task.getProjectId()));
-            event.setTitulo(task.getTitulo());
-            event.setDescripcion(task.getDescripcion());
-            event.setEmbeddingModel(DEFAULT_EMBEDDING_MODEL);
-
-            taskEmbeddingProducer.sendTaskEmbeddingRequest(event);
-
-            System.out.println("📤 Task embedding request sent for task: " + uuidToHex(task.getTaskId()));
+            System.out.println(
+                    "✅ Oracle vector embedding generated for task: "
+                            + uuidToHex(task.getTaskId())
+            );
 
         } catch (Exception e) {
             System.err.println(
-                    "⚠️ Could not send task embedding request. Task operation was not rolled back: "
+                    "⚠️ Could not generate Oracle vector embedding. Task operation was not rolled back: "
                             + e.getMessage()
             );
         }

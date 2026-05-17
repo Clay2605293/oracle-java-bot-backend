@@ -36,7 +36,7 @@ public class TaskEmbeddingStatusService {
             WHERE PROJECT_ID = :projectId
         """, projectUuid);
 
-        boolean ready = semanticEmbeddings >= totalTasks && totalTasks > 0;
+        boolean ready = vectorEmbeddings >= totalTasks && totalTasks > 0;
 
         return new TaskEmbeddingStatusResponseDTO(
                 projectId,
@@ -60,10 +60,27 @@ public class TaskEmbeddingStatusService {
     }
 
     private UUID parseProjectId(String projectId) {
+        return parseId(projectId, "ProjectId inválido");
+    }
+
+    private UUID parseId(String value, String errorMessage) {
         try {
-            return UUID.fromString(projectId);
+            if (value.contains("-")) {
+                return UUID.fromString(value);
+            }
+
+            return hexToUuid(value);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid projectId format");
+            throw new IllegalArgumentException(errorMessage);
         }
+    }
+
+    private UUID hexToUuid(String hex) {
+        return UUID.fromString(
+                hex.replaceFirst(
+                        "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                        "$1-$2-$3-$4-$5"
+                )
+        );
     }
 }

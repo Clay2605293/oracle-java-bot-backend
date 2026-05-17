@@ -12,6 +12,8 @@ import java.util.UUID;
 @Service
 public class TaskVectorEmbeddingBackfillService {
 
+    private static final String EMBEDDING_MODEL = "MULTILINGUAL_E5_BASE";
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -20,25 +22,43 @@ public class TaskVectorEmbeddingBackfillService {
 
         UUID projectUuid = parseProjectId(projectId);
 
-        // 🔹 MERGE en Oracle
         String mergeSql = """
             MERGE INTO CHATBOT_USER.TASK_VECTOR_EMBEDDING v
             USING (
                 SELECT
-                    TASK_ID,
-                    PROJECT_ID,
-                    TO_VECTOR(EMBEDDING_JSON) AS EMBEDDING,
-                    EMBEDDING_TEXT,
-                    EMBEDDING_MODEL
-                FROM CHATBOT_USER.TASK_SEMANTIC_EMBEDDING
-                WHERE PROJECT_ID = :projectId
+                    t.TASK_ID,
+                    t.PROJECT_ID,
+                    SUBSTR(
+                        CASE
+                            WHEN t.DESCRIPCION IS NULL OR TRIM(t.DESCRIPCION) IS NULL THEN
+                                'Título: ' || t.TITULO
+                            ELSE
+                                'Título: ' || t.TITULO || CHR(10) || 'Descripción: ' || t.DESCRIPCION
+                        END,
+                        1,
+                        1000
+                    ) AS EMBEDDING_TEXT,
+                    VECTOR_EMBEDDING(
+                        MULTILINGUAL_E5_BASE
+                        USING
+                            CASE
+                                WHEN t.DESCRIPCION IS NULL OR TRIM(t.DESCRIPCION) IS NULL THEN
+                                    'Título: ' || t.TITULO
+                                ELSE
+                                    'Título: ' || t.TITULO || CHR(10) || 'Descripción: ' || t.DESCRIPCION
+                            END
+                        AS DATA
+                    ) AS EMBEDDING
+                FROM CHATBOT_USER.TAREA t
+                WHERE t.PROJECT_ID = :projectId
+                  AND t.TITULO IS NOT NULL
             ) s
             ON (v.TASK_ID = s.TASK_ID)
             WHEN MATCHED THEN UPDATE SET
                 v.PROJECT_ID = s.PROJECT_ID,
                 v.EMBEDDING = s.EMBEDDING,
                 v.EMBEDDING_TEXT = s.EMBEDDING_TEXT,
-                v.EMBEDDING_MODEL = s.EMBEDDING_MODEL,
+                v.EMBEDDING_MODEL = :embeddingModel,
                 v.UPDATED_AT = SYSTIMESTAMP
             WHEN NOT MATCHED THEN INSERT (
                 TASK_ID,
@@ -53,7 +73,7 @@ public class TaskVectorEmbeddingBackfillService {
                 s.PROJECT_ID,
                 s.EMBEDDING,
                 s.EMBEDDING_TEXT,
-                s.EMBEDDING_MODEL,
+                :embeddingModel,
                 SYSTIMESTAMP,
                 SYSTIMESTAMP
             )
@@ -61,17 +81,19 @@ public class TaskVectorEmbeddingBackfillService {
 
         entityManager.createNativeQuery(mergeSql)
                 .setParameter("projectId", projectUuid)
+                .setParameter("embeddingModel", EMBEDDING_MODEL)
                 .executeUpdate();
 
-        // 🔹 Contar embeddings
         String countSql = """
             SELECT COUNT(*)
             FROM CHATBOT_USER.TASK_VECTOR_EMBEDDING
             WHERE PROJECT_ID = :projectId
+              AND EMBEDDING_MODEL = :embeddingModel
         """;
 
         Object result = entityManager.createNativeQuery(countSql)
                 .setParameter("projectId", projectUuid)
+                .setParameter("embeddingModel", EMBEDDING_MODEL)
                 .getSingleResult();
 
         int total = (result instanceof BigDecimal bd)
@@ -79,17 +101,34 @@ public class TaskVectorEmbeddingBackfillService {
                 : ((Number) result).intValue();
 
         return new TaskVectorEmbeddingBackfillResponseDTO(
-                "Task vector embedding backfill completed",
+                "Task vector embedding backfill completed using Oracle ONNX model",
                 projectId,
                 total
         );
     }
 
     private UUID parseProjectId(String projectId) {
+        return parseId(projectId, "ProjectId inválido");
+    }
+
+    private UUID parseId(String value, String errorMessage) {
         try {
-            return UUID.fromString(projectId);
+            if (value.contains("-")) {
+                return UUID.fromString(value);
+            }
+
+            return hexToUuid(value);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Invalid projectId format");
+            throw new IllegalArgumentException(errorMessage);
         }
+    }
+
+    private UUID hexToUuid(String hex) {
+        return UUID.fromString(
+                hex.replaceFirst(
+                        "(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                        "$1-$2-$3-$4-$5"
+                )
+        );
     }
 }
