@@ -310,7 +310,7 @@ DuplicateResultsStored --> C19
 
 ## 3. Component Table
 
-La siguiente tabla resume cómo los actores humanos, sus acciones principales y los eventos derivados permiten identificar los componentes iniciales del sistema. La tabla se basa en el diagrama de Event Storming usado para conectar actores, acciones, eventos de dominio y componentes arquitectónicos. :contentReference[oaicite:0]{index=0}
+La siguiente tabla resume cómo los actores, sus acciones principales y los eventos derivados permiten identificar los componentes iniciales del sistema. La tabla se basa en el diagrama de Event Storming usado para conectar actores, acciones, eventos de dominio y componentes arquitectónicos.
 
 | Actor | Event / Action | Component | Component responsibilities |
 |---|---|---|---|
