@@ -54,9 +54,6 @@ Los componentes se derivaron considerando los siguientes criterios arquitectóni
 5. **Evitar el entity-trap anti-pattern**  
    Los componentes no se definieron únicamente a partir de tablas de base de datos. En lugar de crear un componente por entidad, se agruparon capacidades de negocio y responsabilidades arquitectónicas.
 
-6. **Diferenciar flujos vigentes de flujos legacy**  
-   La identificación considera la arquitectura actual del sistema. Los métodos anteriores de detección de duplicados mediante LLM directo, similitud semántica fuera de Oracle o embeddings fuera de la base de datos no forman parte de los componentes principales vigentes.
-
 
 ### 2.3 Main event categories
 
