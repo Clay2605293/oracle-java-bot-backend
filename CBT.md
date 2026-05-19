@@ -16,10 +16,6 @@ El alcance de este documento incluye:
 - Una vista de **particionamiento técnico** de la arquitectura.
 - Una vista de **particionamiento por dominio** de la arquitectura.
 
-El análisis considera la arquitectura vigente del sistema. Por lo tanto, se excluyen flujos legacy de detección de duplicados basados en LLM directo o similitud calculada fuera de Oracle. La versión actual utiliza embeddings nativos generados en Oracle con el modelo `MULTILINGUAL_E5_BASE`, búsqueda vectorial mediante Oracle Vector Search y persistencia de resultados en tablas de auditoría específicas.
-
-Este documento debe entenderse como una primera versión arquitectónica. La identificación de componentes puede refinarse conforme evolucionen los requisitos, los atributos de calidad y las decisiones técnicas del sistema.
-
 ## 2. Component Identification process and rationale
 
 Para identificar los componentes iniciales del sistema **Oracle Java Bot** se utilizó la técnica de **Event Storming**, debido a que el sistema presenta flujos claros basados en eventos de negocio, integración multicanal y comunicación desacoplada entre partes del sistema.
@@ -32,7 +28,7 @@ Esta técnica fue seleccionada porque Oracle Java Bot no es únicamente una apli
 
 El uso de Event Storming es adecuado para este sistema por las siguientes razones:
 
-- El sistema tiene actores claramente diferenciados: **Manager**, **Developer**, **Telegram User**, **AI Service** y **System Administrator**.
+- El sistema tiene actores claramente diferenciados: **Manager** y **Developer**.
 - Existen eventos de dominio relevantes que modifican el estado del sistema o generan efectos secundarios.
 - Algunas interacciones son síncronas, como crear una tarea desde la interfaz Web o consultar el dashboard.
 - Otras interacciones son asíncronas, como la publicación de eventos de tareas en Kafka o la generación de backlog asistido por IA.
@@ -61,20 +57,8 @@ Los componentes se derivaron considerando los siguientes criterios arquitectóni
 6. **Diferenciar flujos vigentes de flujos legacy**  
    La identificación considera la arquitectura actual del sistema. Los métodos anteriores de detección de duplicados mediante LLM directo, similitud semántica fuera de Oracle o embeddings fuera de la base de datos no forman parte de los componentes principales vigentes.
 
-### 2.3 Event Storming interpretation for Oracle Java Bot
 
-Bajo Event Storming, los elementos principales del sistema se interpretan de la siguiente manera:
-
-| Elemento | Interpretación en Oracle Java Bot |
-|---|---|
-| Actor | Persona, sistema o servicio que inicia una acción relevante. |
-| Acción | Operación ejecutada por un actor sobre el sistema. |
-| Evento | Hecho significativo que ocurrió dentro del dominio. |
-| Componente | Unidad arquitectónica responsable de procesar acciones, reaccionar a eventos o mantener consistencia del sistema. |
-| Política / regla | Decisión de negocio o técnica que determina qué debe ocurrir después de un evento. |
-| Read model / consulta | Vista utilizada para presentar información al usuario, como dashboard, backlog sugerido o resultados de duplicados. |
-
-### 2.4 Main event categories
+### 2.3 Main event categories
 
 Los eventos identificados se agrupan en las siguientes categorías:
 
@@ -89,7 +73,7 @@ Los eventos identificados se agrupan en las siguientes categorías:
 | Detección semántica de duplicados | Embedding generado, run de detección iniciado, pares similares encontrados, resultados persistidos. |
 | Visibilidad y KPIs | Dashboard consultado, progreso calculado, métricas de sprint consultadas, desempeño de developer consultado. |
 
-### 2.5 Resulting component candidates
+### 2.4 Resulting component candidates
 
 A partir del análisis de eventos, acciones y responsabilidades, se identifican los siguientes componentes candidatos:
 
@@ -117,7 +101,7 @@ A partir del análisis de eventos, acciones y responsabilidades, se identifican 
 
 Esta lista representa una primera versión de componentes arquitectónicos. Su propósito es servir como base para los diagramas de flujo, la tabla de responsabilidades y las vistas de particionamiento técnico y por dominio.
 
-### 2.6 Diagrama de trabajo
+### 2.5 Diagrama de trabajo
 
 ```mermaid
 flowchart LR
