@@ -312,7 +312,7 @@ public class TaskService {
                         "$1-$2-$3-$4-$5"
                 )
         );
-    }
+    }   
 
     private String uuidToHex(UUID uuid) {
         return uuid.toString().replace("-", "").toUpperCase();
