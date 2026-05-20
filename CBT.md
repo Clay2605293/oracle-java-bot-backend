@@ -70,35 +70,7 @@ Los eventos identificados se agrupan en las siguientes categorías:
 | Detección semántica de duplicados | Embedding generado, run de detección iniciado, pares similares encontrados, resultados persistidos. |
 | Visibilidad y KPIs | Dashboard consultado, progreso calculado, métricas de sprint consultadas, desempeño de developer consultado. |
 
-### 2.4 Resulting component candidates
-
-A partir del análisis de eventos, acciones y responsabilidades, se identifican los siguientes componentes candidatos:
-
-| # | Componente | Responsabilidad principal |
-|---|---|---|
-| 1 | Web Interface Component | Proveer la interfaz administrativa para gestión, consulta y visualización del sistema. |
-| 2 | Telegram Bot Interface Component | Permitir interacción conversacional y recepción/envío de mensajes mediante Telegram. |
-| 3 | Authentication Component | Autenticar usuarios y emitir credenciales de acceso. |
-| 4 | Authorization and Security Component | Validar permisos, roles y acceso a recursos protegidos. |
-| 5 | User Management Component | Administrar usuarios del sistema y sus datos operativos. |
-| 6 | Team Management Component | Administrar equipos, miembros y relaciones entre usuarios. |
-| 7 | Project Management Component | Administrar proyectos, miembros del proyecto y documentos asociados. |
-| 8 | Task Management Component | Gestionar el ciclo de vida de tareas, estados, prioridades y comentarios. |
-| 9 | Sprint Management Component | Gestionar sprints y relación de tareas con periodos de trabajo. |
-| 10 | Assignment Component | Gestionar responsables de tareas y relaciones usuario-tarea. |
-| 11 | Dashboard and KPI Component | Calcular y presentar progreso, métricas y visibilidad del trabajo. |
-| 12 | Task Event Notification Component | Preparar y enviar notificaciones relacionadas con eventos de tareas. |
-| 13 | Messaging Component | Desacoplar comunicación mediante Kafka y topics de eventos. |
-| 14 | Document Storage Component | Almacenar documentos de proyecto en Object Storage. |
-| 15 | AI Backlog Generation Component | Orquestar la generación de tareas sugeridas a partir de documentos. |
-| 16 | AI Service Component | Procesar solicitudes de IA externas al backend, principalmente generación de backlog con OpenAI. |
-| 17 | Vector Embedding Component | Generar y actualizar embeddings nativos de tareas dentro de Oracle. |
-| 18 | Semantic Duplicate Detection Component | Ejecutar detección de duplicados usando Oracle Vector Search. |
-| 19 | Persistence Component | Mantener la fuente de verdad, integridad, auditoría y trazabilidad de datos. |
-
-Esta lista representa una primera versión de componentes arquitectónicos. Su propósito es servir como base para los diagramas de flujo, la tabla de responsabilidades y las vistas de particionamiento técnico y por dominio.
-
-### 2.5 Diagrama de trabajo
+### 2.4 Diagrama de trabajo
 
 ```mermaid
 flowchart LR
@@ -306,6 +278,32 @@ DocumentStored --> C19
 DuplicateResultsStored --> C19
 
 ```
+### 2.5 Resulting component candidates
+
+A partir del análisis de eventos, acciones y responsabilidades, se identifican los siguientes componentes candidatos:
+
+| # | Componente | Responsabilidad principal |
+|---|---|---|
+| 1 | Web Interface Component | Proveer la interfaz administrativa para gestión, consulta y visualización del sistema. |
+| 2 | Telegram Bot Interface Component | Permitir interacción conversacional y recepción/envío de mensajes mediante Telegram. |
+| 3 | Authentication Component | Autenticar usuarios y emitir credenciales de acceso. |
+| 4 | Authorization and Security Component | Validar permisos, roles y acceso a recursos protegidos. |
+| 5 | User Management Component | Administrar usuarios del sistema y sus datos operativos. |
+| 6 | Team Management Component | Administrar equipos, miembros y relaciones entre usuarios. |
+| 7 | Project Management Component | Administrar proyectos, miembros del proyecto y documentos asociados. |
+| 8 | Task Management Component | Gestionar el ciclo de vida de tareas, estados, prioridades y comentarios. |
+| 9 | Sprint Management Component | Gestionar sprints y relación de tareas con periodos de trabajo. |
+| 10 | Assignment Component | Gestionar responsables de tareas y relaciones usuario-tarea. |
+| 11 | Dashboard and KPI Component | Calcular y presentar progreso, métricas y visibilidad del trabajo. |
+| 12 | Task Event Notification Component | Preparar y enviar notificaciones relacionadas con eventos de tareas. |
+| 13 | Messaging Component | Desacoplar comunicación mediante Kafka y topics de eventos. |
+| 14 | Document Storage Component | Almacenar documentos de proyecto en Object Storage. |
+| 15 | AI Backlog Generation Component | Orquestar la generación de tareas sugeridas a partir de documentos. |
+| 16 | AI Service Component | Procesar solicitudes de IA externas al backend, principalmente generación de backlog con OpenAI. |
+| 17 | Vector Embedding Component | Generar y actualizar embeddings nativos de tareas dentro de Oracle. |
+| 18 | Semantic Duplicate Detection Component | Ejecutar detección de duplicados usando Oracle Vector Search. |
+| 19 | Persistence Component | Mantener la fuente de verdad, integridad, auditoría y trazabilidad de datos. |
+
 
 
 ## 3. Component Table
