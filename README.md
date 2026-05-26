@@ -1,3 +1,5 @@
+- [User Guide](USER_GUIDE.md)
+
 Link a Frontend
 https://github.com/emihdz1209/oracle-java-bot-frontend
 
