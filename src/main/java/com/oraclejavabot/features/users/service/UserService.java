@@ -5,6 +5,12 @@ import com.oraclejavabot.features.users.repository.UserRepository;
 import com.oraclejavabot.features.users.dto.UserRequestDTO;
 import com.oraclejavabot.features.users.dto.UserResponseDTO;
 
+import com.oraclejavabot.features.users.dto.SkillCategory;
+import com.oraclejavabot.features.users.dto.UserSkillProfileDTO;
+import com.oraclejavabot.features.users.repository.UserSkillProfileRepository;
+
+import com.oraclejavabot.features.users.dto.SkillCategoryOptionDTO;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +20,14 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserSkillProfileRepository userSkillProfileRepository;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(
+            UserRepository userRepository,
+            UserSkillProfileRepository userSkillProfileRepository
+    ) {
         this.userRepository = userRepository;
+        this.userSkillProfileRepository = userSkillProfileRepository;
     }
 
     /**
@@ -95,4 +106,25 @@ public class UserService {
 
         return userRepository.findByTelegramIdIgnoreCase(candidate);
     }
+
+    public List<UserSkillProfileDTO> getUsersSkillProfiles() {
+        return userSkillProfileRepository.findAllPrimarySkillProfiles();
+    }
+
+    public List<UserSkillProfileDTO> getUsersByPrimarySkillCategory(SkillCategory category) {
+        return userSkillProfileRepository.findByPrimarySkillCategory(category);
+    }
+
+    public Optional<UserSkillProfileDTO> getUserSkillProfileById(String userIdHex) {
+        return userSkillProfileRepository.findByUserId(userIdHex);
+    }
+
+    public List<UserSkillProfileDTO> searchUserSkillProfiles(String text) {
+        return userSkillProfileRepository.searchSkillProfiles(text);
+    }
+
+    public List<SkillCategoryOptionDTO> getSkillCategories() {
+        return userSkillProfileRepository.findSkillCategories();
+    }
+
 }

@@ -1,3 +1,4 @@
+
 package com.oraclejavabot.features.users.model;
 
 import jakarta.persistence.Column;

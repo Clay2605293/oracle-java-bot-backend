@@ -1,0 +1,37 @@
+type Query {
+  usersSkillProfiles: [UserSkillProfile!]!
+  usersByPrimarySkillCategory(category: SkillCategory!): [UserSkillProfile!]!
+  userSkillProfileById(id: ID!): UserSkillProfile
+  searchUserSkillProfiles(text: String!): [UserSkillProfile!]!
+  skillCategories: [SkillCategoryOption!]!
+}
+
+enum SkillCategory {
+  BACKEND
+  FRONTEND
+  DEVOPS
+  DATABASE
+  QA
+  CLOUD
+  AI
+}
+
+type UserSkillProfile {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  email: String!
+  primarySkillCategory: SkillCategory!
+  primarySkillCode: String!
+  primarySkillName: String!
+  primarySkillLevel: String!
+  primarySkillYears: Float
+  cardType: String!
+}
+
+type SkillCategoryOption {
+  code: SkillCategory!
+  name: String!
+  description: String
+  cardType: String!
+}
