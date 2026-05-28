@@ -189,10 +189,52 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             autolayout lr
         }
 
-        container oracleJavaBot "Containers" {
-            title "Container Diagram - Oracle Java Bot"
-            description "Vista de contenedores C4 del sistema Oracle Java Bot en su arquitectura objetivo."
-            include *
+        container oracleJavaBot "ContainersRuntime" {
+            title "Container Diagram - Runtime Oracle Java Bot"
+            description "Vista de runtime principal del sistema: entrada Web, backend, Telegram Bot Service, AI Service, mensajería y persistencia."
+            include manager
+            include developer
+            include telegram
+            include openai
+            include nginxIngress
+            include webFrontend
+            include backend
+            include telegramBotService
+            include aiService
+            include kafkaCluster
+            include zookeeperEnsemble
+            include database
+            include objectStorageContainer
+            autolayout lr
+        }
+
+        container oracleJavaBot "ContainersDevOps" {
+            title "Container Diagram - DevOps y Blue/Green"
+            description "Vista de integración y despliegue continuo: repositorios, pipelines, registry, pruebas, promoción Blue/Green y Jira."
+            include devopsEngineer
+            include github
+            include githubActions
+            include ociDevOps
+            include ocir
+            include oke
+            include jira
+            include cicdOrchestrator
+            include regressionTestRunner
+            include nginxIngress
+            include backend
+            autolayout lr
+        }
+
+        container oracleJavaBot "ContainersDataAI" {
+            title "Container Diagram - Datos e IA"
+            description "Vista de capacidades de datos e inteligencia artificial: documentos, generación de backlog, embeddings, vector search y resultados de duplicidad."
+            include manager
+            include openai
+            include backend
+            include aiService
+            include kafkaCluster
+            include database
+            include objectStorageContainer
             autolayout lr
         }
 
