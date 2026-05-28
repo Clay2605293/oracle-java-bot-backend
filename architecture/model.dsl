@@ -1,5 +1,13 @@
 workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java Bot." {
 
+
+    properties {
+        structurizr.inspection.model.relationship.technology ignore
+        structurizr.inspection.model.softwaresystem.documentation ignore
+        structurizr.inspection.model.softwaresystem.decisions ignore
+    }
+
+
     model {
         // =========================================================
         // Personas
@@ -218,6 +226,15 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         cicdOrchestrator -> nginxIngress "Promueve tráfico entre backend-blue y backend-green" "Deployment automation"
         cicdOrchestrator -> jira "Crea ticket si falla el quality gate" "HTTPS / API"
 
+        manager -> webFrontend "Carga documentos y solicita generación de backlog IA"
+        webFrontend -> objectStorageContainer "Carga documentos del proyecto mediante flujo autorizado" "HTTPS"
+        webFrontend -> backend "Solicita generación de backlog desde documento" "HTTPS / JSON"
+        backend -> aiService "Consulta disponibilidad del AI Service" "HTTP"
+        kafkaCluster -> aiService "Entrega solicitudes de generación de backlog" "Kafka"
+        kafkaCluster -> backend "Entrega resultados de generación de backlog" "Kafka"
+        aiService -> kafkaCluster "Publica tareas sugeridas generadas" "Kafka"
+        backend -> webFrontend "Entrega tareas sugeridas para revisión del Manager" "HTTPS / JSON"
+
         
         // =========================================================
         // Relaciones internas del Spring Boot Backend
@@ -349,7 +366,7 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             deploymentNode "OCI Región Querétaro" "Región cloud donde se despliega la arquitectura objetivo de producción." "Oracle Cloud Infrastructure" {
                 tags "Oracle Cloud"
 
-                infrastructureNode "OCI Load Balancer" "Expone el punto de entrada público del sistema y distribuye tráfico hacia el Ingress Controller." "OCI Load Balancer" {
+                ociLoadBalancer = infrastructureNode "OCI Load Balancer" "Expone el punto de entrada público del sistema y distribuye tráfico hacia el Ingress Controller." "OCI Load Balancer" {
                     tags "Gateway"
                 }
 
@@ -366,6 +383,7 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
                             containerInstance zookeeperEnsemble
                         }
                     }
+                    ociLoadBalancer -> nginxIngress "Distribuye tráfico hacia el Ingress Controller" "HTTPS"
 
                     deploymentNode "Fault Domain 2" "Fault Domain 2 dentro del Availability Domain de producción." "OCI Fault Domain" {
                         deploymentNode "Worker Node FD2" "Nodo worker de Kubernetes en FD2." "OKE Worker Node" {
@@ -407,6 +425,7 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
                 deploymentNode "OCI Container Registry" "Registry de imágenes Docker usadas por OKE." "OCIR" {
                     tags "DevOps"
+                    softwareSystemInstance ocir
                 }
             }
         }
@@ -550,6 +569,25 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             autolayout lr
         }
 
+        dynamic oracleJavaBot "DynamicAIBacklogGeneration" {
+            title "Dynamic Diagram - Generación de backlog con IA desde documento"
+            description "Secuencia funcional para cargar un documento de proyecto, solicitar generación de backlog, procesar el documento en el AI Service, invocar OpenAI y persistir tareas sugeridas."
+
+            manager -> webFrontend "1. Carga documento del proyecto y solicita generación de backlog"
+            webFrontend -> backend "2. Envía metadatos del documento y solicitud de generación IA"
+            backend -> objectStorageContainer "3. Almacena o recupera documento en OCI Object Storage"
+            backend -> database "4. Persiste metadatos del documento en PROYECTO_DOCUMENTO"
+            backend -> kafkaCluster "5. Publica solicitud de generación de backlog"
+            kafkaCluster -> aiService "6. Entrega solicitud al AI Service"
+            aiService -> objectStorageContainer "7. Recupera documento del proyecto"
+            aiService -> openai "8. Solicita generación de tareas sugeridas"
+            aiService -> kafkaCluster "9. Publica tareas sugeridas generadas"
+            kafkaCluster -> backend "10. Entrega resultado de generación IA"
+            backend -> database "11. Persiste sugerencias en TAREA_AI_SUGERIDA"
+            backend -> webFrontend "12. Muestra tareas sugeridas para aprobación o rechazo"
+
+            autolayout lr
+        }
 
         styles {
             element "Person" {
@@ -618,4 +656,8 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
         theme default
     }
+
+        configuration {
+            scope softwaresystem
+        }
 }
