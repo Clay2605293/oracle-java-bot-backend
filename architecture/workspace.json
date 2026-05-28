@@ -1,0 +1,97 @@
+{
+  "configuration" : { },
+  "description" : "Modelo C4 de arquitectura objetivo para Oracle Java Bot.",
+  "documentation" : { },
+  "id" : 1,
+  "lastModifiedDate" : "2026-05-28T00:46:33Z",
+  "model" : {
+    "people" : [ {
+      "description" : "Responsable de gestionar proyectos, tareas, equipos y métricas.",
+      "id" : "1",
+      "name" : "Manager",
+      "properties" : {
+        "structurizr.dsl.identifier" : "manager"
+      },
+      "relationships" : [ {
+        "description" : "Gestiona proyectos, tareas, documentos, métricas y detección de duplicados",
+        "destinationId" : "3",
+        "id" : "4",
+        "sourceId" : "1",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Miembro del equipo que consulta y actualiza tareas.",
+      "id" : "2",
+      "name" : "Developer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "developer"
+      },
+      "relationships" : [ {
+        "description" : "Consulta y actualiza tareas desde la Web o Telegram",
+        "destinationId" : "3",
+        "id" : "5",
+        "sourceId" : "2",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    } ],
+    "softwareSystems" : [ {
+      "description" : "Sistema cloud-native para gestión de proyectos, tareas, KPIs, notificaciones e IA.",
+      "documentation" : { },
+      "id" : "3",
+      "name" : "Oracle Java Bot",
+      "properties" : {
+        "structurizr.dsl.identifier" : "oracleJavaBot"
+      },
+      "tags" : "Element,Software System"
+    } ]
+  },
+  "name" : "Oracle Java Bot",
+  "properties" : {
+    "structurizr.inspection.error" : "3",
+    "structurizr.dsl" : "d29ya3NwYWNlICJPcmFjbGUgSmF2YSBCb3QiICJNb2RlbG8gQzQgZGUgYXJxdWl0ZWN0dXJhIG9iamV0aXZvIHBhcmEgT3JhY2xlIEphdmEgQm90LiIgewoKICAgIG1vZGVsIHsKICAgICAgICBtYW5hZ2VyID0gcGVyc29uICJNYW5hZ2VyIiAiUmVzcG9uc2FibGUgZGUgZ2VzdGlvbmFyIHByb3llY3RvcywgdGFyZWFzLCBlcXVpcG9zIHkgbcOpdHJpY2FzLiIKICAgICAgICBkZXZlbG9wZXIgPSBwZXJzb24gIkRldmVsb3BlciIgIk1pZW1icm8gZGVsIGVxdWlwbyBxdWUgY29uc3VsdGEgeSBhY3R1YWxpemEgdGFyZWFzLiIKCiAgICAgICAgb3JhY2xlSmF2YUJvdCA9IHNvZnR3YXJlU3lzdGVtICJPcmFjbGUgSmF2YSBCb3QiICJTaXN0ZW1hIGNsb3VkLW5hdGl2ZSBwYXJhIGdlc3Rpw7NuIGRlIHByb3llY3RvcywgdGFyZWFzLCBLUElzLCBub3RpZmljYWNpb25lcyBlIElBLiIKCiAgICAgICAgbWFuYWdlciAtPiBvcmFjbGVKYXZhQm90ICJHZXN0aW9uYSBwcm95ZWN0b3MsIHRhcmVhcywgZG9jdW1lbnRvcywgbcOpdHJpY2FzIHkgZGV0ZWNjacOzbiBkZSBkdXBsaWNhZG9zIgogICAgICAgIGRldmVsb3BlciAtPiBvcmFjbGVKYXZhQm90ICJDb25zdWx0YSB5IGFjdHVhbGl6YSB0YXJlYXMgZGVzZGUgbGEgV2ViIG8gVGVsZWdyYW0iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgb3JhY2xlSmF2YUJvdCAiU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgdGhlbWUgZGVmYXVsdAogICAgfQp9",
+    "structurizr.inspection.info" : "0",
+    "structurizr.inspection.ignore" : "0",
+    "structurizr.inspection.warning" : "0"
+  },
+  "views" : {
+    "configuration" : {
+      "styles" : { },
+      "terminology" : { },
+      "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
+    },
+    "systemContextViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "3",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: Oracle Java Bot",
+      "order" : 1,
+      "relationships" : [ {
+        "id" : "4"
+      }, {
+        "id" : "5"
+      } ],
+      "softwareSystemId" : "3"
+    } ]
+  }
+}
