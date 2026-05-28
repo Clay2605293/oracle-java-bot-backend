@@ -51,6 +51,26 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
             telegramBotService = container "Telegram Bot Service" "Servicio Java/Spring Boot separado del backend principal. Atiende webhooks de Telegram, resuelve comandos conversacionales y coordina notificaciones." "Java / Spring Boot" {
                 tags "Application"
+
+                telegramWebhookComponent = component "Telegram Webhook Component" "Recibe actualizaciones de Telegram mediante webhook y las traduce a solicitudes internas del bot." "Spring MVC Controller"
+
+                botCommandParserComponent = component "Bot Command Parser Component" "Interpreta comandos, mensajes y callbacks enviados por usuarios desde Telegram." "Spring Service"
+
+                botConversationStateComponent = component "Conversation State Component" "Administra estado conversacional para flujos guiados de proyectos y tareas." "Spring Service"
+
+                botProjectFlowComponent = component "Project Flow Component" "Orquesta comandos relacionados con consulta y selección de proyectos." "Spring Service"
+
+                botTaskFlowComponent = component "Task Flow Component" "Orquesta comandos relacionados con consulta, actualización y seguimiento de tareas." "Spring Service"
+
+                botUserResolutionComponent = component "Bot User Resolution Component" "Resuelve la identidad Telegram del usuario contra usuarios registrados del sistema." "Spring Service"
+
+                botKeyboardComponent = component "Bot Keyboard Component" "Construye teclados, opciones y respuestas interactivas para Telegram." "Spring Service"
+
+                botNotificationComponent = component "Bot Notification Component" "Prepara y envía notificaciones de eventos de tarea hacia usuarios de Telegram." "Spring Service"
+
+                telegramApiClientComponent = component "Telegram API Client Component" "Invoca la API de Telegram para enviar mensajes, respuestas y notificaciones." "Telegram Bot API Client"
+
+                botMessagingComponent = component "Bot Messaging Component" "Publica y consume eventos Kafka relacionados con notificaciones y eventos de tarea." "Spring Kafka Producer / Consumer"
             }
 
             aiService = container "AI Service" "Microservicio Python encargado de parsear documentos, invocar OpenAI y generar tareas sugeridas para backlog." "Python / FastAPI" {
@@ -228,6 +248,37 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         messagingComponent -> kafkaCluster "Publica y consume eventos" "Kafka"
         
         // =========================================================
+        // Relaciones internas del Telegram Bot Service
+        // =========================================================
+
+        telegram -> telegramWebhookComponent "Envía updates mediante webhook" "HTTPS"
+
+        telegramWebhookComponent -> botCommandParserComponent "Entrega mensajes y callbacks para interpretación"
+        botCommandParserComponent -> botConversationStateComponent "Consulta y actualiza estado conversacional"
+        botCommandParserComponent -> botUserResolutionComponent "Solicita resolución de identidad Telegram"
+
+        botUserResolutionComponent -> backend "Consulta usuario registrado por telegramId" "HTTPS / JSON"
+
+        botCommandParserComponent -> botProjectFlowComponent "Dirige comandos de proyectos"
+        botCommandParserComponent -> botTaskFlowComponent "Dirige comandos de tareas"
+
+        botProjectFlowComponent -> backend "Consulta proyectos disponibles para el usuario" "HTTPS / JSON"
+        botTaskFlowComponent -> backend "Consulta y actualiza tareas" "HTTPS / JSON"
+
+        botProjectFlowComponent -> botKeyboardComponent "Solicita opciones interactivas de proyectos"
+        botTaskFlowComponent -> botKeyboardComponent "Solicita opciones interactivas de tareas"
+
+        botProjectFlowComponent -> telegramApiClientComponent "Envía respuestas de proyectos"
+        botTaskFlowComponent -> telegramApiClientComponent "Envía respuestas de tareas"
+        botNotificationComponent -> telegramApiClientComponent "Envía notificaciones de eventos"
+
+        telegramApiClientComponent -> telegram "Envía mensajes mediante Telegram Bot API" "HTTPS"
+
+        botMessagingComponent -> kafkaCluster "Consume eventos de tarea y notificación" "Kafka"
+        botMessagingComponent -> botNotificationComponent "Entrega eventos que requieren notificación"
+        botNotificationComponent -> botUserResolutionComponent "Resuelve destinatarios Telegram"
+
+        // =========================================================
         // Relaciones DevOps
         // =========================================================
 
@@ -308,6 +359,13 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         component backend "BackendComponents" {
             title "Component Diagram - Spring Boot Backend"
             description "Vista interna del backend Spring Boot, basada en los componentes identificados por Event Storming y reflejados en la estructura por features del repositorio."
+            include *
+            autolayout lr
+        }
+
+        component telegramBotService "TelegramBotComponents" {
+            title "Component Diagram - Telegram Bot Service"
+            description "Vista interna del Telegram Bot Service objetivo, separado del backend principal y basado en webhook para soportar despliegues replicados."
             include *
             autolayout lr
         }
