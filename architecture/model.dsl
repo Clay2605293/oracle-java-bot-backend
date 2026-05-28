@@ -23,6 +23,8 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
         oracleJavaBot = softwareSystem "Oracle Java Bot" "Sistema cloud-native para gestión de proyectos, tareas, KPIs, notificaciones, generación de backlog asistida por IA y detección semántica de duplicados." {
 
+            !adrs doc/arch
+
             nginxIngress = container "Nginx / Ingress Controller" "Punto de entrada interno que enruta tráfico hacia la versión activa del backend y soporta la estrategia Blue/Green." "Nginx / Kubernetes Ingress" {
                 tags "Gateway"
             }
