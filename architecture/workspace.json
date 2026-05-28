@@ -3,25 +3,25 @@
   "description" : "Modelo C4 de arquitectura objetivo para Oracle Java Bot.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2026-05-28T00:52:32Z",
+  "lastModifiedDate" : "2026-05-28T01:34:21Z",
   "model" : {
     "people" : [ {
-      "description" : "Responsable de gestionar proyectos, tareas, equipos y métricas.",
+      "description" : "Responsable de gestionar proyectos, equipos, tareas, documentos, métricas y análisis de duplicados.",
       "id" : "1",
       "name" : "Manager",
       "properties" : {
         "structurizr.dsl.identifier" : "manager"
       },
       "relationships" : [ {
-        "description" : "Gestiona proyectos, tareas, documentos, métricas y detección de duplicados",
-        "destinationId" : "3",
-        "id" : "4",
+        "description" : "Gestiona proyectos, equipos, tareas, documentos, KPIs y análisis de duplicados",
+        "destinationId" : "4",
+        "id" : "15",
         "sourceId" : "1",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Person"
     }, {
-      "description" : "Miembro del equipo que consulta y actualiza tareas.",
+      "description" : "Miembro del equipo de desarrollo que consulta tareas, actualiza avances y recibe notificaciones.",
       "id" : "2",
       "name" : "Developer",
       "properties" : {
@@ -29,35 +29,260 @@
       },
       "relationships" : [ {
         "description" : "Consulta y actualiza tareas desde la Web o Telegram",
-        "destinationId" : "3",
-        "id" : "5",
+        "destinationId" : "4",
+        "id" : "16",
         "sourceId" : "2",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Envía comandos y recibe notificaciones",
+        "destinationId" : "12",
+        "id" : "17",
+        "sourceId" : "2",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Person"
+    }, {
+      "description" : "Responsable de operar los pipelines, despliegues, quality gates e infraestructura cloud.",
+      "id" : "3",
+      "name" : "DevOps Engineer",
+      "properties" : {
+        "structurizr.dsl.identifier" : "devopsEngineer"
+      },
+      "relationships" : [ {
+        "description" : "Mantiene repositorios y revisa cambios",
+        "destinationId" : "5",
+        "id" : "18",
+        "sourceId" : "3",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Supervisa pipelines y despliegues",
+        "destinationId" : "7",
+        "id" : "19",
+        "sourceId" : "3",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Person"
     } ],
     "softwareSystems" : [ {
-      "description" : "Sistema cloud-native para gestión de proyectos, tareas, KPIs, notificaciones e IA.",
+      "description" : "Sistema cloud-native para gestión de proyectos, tareas, KPIs, notificaciones, generación de backlog asistida por IA y detección semántica de duplicados.",
       "documentation" : { },
-      "id" : "3",
+      "id" : "4",
       "name" : "Oracle Java Bot",
       "properties" : {
         "structurizr.dsl.identifier" : "oracleJavaBot"
       },
+      "relationships" : [ {
+        "description" : "Envía y recibe mensajes mediante webhook",
+        "destinationId" : "12",
+        "id" : "20",
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Solicita generación de tareas sugeridas",
+        "destinationId" : "13",
+        "id" : "21",
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Lee y escribe datos transaccionales, embeddings y resultados de vector search",
+        "destinationId" : "10",
+        "id" : "22",
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Almacena y recupera documentos de proyecto",
+        "destinationId" : "11",
+        "id" : "23",
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Genera tickets ante fallas del quality gate",
+        "destinationId" : "14",
+        "id" : "24",
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Se ejecuta como servicios contenerizados en producción",
+        "destinationId" : "9",
+        "id" : "25",
+        "sourceId" : "4",
+        "tags" : "Relationship"
+      } ],
       "tags" : "Element,Software System"
+    }, {
+      "description" : "Hospeda los repositorios separados de backend, frontend, testing y AI service.",
+      "documentation" : { },
+      "id" : "5",
+      "name" : "GitHub",
+      "properties" : {
+        "structurizr.dsl.identifier" : "github"
+      },
+      "relationships" : [ {
+        "description" : "Dispara workflows de integración",
+        "destinationId" : "6",
+        "id" : "26",
+        "sourceId" : "5",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Dispara pipelines por cambios en repositorios",
+        "destinationId" : "7",
+        "id" : "28",
+        "sourceId" : "5",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System,External System"
+    }, {
+      "description" : "Automatiza la construcción del frontend React/Vite y su integración hacia el backend.",
+      "documentation" : { },
+      "id" : "6",
+      "name" : "GitHub Actions",
+      "properties" : {
+        "structurizr.dsl.identifier" : "githubActions"
+      },
+      "relationships" : [ {
+        "description" : "Actualiza artefactos construidos del frontend hacia el backend",
+        "destinationId" : "5",
+        "id" : "27",
+        "sourceId" : "6",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System,External System"
+    }, {
+      "description" : "Ejecuta pipelines de build, despliegue, health checks, pruebas de regresión y promoción Blue/Green.",
+      "documentation" : { },
+      "id" : "7",
+      "name" : "OCI DevOps",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ociDevOps"
+      },
+      "relationships" : [ {
+        "description" : "Obtiene código fuente",
+        "destinationId" : "5",
+        "id" : "29",
+        "sourceId" : "7",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Construye y publica imágenes Docker",
+        "destinationId" : "8",
+        "id" : "30",
+        "sourceId" : "7",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Despliega versiones candidatas y promueve tráfico",
+        "destinationId" : "9",
+        "id" : "31",
+        "sourceId" : "7",
+        "tags" : "Relationship"
+      }, {
+        "description" : "Crea tickets cuando fallan pruebas o health checks",
+        "destinationId" : "14",
+        "id" : "33",
+        "sourceId" : "7",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System,Oracle Cloud"
+    }, {
+      "description" : "Almacena imágenes versionadas del backend, Telegram Bot Service, AI Service y componentes de soporte.",
+      "documentation" : { },
+      "id" : "8",
+      "name" : "OCI Container Registry",
+      "properties" : {
+        "structurizr.dsl.identifier" : "ocir"
+      },
+      "tags" : "Element,Software System,Oracle Cloud"
+    }, {
+      "description" : "Plataforma objetivo de ejecución en producción, distribuida en tres Fault Domains dentro de la OCI Región Querétaro.",
+      "documentation" : { },
+      "id" : "9",
+      "name" : "OCI Kubernetes Engine",
+      "properties" : {
+        "structurizr.dsl.identifier" : "oke"
+      },
+      "relationships" : [ {
+        "description" : "Obtiene imágenes de contenedor",
+        "destinationId" : "8",
+        "id" : "32",
+        "sourceId" : "9",
+        "tags" : "Relationship"
+      } ],
+      "tags" : "Element,Software System,Oracle Cloud"
+    }, {
+      "description" : "Base de datos principal del sistema. Mantiene datos transaccionales, embeddings vectoriales y resultados de búsqueda semántica.",
+      "documentation" : { },
+      "id" : "10",
+      "name" : "Oracle Database 26ai",
+      "properties" : {
+        "structurizr.dsl.identifier" : "oracleDb"
+      },
+      "tags" : "Element,Software System,Oracle Cloud"
+    }, {
+      "description" : "Almacena documentos de proyecto utilizados por los flujos de generación de backlog con IA.",
+      "documentation" : { },
+      "id" : "11",
+      "name" : "OCI Object Storage",
+      "properties" : {
+        "structurizr.dsl.identifier" : "objectStorage"
+      },
+      "tags" : "Element,Software System,Oracle Cloud"
+    }, {
+      "description" : "Canal externo para interacción conversacional y notificaciones hacia developers.",
+      "documentation" : { },
+      "id" : "12",
+      "name" : "Telegram Platform",
+      "properties" : {
+        "structurizr.dsl.identifier" : "telegram"
+      },
+      "tags" : "Element,Software System,External System"
+    }, {
+      "description" : "Servicio externo utilizado por el AI Service para generación de tareas sugeridas a partir de documentos.",
+      "documentation" : { },
+      "id" : "13",
+      "name" : "OpenAI API",
+      "properties" : {
+        "structurizr.dsl.identifier" : "openai"
+      },
+      "tags" : "Element,Software System,External System"
+    }, {
+      "description" : "Sistema externo donde se registran tickets cuando falla el quality gate del despliegue.",
+      "documentation" : { },
+      "id" : "14",
+      "name" : "Jira Service",
+      "properties" : {
+        "structurizr.dsl.identifier" : "jira"
+      },
+      "tags" : "Element,Software System,External System"
     } ]
   },
   "name" : "Oracle Java Bot",
   "properties" : {
-    "structurizr.inspection.error" : "3",
-    "structurizr.dsl" : "d29ya3NwYWNlICJPcmFjbGUgSmF2YSBCb3QiICJNb2RlbG8gQzQgZGUgYXJxdWl0ZWN0dXJhIG9iamV0aXZvIHBhcmEgT3JhY2xlIEphdmEgQm90LiIgewoKICAgIG1vZGVsIHsKICAgICAgICBtYW5hZ2VyID0gcGVyc29uICJNYW5hZ2VyIiAiUmVzcG9uc2FibGUgZGUgZ2VzdGlvbmFyIHByb3llY3RvcywgdGFyZWFzLCBlcXVpcG9zIHkgbcOpdHJpY2FzLiIKICAgICAgICBkZXZlbG9wZXIgPSBwZXJzb24gIkRldmVsb3BlciIgIk1pZW1icm8gZGVsIGVxdWlwbyBxdWUgY29uc3VsdGEgeSBhY3R1YWxpemEgdGFyZWFzLiIKCiAgICAgICAgb3JhY2xlSmF2YUJvdCA9IHNvZnR3YXJlU3lzdGVtICJPcmFjbGUgSmF2YSBCb3QiICJTaXN0ZW1hIGNsb3VkLW5hdGl2ZSBwYXJhIGdlc3Rpw7NuIGRlIHByb3llY3RvcywgdGFyZWFzLCBLUElzLCBub3RpZmljYWNpb25lcyBlIElBLiIKCiAgICAgICAgbWFuYWdlciAtPiBvcmFjbGVKYXZhQm90ICJHZXN0aW9uYSBwcm95ZWN0b3MsIHRhcmVhcywgZG9jdW1lbnRvcywgbcOpdHJpY2FzIHkgZGV0ZWNjacOzbiBkZSBkdXBsaWNhZG9zIgogICAgICAgIGRldmVsb3BlciAtPiBvcmFjbGVKYXZhQm90ICJDb25zdWx0YSB5IGFjdHVhbGl6YSB0YXJlYXMgZGVzZGUgbGEgV2ViIG8gVGVsZWdyYW0iCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUNvbnRleHQgb3JhY2xlSmF2YUJvdCAiU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgdGhlbWUgZGVmYXVsdAogICAgfQp9",
+    "structurizr.inspection.error" : "20",
+    "structurizr.dsl" : "d29ya3NwYWNlICJPcmFjbGUgSmF2YSBCb3QiICJNb2RlbG8gQzQgZGUgYXJxdWl0ZWN0dXJhIG9iamV0aXZvIHBhcmEgT3JhY2xlIEphdmEgQm90LiIgewoKICAgIG1vZGVsIHsKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBQZXJzb25hcwogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBtYW5hZ2VyID0gcGVyc29uICJNYW5hZ2VyIiAiUmVzcG9uc2FibGUgZGUgZ2VzdGlvbmFyIHByb3llY3RvcywgZXF1aXBvcywgdGFyZWFzLCBkb2N1bWVudG9zLCBtw6l0cmljYXMgeSBhbsOhbGlzaXMgZGUgZHVwbGljYWRvcy4iCiAgICAgICAgZGV2ZWxvcGVyID0gcGVyc29uICJEZXZlbG9wZXIiICJNaWVtYnJvIGRlbCBlcXVpcG8gZGUgZGVzYXJyb2xsbyBxdWUgY29uc3VsdGEgdGFyZWFzLCBhY3R1YWxpemEgYXZhbmNlcyB5IHJlY2liZSBub3RpZmljYWNpb25lcy4iCiAgICAgICAgZGV2b3BzRW5naW5lZXIgPSBwZXJzb24gIkRldk9wcyBFbmdpbmVlciIgIlJlc3BvbnNhYmxlIGRlIG9wZXJhciBsb3MgcGlwZWxpbmVzLCBkZXNwbGllZ3VlcywgcXVhbGl0eSBnYXRlcyBlIGluZnJhZXN0cnVjdHVyYSBjbG91ZC4iCgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFNpc3RlbWEgcHJpbmNpcGFsCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIG9yYWNsZUphdmFCb3QgPSBzb2Z0d2FyZVN5c3RlbSAiT3JhY2xlIEphdmEgQm90IiAiU2lzdGVtYSBjbG91ZC1uYXRpdmUgcGFyYSBnZXN0acOzbiBkZSBwcm95ZWN0b3MsIHRhcmVhcywgS1BJcywgbm90aWZpY2FjaW9uZXMsIGdlbmVyYWNpw7NuIGRlIGJhY2tsb2cgYXNpc3RpZGEgcG9yIElBIHkgZGV0ZWNjacOzbiBzZW3DoW50aWNhIGRlIGR1cGxpY2Fkb3MuIgoKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBTaXN0ZW1hcyBleHRlcm5vcyB5IHBsYXRhZm9ybWFzIGRlIHNvcG9ydGUKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCiAgICAgICAgZ2l0aHViID0gc29mdHdhcmVTeXN0ZW0gIkdpdEh1YiIgIkhvc3BlZGEgbG9zIHJlcG9zaXRvcmlvcyBzZXBhcmFkb3MgZGUgYmFja2VuZCwgZnJvbnRlbmQsIHRlc3RpbmcgeSBBSSBzZXJ2aWNlLiIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCBTeXN0ZW0iCiAgICAgICAgfQoKICAgICAgICBnaXRodWJBY3Rpb25zID0gc29mdHdhcmVTeXN0ZW0gIkdpdEh1YiBBY3Rpb25zIiAiQXV0b21hdGl6YSBsYSBjb25zdHJ1Y2Npw7NuIGRlbCBmcm9udGVuZCBSZWFjdC9WaXRlIHkgc3UgaW50ZWdyYWNpw7NuIGhhY2lhIGVsIGJhY2tlbmQuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIFN5c3RlbSIKICAgICAgICB9CgogICAgICAgIG9jaURldk9wcyA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgRGV2T3BzIiAiRWplY3V0YSBwaXBlbGluZXMgZGUgYnVpbGQsIGRlc3BsaWVndWUsIGhlYWx0aCBjaGVja3MsIHBydWViYXMgZGUgcmVncmVzacOzbiB5IHByb21vY2nDs24gQmx1ZS9HcmVlbi4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb2NpciA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgQ29udGFpbmVyIFJlZ2lzdHJ5IiAiQWxtYWNlbmEgaW3DoWdlbmVzIHZlcnNpb25hZGFzIGRlbCBiYWNrZW5kLCBUZWxlZ3JhbSBCb3QgU2VydmljZSwgQUkgU2VydmljZSB5IGNvbXBvbmVudGVzIGRlIHNvcG9ydGUuIiB7CiAgICAgICAgICAgIHRhZ3MgIk9yYWNsZSBDbG91ZCIKICAgICAgICB9CgogICAgICAgIG9rZSA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgS3ViZXJuZXRlcyBFbmdpbmUiICJQbGF0YWZvcm1hIG9iamV0aXZvIGRlIGVqZWN1Y2nDs24gZW4gcHJvZHVjY2nDs24sIGRpc3RyaWJ1aWRhIGVuIHRyZXMgRmF1bHQgRG9tYWlucyBkZW50cm8gZGUgbGEgT0NJIFJlZ2nDs24gUXVlcsOpdGFyby4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb3JhY2xlRGIgPSBzb2Z0d2FyZVN5c3RlbSAiT3JhY2xlIERhdGFiYXNlIDI2YWkiICJCYXNlIGRlIGRhdG9zIHByaW5jaXBhbCBkZWwgc2lzdGVtYS4gTWFudGllbmUgZGF0b3MgdHJhbnNhY2Npb25hbGVzLCBlbWJlZGRpbmdzIHZlY3RvcmlhbGVzIHkgcmVzdWx0YWRvcyBkZSBiw7pzcXVlZGEgc2Vtw6FudGljYS4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb2JqZWN0U3RvcmFnZSA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgT2JqZWN0IFN0b3JhZ2UiICJBbG1hY2VuYSBkb2N1bWVudG9zIGRlIHByb3llY3RvIHV0aWxpemFkb3MgcG9yIGxvcyBmbHVqb3MgZGUgZ2VuZXJhY2nDs24gZGUgYmFja2xvZyBjb24gSUEuIiB7CiAgICAgICAgICAgIHRhZ3MgIk9yYWNsZSBDbG91ZCIKICAgICAgICB9CgogICAgICAgIHRlbGVncmFtID0gc29mdHdhcmVTeXN0ZW0gIlRlbGVncmFtIFBsYXRmb3JtIiAiQ2FuYWwgZXh0ZXJubyBwYXJhIGludGVyYWNjacOzbiBjb252ZXJzYWNpb25hbCB5IG5vdGlmaWNhY2lvbmVzIGhhY2lhIGRldmVsb3BlcnMuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIFN5c3RlbSIKICAgICAgICB9CgogICAgICAgIG9wZW5haSA9IHNvZnR3YXJlU3lzdGVtICJPcGVuQUkgQVBJIiAiU2VydmljaW8gZXh0ZXJubyB1dGlsaXphZG8gcG9yIGVsIEFJIFNlcnZpY2UgcGFyYSBnZW5lcmFjacOzbiBkZSB0YXJlYXMgc3VnZXJpZGFzIGEgcGFydGlyIGRlIGRvY3VtZW50b3MuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIFN5c3RlbSIKICAgICAgICB9CgogICAgICAgIGppcmEgPSBzb2Z0d2FyZVN5c3RlbSAiSmlyYSBTZXJ2aWNlIiAiU2lzdGVtYSBleHRlcm5vIGRvbmRlIHNlIHJlZ2lzdHJhbiB0aWNrZXRzIGN1YW5kbyBmYWxsYSBlbCBxdWFsaXR5IGdhdGUgZGVsIGRlc3BsaWVndWUuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIFN5c3RlbSIKICAgICAgICB9CgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFJlbGFjaW9uZXMgZGUgbmVnb2NpbyB5IHVzbwogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBtYW5hZ2VyIC0+IG9yYWNsZUphdmFCb3QgIkdlc3Rpb25hIHByb3llY3RvcywgZXF1aXBvcywgdGFyZWFzLCBkb2N1bWVudG9zLCBLUElzIHkgYW7DoWxpc2lzIGRlIGR1cGxpY2Fkb3MiCiAgICAgICAgZGV2ZWxvcGVyIC0+IG9yYWNsZUphdmFCb3QgIkNvbnN1bHRhIHkgYWN0dWFsaXphIHRhcmVhcyBkZXNkZSBsYSBXZWIgbyBUZWxlZ3JhbSIKICAgICAgICBkZXZlbG9wZXIgLT4gdGVsZWdyYW0gIkVudsOtYSBjb21hbmRvcyB5IHJlY2liZSBub3RpZmljYWNpb25lcyIKICAgICAgICBkZXZvcHNFbmdpbmVlciAtPiBnaXRodWIgIk1hbnRpZW5lIHJlcG9zaXRvcmlvcyB5IHJldmlzYSBjYW1iaW9zIgogICAgICAgIGRldm9wc0VuZ2luZWVyIC0+IG9jaURldk9wcyAiU3VwZXJ2aXNhIHBpcGVsaW5lcyB5IGRlc3BsaWVndWVzIgoKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBSZWxhY2lvbmVzIGRlbCBzaXN0ZW1hIHByaW5jaXBhbAogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IHRlbGVncmFtICJFbnbDrWEgeSByZWNpYmUgbWVuc2FqZXMgbWVkaWFudGUgd2ViaG9vayIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9wZW5haSAiU29saWNpdGEgZ2VuZXJhY2nDs24gZGUgdGFyZWFzIHN1Z2VyaWRhcyIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9yYWNsZURiICJMZWUgeSBlc2NyaWJlIGRhdG9zIHRyYW5zYWNjaW9uYWxlcywgZW1iZWRkaW5ncyB5IHJlc3VsdGFkb3MgZGUgdmVjdG9yIHNlYXJjaCIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9iamVjdFN0b3JhZ2UgIkFsbWFjZW5hIHkgcmVjdXBlcmEgZG9jdW1lbnRvcyBkZSBwcm95ZWN0byIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IGppcmEgIkdlbmVyYSB0aWNrZXRzIGFudGUgZmFsbGFzIGRlbCBxdWFsaXR5IGdhdGUiCiAgICAgICAgb3JhY2xlSmF2YUJvdCAtPiBva2UgIlNlIGVqZWN1dGEgY29tbyBzZXJ2aWNpb3MgY29udGVuZXJpemFkb3MgZW4gcHJvZHVjY2nDs24iCgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFJlbGFjaW9uZXMgRGV2T3BzCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIGdpdGh1YiAtPiBnaXRodWJBY3Rpb25zICJEaXNwYXJhIHdvcmtmbG93cyBkZSBpbnRlZ3JhY2nDs24iCiAgICAgICAgZ2l0aHViQWN0aW9ucyAtPiBnaXRodWIgIkFjdHVhbGl6YSBhcnRlZmFjdG9zIGNvbnN0cnVpZG9zIGRlbCBmcm9udGVuZCBoYWNpYSBlbCBiYWNrZW5kIgogICAgICAgIGdpdGh1YiAtPiBvY2lEZXZPcHMgIkRpc3BhcmEgcGlwZWxpbmVzIHBvciBjYW1iaW9zIGVuIHJlcG9zaXRvcmlvcyIKICAgICAgICBvY2lEZXZPcHMgLT4gZ2l0aHViICJPYnRpZW5lIGPDs2RpZ28gZnVlbnRlIgogICAgICAgIG9jaURldk9wcyAtPiBvY2lyICJDb25zdHJ1eWUgeSBwdWJsaWNhIGltw6FnZW5lcyBEb2NrZXIiCiAgICAgICAgb2NpRGV2T3BzIC0+IG9rZSAiRGVzcGxpZWdhIHZlcnNpb25lcyBjYW5kaWRhdGFzIHkgcHJvbXVldmUgdHLDoWZpY28iCiAgICAgICAgb2tlIC0+IG9jaXIgIk9idGllbmUgaW3DoWdlbmVzIGRlIGNvbnRlbmVkb3IiCiAgICAgICAgb2NpRGV2T3BzIC0+IGppcmEgIkNyZWEgdGlja2V0cyBjdWFuZG8gZmFsbGFuIHBydWViYXMgbyBoZWFsdGggY2hlY2tzIgogICAgfQoKICAgIHZpZXdzIHsKICAgICAgICBzeXN0ZW1MYW5kc2NhcGUgIlN5c3RlbUxhbmRzY2FwZSIgewogICAgICAgICAgICB0aXRsZSAiU3lzdGVtIExhbmRzY2FwZSAtIEVjb3Npc3RlbWEgT3JhY2xlIEphdmEgQm90IgogICAgICAgICAgICBkZXNjcmlwdGlvbiAiVmlzdGEgZ2VuZXJhbCBkZWwgZWNvc2lzdGVtYSBkZSBzaXN0ZW1hcywgcGxhdGFmb3JtYXMgeSBhY3RvcmVzIHF1ZSBpbnRlcmFjdMO6YW4gY29uIE9yYWNsZSBKYXZhIEJvdC4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBzeXN0ZW1Db250ZXh0IG9yYWNsZUphdmFCb3QgIlN5c3RlbUNvbnRleHQiIHsKICAgICAgICAgICAgdGl0bGUgIlN5c3RlbSBDb250ZXh0IC0gT3JhY2xlIEphdmEgQm90IgogICAgICAgICAgICBkZXNjcmlwdGlvbiAiVmlzdGEgZGUgY29udGV4dG8gZGVsIHNpc3RlbWEgT3JhY2xlIEphdmEgQm90LCBzdXMgdXN1YXJpb3MgcHJpbmNpcGFsZXMgeSBkZXBlbmRlbmNpYXMgZXh0ZXJuYXMuIgogICAgICAgICAgICBpbmNsdWRlICoKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgc3R5bGVzIHsKICAgICAgICAgICAgZWxlbWVudCAiUGVyc29uIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBwZXJzb24KICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzA4NDI3QgogICAgICAgICAgICAgICAgY29sb3IgI0ZGRkZGRgogICAgICAgICAgICB9CgogICAgICAgICAgICBlbGVtZW50ICJTb2Z0d2FyZSBTeXN0ZW0iIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzExNjhCRAogICAgICAgICAgICAgICAgY29sb3IgI0ZGRkZGRgogICAgICAgICAgICB9CgogICAgICAgICAgICBlbGVtZW50ICJFeHRlcm5hbCBTeXN0ZW0iIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgIzk5OTk5OQogICAgICAgICAgICAgICAgY29sb3IgI0ZGRkZGRgogICAgICAgICAgICB9CgogICAgICAgICAgICBlbGVtZW50ICJPcmFjbGUgQ2xvdWQiIHsKICAgICAgICAgICAgICAgIGJhY2tncm91bmQgI0M3NDYzNAogICAgICAgICAgICAgICAgY29sb3IgI0ZGRkZGRgogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICB0aGVtZSBkZWZhdWx0CiAgICB9Cn0=",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "0",
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
     "configuration" : {
-      "styles" : { },
+      "styles" : {
+        "elements" : [ {
+          "background" : "#999999",
+          "color" : "#ffffff",
+          "tag" : "External System"
+        }, {
+          "background" : "#c74634",
+          "color" : "#ffffff",
+          "tag" : "Oracle Cloud"
+        }, {
+          "background" : "#08427b",
+          "color" : "#ffffff",
+          "shape" : "Person",
+          "tag" : "Person"
+        }, {
+          "background" : "#1168bd",
+          "color" : "#ffffff",
+          "tag" : "Software System"
+        } ]
+      },
       "terminology" : { },
       "themes" : [ "https://static.structurizr.com/themes/default/theme.json" ]
     },
@@ -69,6 +294,79 @@
         "rankSeparation" : 100,
         "vertices" : true
       },
+      "description" : "Vista de contexto del sistema Oracle Java Bot, sus usuarios principales y dependencias externas.",
+      "elements" : [ {
+        "id" : "1",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "2",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "enterpriseBoundaryVisible" : true,
+      "key" : "SystemContext",
+      "name" : "System Context View: Oracle Java Bot",
+      "order" : 2,
+      "relationships" : [ {
+        "id" : "15"
+      }, {
+        "id" : "16"
+      }, {
+        "id" : "17"
+      }, {
+        "id" : "20"
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "22"
+      }, {
+        "id" : "23"
+      }, {
+        "id" : "24"
+      }, {
+        "id" : "25"
+      } ],
+      "softwareSystemId" : "4",
+      "title" : "System Context - Oracle Java Bot"
+    } ],
+    "systemLandscapeViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "description" : "Vista general del ecosistema de sistemas, plataformas y actores que interactúan con Oracle Java Bot.",
       "elements" : [ {
         "id" : "1",
         "x" : 0,
@@ -81,17 +379,95 @@
         "id" : "3",
         "x" : 0,
         "y" : 0
+      }, {
+        "id" : "4",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "5",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "7",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
       } ],
       "enterpriseBoundaryVisible" : true,
-      "key" : "SystemContext",
-      "name" : "System Context View: Oracle Java Bot",
+      "key" : "SystemLandscape",
+      "name" : "System Landscape View",
       "order" : 1,
       "relationships" : [ {
-        "id" : "4"
+        "id" : "15"
       }, {
-        "id" : "5"
+        "id" : "16"
+      }, {
+        "id" : "17"
+      }, {
+        "id" : "18"
+      }, {
+        "id" : "19"
+      }, {
+        "id" : "20"
+      }, {
+        "id" : "21"
+      }, {
+        "id" : "22"
+      }, {
+        "id" : "23"
+      }, {
+        "id" : "24"
+      }, {
+        "id" : "25"
+      }, {
+        "id" : "26"
+      }, {
+        "id" : "27"
+      }, {
+        "id" : "28"
+      }, {
+        "id" : "29"
+      }, {
+        "id" : "30"
+      }, {
+        "id" : "31"
+      }, {
+        "id" : "32"
+      }, {
+        "id" : "33"
       } ],
-      "softwareSystemId" : "3"
+      "title" : "System Landscape - Ecosistema Oracle Java Bot"
     } ]
   }
 }
