@@ -326,6 +326,80 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         ociDevOps -> oke "Despliega versiones candidatas y promueve tráfico"
         oke -> ocir "Obtiene imágenes de contenedor"
         ociDevOps -> jira "Crea tickets cuando fallan pruebas o health checks"
+        ociDevOps -> cicdOrchestrator "Ejecuta orquestación de despliegue, health checks, pruebas y promoción Blue/Green"
+        cicdOrchestrator -> ocir "Publica o valida imágenes Docker versionadas"
+        cicdOrchestrator -> oke "Despliega versión candidata en OKE"
+        regressionTestRunner -> backend "Valida endpoints críticos del backend candidato"
+
+        // =========================================================
+        // Deployment Environment
+        // =========================================================
+
+        production = deploymentEnvironment "Produccion" {
+            deploymentNode "OCI Región Querétaro" "Región cloud donde se despliega la arquitectura objetivo de producción." "Oracle Cloud Infrastructure" {
+                tags "Oracle Cloud"
+
+                infrastructureNode "OCI Load Balancer" "Expone el punto de entrada público del sistema y distribuye tráfico hacia el Ingress Controller." "OCI Load Balancer" {
+                    tags "Gateway"
+                }
+
+                deploymentNode "OKE Cluster" "Cluster Kubernetes de producción para ejecutar los servicios contenerizados de Oracle Java Bot." "OCI Kubernetes Engine" {
+                    tags "Oracle Cloud"
+
+                    deploymentNode "Fault Domain 1" "Fault Domain 1 dentro del Availability Domain de producción." "OCI Fault Domain" {
+                        deploymentNode "Worker Node FD1" "Nodo worker de Kubernetes en FD1." "OKE Worker Node" {
+                            containerInstance nginxIngress
+                            containerInstance backend
+                            containerInstance telegramBotService
+                            containerInstance aiService
+                            containerInstance kafkaCluster
+                            containerInstance zookeeperEnsemble
+                        }
+                    }
+
+                    deploymentNode "Fault Domain 2" "Fault Domain 2 dentro del Availability Domain de producción." "OCI Fault Domain" {
+                        deploymentNode "Worker Node FD2" "Nodo worker de Kubernetes en FD2." "OKE Worker Node" {
+                            containerInstance nginxIngress
+                            containerInstance backend
+                            containerInstance telegramBotService
+                            containerInstance aiService
+                            containerInstance kafkaCluster
+                            containerInstance zookeeperEnsemble
+                        }
+                    }
+
+                    deploymentNode "Fault Domain 3" "Fault Domain 3 dentro del Availability Domain de producción." "OCI Fault Domain" {
+                        deploymentNode "Worker Node FD3" "Nodo worker de Kubernetes en FD3." "OKE Worker Node" {
+                            containerInstance nginxIngress
+                            containerInstance backend
+                            containerInstance telegramBotService
+                            containerInstance aiService
+                            containerInstance kafkaCluster
+                            containerInstance zookeeperEnsemble
+                        }
+                    }
+                }
+
+                deploymentNode "Oracle Database 26ai Service" "Servicio administrado de Oracle Database 26ai usado para persistencia y vector search." "Oracle Database 26ai" {
+                    tags "Database"
+                    containerInstance database
+                }
+
+                deploymentNode "OCI Object Storage Service" "Servicio administrado para documentos de proyecto." "OCI Object Storage" {
+                    tags "Storage"
+                    containerInstance objectStorageContainer
+                }
+
+                deploymentNode "OCI DevOps Service" "Servicio administrado para pipelines de build, testing y deployment." "OCI DevOps" {
+                    tags "DevOps"
+                    containerInstance cicdOrchestrator
+                }
+
+                deploymentNode "OCI Container Registry" "Registry de imágenes Docker usadas por OKE." "OCIR" {
+                    tags "DevOps"
+                }
+            }
+        }
     }
 
     views {
@@ -412,6 +486,35 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             include *
             autolayout lr
         }
+
+        deployment oracleJavaBot "Produccion" "DeploymentProduction" {
+            title "Deployment Diagram - Producción en OCI Región Querétaro"
+            description "Vista de despliegue objetivo en OCI Kubernetes Engine, distribuida en tres Fault Domains y preparada para Blue/Green deployment."
+            include *
+            autolayout lr
+        }
+
+        dynamic oracleJavaBot "DynamicBlueGreenDeployment" {
+            title "Dynamic Diagram - Blue/Green Deployment con Quality Gates"
+            description "Secuencia de despliegue continuo: commit, build, publicación de imagen, despliegue candidato, validación, pruebas de regresión, promoción de tráfico y creación de ticket Jira ante fallas."
+
+            devopsEngineer -> github "1. Realiza push o merge a una rama protegida"
+            github -> githubActions "2. Dispara workflow de integración del frontend"
+            githubActions -> github "3. Publica assets React/Vite construidos hacia el repositorio backend"
+            github -> ociDevOps "4. Dispara pipeline de OCI DevOps"
+            ociDevOps -> github "5. Obtiene código fuente actualizado"
+            ociDevOps -> ocir "6. Construye y publica imagen Docker versionada"
+            ociDevOps -> oke "7. Despliega versión candidata en OKE"
+            oke -> ocir "8. Descarga imagen candidata"
+            ociDevOps -> cicdOrchestrator "9. Ejecuta orquestación de despliegue y validación"
+            cicdOrchestrator -> regressionTestRunner "10. Ejecuta health checks y pruebas de regresión"
+            regressionTestRunner -> backend "11. Valida endpoints críticos del backend candidato"
+            cicdOrchestrator -> nginxIngress "12. Si el quality gate pasa, promueve tráfico hacia el color candidato"
+            cicdOrchestrator -> jira "13. Si el quality gate falla, registra ticket con evidencia accionable"
+
+            autolayout lr
+        }
+
 
         styles {
             element "Person" {
