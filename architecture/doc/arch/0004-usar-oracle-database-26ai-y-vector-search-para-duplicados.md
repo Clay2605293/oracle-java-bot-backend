@@ -1,74 +1,79 @@
 # 4. Usar Oracle Database 26ai y Vector Search para duplicados
 
-Fecha: 2026-05-27
+Date: 2026-05-28
 
-## Estado
+## Status
 
-Aceptada
+Accepted
 
-## Contexto
+## Context
 
 Oracle Java Bot debe ayudar al manager a mejorar la calidad del backlog detectando tareas potencialmente duplicadas dentro de un proyecto.
 
-Inicialmente, la detección de duplicados podía resolverse mediante un microservicio externo de IA o mediante comparación semántica fuera de la base de datos. Sin embargo, el sistema ya utiliza Oracle Database como fuente principal de verdad y la arquitectura objetivo busca aprovechar capacidades nativas de Oracle para reducir acoplamiento, mejorar trazabilidad y mantener los resultados dentro del ecosistema de datos principal.
+Inicialmente, la detección de duplicados se implementó mediante servicios externos de inteligencia artificial y análisis semántico fuera de la base de datos. Sin embargo, el sistema utiliza Oracle Database como fuente principal de verdad y la arquitectura objetivo busca aprovechar capacidades nativas de Oracle para reducir acoplamiento, mejorar trazabilidad y mantener los resultados dentro del ecosistema principal de datos.
 
 La base de datos actual incluye estructuras especializadas para embeddings y resultados de detección vectorial, entre ellas:
 
-- `TASK_VECTOR_EMBEDDING`
-- `AI_VECTOR_DUP_DETECTION_RUN`
-- `AI_VECTOR_DUP_RESULT`
+* `TASK_VECTOR_EMBEDDING`
+* `AI_VECTOR_DUP_DETECTION_RUN`
+* `AI_VECTOR_DUP_RESULT`
 
-La tabla `TASK_VECTOR_EMBEDDING` almacena embeddings asociados a tareas y proyectos. Las tablas `AI_VECTOR_DUP_DETECTION_RUN` y `AI_VECTOR_DUP_RESULT` permiten registrar ejecuciones de análisis, parámetros, estado, resultados, similitud y distancia.
+La tabla `TASK_VECTOR_EMBEDDING` almacena embeddings asociados a tareas y proyectos. Las tablas `AI_VECTOR_DUP_DETECTION_RUN` y `AI_VECTOR_DUP_RESULT` permiten registrar ejecuciones de análisis, parámetros, estado, resultados, similitud y distancia entre tareas.
 
-## Decisión
+El sistema requiere una solución capaz de identificar similitud semántica entre tareas aun cuando se utilicen diferentes palabras o estructuras para describir el mismo trabajo.
 
-Se decide utilizar **Oracle Database 26ai** como motor principal de persistencia y análisis semántico para la detección de tareas duplicadas.
+## Decision
+
+Se decide utilizar **Oracle Database 26ai** como plataforma principal para almacenamiento de embeddings, búsqueda vectorial y persistencia de resultados relacionados con la detección de tareas duplicadas.
 
 La detección de duplicados se basará en:
 
-1. Generación o actualización de embeddings vectoriales cuando una tarea se crea o modifica.
+1. Generación o actualización de embeddings cuando una tarea se crea o modifica.
 2. Persistencia de embeddings en `TASK_VECTOR_EMBEDDING`.
-3. Ejecución de búsqueda semántica usando Oracle Vector Search.
+3. Ejecución de búsquedas semánticas utilizando Oracle Vector Search.
 4. Registro de cada ejecución en `AI_VECTOR_DUP_DETECTION_RUN`.
 5. Registro de pares de tareas similares en `AI_VECTOR_DUP_RESULT`.
-6. Exposición de resultados al manager mediante el backend y el dashboard.
+6. Exposición de resultados mediante el backend y los dashboards del sistema.
 
-El AI Service en Python no será el motor principal de comparación para duplicados en la arquitectura objetivo. Su responsabilidad principal se mantiene en la generación de backlog asistida por IA a partir de documentos.
+El backend Spring Boot será responsable de orquestar el flujo completo de detección. El AI Service en Python dejará de ser el mecanismo principal para comparación semántica de duplicados y se enfocará principalmente en capacidades de generación asistida de backlog y procesamiento documental.
 
-## Consecuencias
+La arquitectura también deja abierta la posibilidad de migrar progresivamente la generación de embeddings hacia capacidades nativas de Oracle AI cuando dichas funcionalidades formen parte de la solución objetivo.
+
+## Consequences
 
 ### Positivas
 
-- Reduce dependencia de servicios externos para una capacidad crítica del sistema.
-- Mantiene embeddings, resultados y trazabilidad dentro de Oracle Database 26ai.
-- Permite consultar resultados históricos de detección por proyecto y ejecución.
-- Facilita auditoría, revisión y análisis posterior.
-- Disminuye movimiento de datos sensibles fuera de la base principal.
-- Alinea el proyecto con tecnologías Oracle, coherente con el contexto del producto.
-- Permite que el backend gestione el flujo completo de detección sin delegar comparación semántica a un servicio externo.
+* Reduce la dependencia de servicios externos para una capacidad crítica del sistema.
+* Mantiene embeddings, resultados y trazabilidad dentro de Oracle Database 26ai.
+* Permite consultar resultados históricos por proyecto y ejecución.
+* Facilita auditoría, revisión y análisis posterior de decisiones tomadas por el sistema.
+* Reduce movimiento innecesario de datos fuera de la base principal.
+* Alinea el proyecto con tecnologías Oracle, coherente con el contexto del producto.
+* Permite que el backend gestione el flujo completo de detección sin depender de un motor externo para cada análisis.
+* Simplifica la arquitectura al concentrar almacenamiento, búsqueda y resultados dentro de una misma plataforma.
 
 ### Negativas
 
-- Aumenta dependencia tecnológica hacia Oracle Database 26ai.
-- Requiere diseño cuidadoso de índices, tamaño de embeddings y umbrales de similitud.
-- El equipo debe entender operaciones vectoriales y sus implicaciones de rendimiento.
-- Cambios futuros en modelo de embeddings pueden requerir backfill o migraciones.
-- La generación de embeddings debe mantenerse consistente cuando se crean o modifican tareas.
+* Incrementa la dependencia tecnológica hacia Oracle Database 26ai.
+* Requiere diseño cuidadoso de índices vectoriales, dimensiones de embeddings y umbrales de similitud.
+* El equipo debe adquirir conocimientos sobre búsqueda vectorial y optimización de consultas semánticas.
+* Cambios futuros en modelos de embeddings pueden requerir reprocesamiento masivo de información.
+* La calidad de los resultados dependerá de la calidad y consistencia de los embeddings generados.
 
-## Alternativas consideradas
+### Alternativas consideradas
 
-### Detección con LLM directo
+#### Detección utilizando LLMs directamente
 
-Se descartó como estrategia principal porque puede ser más costosa, menos trazable y más difícil de auditar. Además, cada análisis dependería de llamadas externas y prompts, lo que complica reproducibilidad.
+Se descartó como estrategia principal porque incrementa costos operativos, dificulta la trazabilidad de resultados y depende de llamadas externas para cada análisis realizado.
 
-### Detección mediante microservicio Python con embeddings externos
+#### Detección mediante microservicio Python especializado
 
-Se consideró porque permite aislar lógica de IA. Sin embargo, se descartó como motor principal para duplicados porque mueve datos fuera de la base y duplica responsabilidades que Oracle 26ai puede manejar nativamente.
+Se consideró porque permite aislar la lógica de inteligencia artificial. Sin embargo, se descartó como mecanismo principal porque duplica responsabilidades que Oracle Database 26ai puede ejecutar de manera nativa y obliga a mover datos fuera de la plataforma principal.
 
-### Comparación textual tradicional
+#### Comparación textual tradicional
 
-Se descartó porque la similitud léxica no captura adecuadamente duplicados semánticos cuando las tareas usan diferentes palabras para describir el mismo trabajo.
+Se descartó porque la similitud léxica no captura adecuadamente relaciones semánticas entre tareas que describen el mismo trabajo utilizando vocabularios diferentes.
 
-## Resultado
+### Resultado
 
-Oracle Java Bot utilizará Oracle Database 26ai y Oracle Vector Search como base de la detección semántica de tareas duplicadas. El backend Spring Boot orquestará la generación de embeddings, ejecución de búsqueda, persistencia de resultados y exposición al dashboard.
+Oracle Java Bot utilizará Oracle Database 26ai y Oracle Vector Search como base de la detección semántica de tareas duplicadas. El backend Spring Boot orquestará la generación de embeddings, ejecución de búsquedas vectoriales, persistencia de resultados y exposición de información al dashboard del sistema.

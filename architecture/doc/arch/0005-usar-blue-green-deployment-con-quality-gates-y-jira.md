@@ -1,69 +1,73 @@
-# 5. Usar Blue/Green deployment con quality gates y Jira
+# 5. Adoptar Blue/Green Deployment con quality gates automatizados
 
-Fecha: 2026-05-27
+Date: 2026-05-28
 
-## Estado
+## Status
 
-Aceptada
+Accepted
 
-## Contexto
+## Context
 
 Oracle Java Bot requiere un proceso de despliegue que reduzca el riesgo de introducir fallas en producción. El sistema contiene funcionalidades críticas para gestión de proyectos, tareas, KPIs, notificaciones, generación de backlog asistida por IA y detección semántica de duplicados.
 
-El despliegue manual o directo sobre una única instancia activa puede generar indisponibilidad, regresiones no detectadas y dificultad para realizar rollback. Además, el equipo ya cuenta con automatización de DevOps, pruebas de regresión y scripts para crear tickets cuando un quality gate falla.
+Los despliegues directos sobre una única versión activa pueden provocar indisponibilidad, regresiones no detectadas y dificultades para realizar rollback ante incidentes.
 
-La arquitectura objetivo considera ejecución en OCI Kubernetes Engine, con entrada mediante OCI Load Balancer y Nginx / Ingress Controller. Esto permite aplicar una estrategia Blue/Green donde una versión candidata se despliega y valida antes de recibir tráfico productivo.
+Además, el proyecto ya cuenta con automatización de DevOps, pruebas de regresión automatizadas y mecanismos de generación de evidencia cuando una validación falla.
 
-## Decisión
+La arquitectura objetivo considera ejecución sobre OCI Kubernetes Engine, utilizando OCI Load Balancer y Nginx / Ingress Controller como punto de entrada. Esto permite desplegar versiones candidatas y validarlas antes de exponerlas a usuarios finales.
 
-Se adopta una estrategia de **Blue/Green deployment** con quality gates automatizados y registro de fallas en Jira.
+## Decision
 
-El flujo de despliegue será:
+Se adopta una estrategia de **Blue/Green Deployment** complementada con quality gates automatizados dentro del pipeline de integración y despliegue continuo.
 
-1. Un developer o DevOps Engineer realiza push o merge hacia una rama protegida.
-2. GitHub y GitHub Actions preparan los artefactos necesarios, incluyendo el frontend React/Vite embebido en el backend.
+El flujo de despliegue contempla:
+
+1. Un Developer o DevOps Engineer realiza un push o merge hacia una rama protegida.
+2. GitHub y GitHub Actions preparan los artefactos necesarios, incluyendo el frontend React/Vite integrado dentro del backend.
 3. OCI DevOps obtiene el código fuente actualizado.
 4. OCI DevOps construye y publica imágenes Docker versionadas en OCI Container Registry.
-5. OCI DevOps despliega la versión candidata en OKE.
-6. El CI/CD Orchestrator ejecuta health checks.
-7. El Regression Test Runner ejecuta pruebas automatizadas sobre endpoints críticos.
-8. Si los quality gates pasan, Nginx / Ingress Controller promueve tráfico hacia la versión candidata.
-9. Si algún quality gate falla, el tráfico no se promueve y se crea un ticket Jira con evidencia accionable.
+5. OCI DevOps despliega una versión candidata dentro del entorno objetivo.
+6. Se ejecutan health checks automáticos.
+7. Se ejecutan pruebas automatizadas de regresión sobre funcionalidades críticas.
+8. Si todos los quality gates son satisfactorios, el tráfico es promovido hacia la nueva versión.
+9. Si algún quality gate falla, la promoción es bloqueada y la versión estable continúa atendiendo tráfico.
 
-## Consecuencias
+Como parte del proceso operativo, las fallas detectadas durante la validación podrán generar tickets de seguimiento en Jira con evidencia técnica asociada.
+
+## Consequences
 
 ### Positivas
 
-- Reduce el riesgo de introducir fallas directamente en producción.
-- Permite validar una versión candidata antes de exponerla a usuarios.
-- Facilita rollback al conservar una versión estable disponible.
-- Integra pruebas de regresión como parte obligatoria del proceso de despliegue.
-- Genera trazabilidad operativa mediante tickets Jira cuando ocurre una falla.
-- Mejora la confianza del equipo en releases frecuentes.
-- Alinea la operación del sistema con prácticas profesionales de entrega continua.
+* Reduce significativamente el riesgo de introducir fallas directamente en producción.
+* Permite validar una versión candidata antes de exponerla a usuarios finales.
+* Facilita rollback al mantener una versión estable disponible durante el despliegue.
+* Integra pruebas automatizadas como parte obligatoria del proceso de liberación.
+* Mejora la trazabilidad operativa mediante generación automática de evidencia.
+* Incrementa la confianza del equipo para realizar despliegues frecuentes.
+* Alinea el sistema con prácticas modernas de Continuous Delivery.
 
 ### Negativas
 
-- Requiere mantener dos versiones o colores durante el proceso de despliegue.
-- Aumenta la complejidad de configuración de Nginx / Ingress Controller.
-- Requiere pruebas automatizadas confiables; pruebas frágiles pueden bloquear despliegues válidos.
-- Puede aumentar consumo temporal de recursos durante despliegues.
-- Requiere disciplina para que los cambios de frontend, backend, AI Service y Telegram Bot Service sean versionados y promovidos correctamente.
+* Requiere mantener simultáneamente dos versiones durante el proceso de despliegue.
+* Incrementa la complejidad de configuración de Nginx, Ingress Controller y mecanismos de promoción de tráfico.
+* Requiere pruebas automatizadas confiables; pruebas inestables pueden bloquear despliegues válidos.
+* Puede aumentar temporalmente el consumo de recursos durante cada despliegue.
+* Exige disciplina de versionamiento entre frontend, backend, AI Service y Telegram Bot Service.
 
-## Alternativas consideradas
+### Alternativas consideradas
 
-### Despliegue directo sobre producción
+#### Despliegue directo sobre producción
 
-Se descartó porque expone a los usuarios a fallas inmediatamente después del despliegue y dificulta rollback controlado.
+Se descartó porque expone inmediatamente a los usuarios a posibles errores y dificulta la recuperación ante fallas.
 
-### Rolling deployment simple
+#### Rolling Deployment
 
-Se consideró porque Kubernetes lo soporta de forma nativa. Sin embargo, se prefirió Blue/Green porque permite validar un ambiente candidato antes de mover tráfico, lo cual se alinea mejor con el quality gate y las pruebas automatizadas existentes.
+Se consideró porque Kubernetes lo soporta de manera nativa. Sin embargo, fue descartado como estrategia principal porque no proporciona un entorno completamente aislado para validar una versión candidata antes de recibir tráfico.
 
-### Canary deployment
+#### Canary Deployment
 
-Se consideró como alternativa avanzada. Se descartó para esta etapa porque requiere observabilidad, métricas de error y control gradual de tráfico más sofisticado. Puede evaluarse como evolución futura.
+Se consideró como evolución futura. Fue descartado para esta etapa porque requiere observabilidad más avanzada, métricas de negocio y mecanismos sofisticados de control gradual del tráfico.
 
-## Resultado
+### Resultado
 
-Oracle Java Bot utilizará Blue/Green deployment con quality gates automatizados. La versión candidata será validada mediante health checks y pruebas de regresión antes de recibir tráfico. Si la validación falla, se bloqueará la promoción y se registrará un ticket Jira con evidencia para seguimiento.
+Oracle Java Bot utilizará Blue/Green Deployment con quality gates automatizados como estrategia principal de despliegue. Las nuevas versiones serán validadas mediante health checks y pruebas de regresión antes de recibir tráfico productivo, reduciendo riesgos operativos y mejorando la confiabilidad de las liberaciones.
