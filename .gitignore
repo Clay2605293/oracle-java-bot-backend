@@ -104,4 +104,4 @@ tmp/
 temp/
 *.tmp
 *.swp
-*.swo
+architecture/.structurizr/
