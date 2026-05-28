@@ -3,7 +3,7 @@
   "description" : "Modelo C4 de arquitectura objetivo para Oracle Java Bot.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2026-05-28T01:43:03Z",
+  "lastModifiedDate" : "2026-05-28T01:47:05Z",
   "model" : {
     "people" : [ {
       "description" : "Responsable de gestionar proyectos, equipos, tareas, documentos, métricas y análisis de duplicados.",
@@ -15,13 +15,13 @@
       "relationships" : [ {
         "description" : "Gestiona proyectos, equipos, tareas, documentos, KPIs y análisis de duplicados",
         "destinationId" : "4",
-        "id" : "26",
+        "id" : "41",
         "sourceId" : "1",
         "tags" : "Relationship"
       }, {
         "description" : "Accede al sistema Web mediante HTTPS",
         "destinationId" : "5",
-        "id" : "37",
+        "id" : "52",
         "sourceId" : "1",
         "tags" : "Relationship"
       } ],
@@ -36,25 +36,25 @@
       "relationships" : [ {
         "description" : "Consulta y actualiza tareas desde la Web o Telegram",
         "destinationId" : "4",
-        "id" : "27",
+        "id" : "42",
         "sourceId" : "2",
         "tags" : "Relationship"
       }, {
         "description" : "Envía comandos y recibe notificaciones",
-        "destinationId" : "23",
-        "id" : "28",
+        "destinationId" : "38",
+        "id" : "43",
         "sourceId" : "2",
         "tags" : "Relationship"
       }, {
         "description" : "Accede al sistema Web mediante HTTPS",
         "destinationId" : "5",
-        "id" : "38",
+        "id" : "53",
         "sourceId" : "2",
         "tags" : "Relationship"
       }, {
         "description" : "Interactúa con el bot",
-        "destinationId" : "23",
-        "id" : "42",
+        "destinationId" : "38",
+        "id" : "57",
         "sourceId" : "2",
         "tags" : "Relationship"
       } ],
@@ -68,14 +68,14 @@
       },
       "relationships" : [ {
         "description" : "Mantiene repositorios y revisa cambios",
-        "destinationId" : "16",
-        "id" : "29",
+        "destinationId" : "31",
+        "id" : "44",
         "sourceId" : "3",
         "tags" : "Relationship"
       }, {
         "description" : "Supervisa pipelines y despliegues",
-        "destinationId" : "18",
-        "id" : "30",
+        "destinationId" : "33",
+        "id" : "45",
         "sourceId" : "3",
         "tags" : "Relationship"
       } ],
@@ -93,7 +93,7 @@
         "relationships" : [ {
           "description" : "Enruta tráfico hacia la versión activa del backend",
           "destinationId" : "7",
-          "id" : "39",
+          "id" : "54",
           "sourceId" : "5",
           "tags" : "Relationship"
         } ],
@@ -110,7 +110,21 @@
         "relationships" : [ {
           "description" : "Consume APIs REST protegidas",
           "destinationId" : "7",
-          "id" : "41",
+          "id" : "56",
+          "sourceId" : "6",
+          "tags" : "Relationship",
+          "technology" : "HTTPS / JSON"
+        }, {
+          "description" : "Solicita autenticación y recibe token JWT",
+          "destinationId" : "8",
+          "id" : "76",
+          "sourceId" : "6",
+          "tags" : "Relationship",
+          "technology" : "HTTPS / JSON"
+        }, {
+          "description" : "Envía solicitudes protegidas con token JWT",
+          "destinationId" : "9",
+          "id" : "77",
           "sourceId" : "6",
           "tags" : "Relationship",
           "technology" : "HTTPS / JSON"
@@ -118,6 +132,356 @@
         "tags" : "Element,Container,Web Application",
         "technology" : "React / Vite / Static Assets"
       }, {
+        "components" : [ {
+          "description" : "Valida credenciales, emite tokens JWT y habilita el acceso inicial al sistema.",
+          "documentation" : { },
+          "id" : "8",
+          "name" : "Authentication Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "authComponent"
+          },
+          "relationships" : [ {
+            "description" : "Consulta credenciales y datos de usuario",
+            "destinationId" : "22",
+            "id" : "78",
+            "sourceId" : "8",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring MVC Controller / Service"
+        }, {
+          "description" : "Valida permisos, roles y acceso a recursos protegidos mediante filtros JWT y configuración de seguridad.",
+          "documentation" : { },
+          "id" : "9",
+          "name" : "Authorization and Security Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "securityComponent"
+          },
+          "relationships" : [ {
+            "description" : "Consulta roles, permisos y membresías",
+            "destinationId" : "22",
+            "id" : "79",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza operaciones de usuarios",
+            "destinationId" : "10",
+            "id" : "80",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza operaciones de equipos",
+            "destinationId" : "11",
+            "id" : "81",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza operaciones de proyectos",
+            "destinationId" : "12",
+            "id" : "82",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza operaciones de tareas",
+            "destinationId" : "13",
+            "id" : "83",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza consulta de métricas",
+            "destinationId" : "16",
+            "id" : "84",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza generación de backlog IA",
+            "destinationId" : "18",
+            "id" : "85",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Autoriza análisis de duplicados",
+            "destinationId" : "20",
+            "id" : "86",
+            "sourceId" : "9",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Security / JWT Filter"
+        }, {
+          "description" : "Administra usuarios, credenciales, roles, estado de usuario y datos operativos.",
+          "documentation" : { },
+          "id" : "10",
+          "name" : "User Management Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "userManagementComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste usuarios, credenciales, roles y estado",
+            "destinationId" : "22",
+            "id" : "87",
+            "sourceId" : "10",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Administra equipos, miembros y relaciones entre usuarios.",
+          "documentation" : { },
+          "id" : "11",
+          "name" : "Team Management Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "teamManagementComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste equipos y miembros",
+            "destinationId" : "22",
+            "id" : "88",
+            "sourceId" : "11",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Administra proyectos, miembros del proyecto y documentos asociados.",
+          "documentation" : { },
+          "id" : "12",
+          "name" : "Project Management Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "projectManagementComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste proyectos, miembros y documentos",
+            "destinationId" : "22",
+            "id" : "89",
+            "sourceId" : "12",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Coordina carga y consulta de documentos",
+            "destinationId" : "17",
+            "id" : "94",
+            "sourceId" : "12",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Solicita generación de backlog desde documentos",
+            "destinationId" : "18",
+            "id" : "101",
+            "sourceId" : "12",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Gestiona ciclo de vida de tareas: creación, edición, eliminación, estado, prioridad, comentarios y asignaciones.",
+          "documentation" : { },
+          "id" : "13",
+          "name" : "Task Management Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "taskManagementComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste tareas, comentarios, prioridades, estados y asignaciones",
+            "destinationId" : "22",
+            "id" : "90",
+            "sourceId" : "13",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Solicita generación o actualización de embeddings",
+            "destinationId" : "19",
+            "id" : "97",
+            "sourceId" : "13",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Publica eventos de tarea",
+            "destinationId" : "21",
+            "id" : "106",
+            "sourceId" : "13",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Administra sprints y relación de tareas con periodos de trabajo.",
+          "documentation" : { },
+          "id" : "14",
+          "name" : "Sprint Management Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "sprintManagementComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste sprints",
+            "destinationId" : "22",
+            "id" : "91",
+            "sourceId" : "14",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Gestiona responsables y relaciones usuario-tarea.",
+          "documentation" : { },
+          "id" : "15",
+          "name" : "Assignment Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "assignmentComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste relaciones usuario-tarea",
+            "destinationId" : "22",
+            "id" : "92",
+            "sourceId" : "15",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Calcula progreso de proyectos, métricas de sprint y desempeño de developers.",
+          "documentation" : { },
+          "id" : "16",
+          "name" : "Dashboard and KPI Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "dashboardKpiComponent"
+          },
+          "relationships" : [ {
+            "description" : "Consulta datos para KPIs y progreso",
+            "destinationId" : "22",
+            "id" : "93",
+            "sourceId" : "16",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Repository"
+        }, {
+          "description" : "Registra metadatos de documentos y coordina almacenamiento en OCI Object Storage.",
+          "documentation" : { },
+          "id" : "17",
+          "name" : "Document Storage Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "documentStorageComponent"
+          },
+          "relationships" : [ {
+            "description" : "Guarda y recupera archivos",
+            "destinationId" : "28",
+            "id" : "95",
+            "sourceId" : "17",
+            "tags" : "Relationship",
+            "technology" : "OCI SDK / HTTPS"
+          }, {
+            "description" : "Persiste metadatos de documentos",
+            "destinationId" : "22",
+            "id" : "96",
+            "sourceId" : "17",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / OCI SDK"
+        }, {
+          "description" : "Orquesta la generación de tareas sugeridas a partir de documentos mediante Kafka y AI Service.",
+          "documentation" : { },
+          "id" : "18",
+          "name" : "AI Backlog Generation Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "aiBacklogComponent"
+          },
+          "relationships" : [ {
+            "description" : "Publica solicitud de generación IA",
+            "destinationId" : "21",
+            "id" : "102",
+            "sourceId" : "18",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Crea tareas aprobadas desde sugerencias IA",
+            "destinationId" : "13",
+            "id" : "104",
+            "sourceId" : "18",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Persiste sugerencias en TAREA_AI_SUGERIDA",
+            "destinationId" : "22",
+            "id" : "105",
+            "sourceId" : "18",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Kafka Producer-Consumer"
+        }, {
+          "description" : "Genera y actualiza embeddings vectoriales de tareas en Oracle Database 26ai.",
+          "documentation" : { },
+          "id" : "19",
+          "name" : "Vector Embedding Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "vectorEmbeddingComponent"
+          },
+          "relationships" : [ {
+            "description" : "Persiste embeddings en TASK_VECTOR_EMBEDDING",
+            "destinationId" : "22",
+            "id" : "98",
+            "sourceId" : "19",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Oracle 26ai"
+        }, {
+          "description" : "Ejecuta detección de duplicados mediante Oracle Vector Search y persiste resultados.",
+          "documentation" : { },
+          "id" : "20",
+          "name" : "Semantic Duplicate Detection Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "duplicateDetectionComponent"
+          },
+          "relationships" : [ {
+            "description" : "Consulta embeddings y persiste runs/resultados",
+            "destinationId" : "22",
+            "id" : "99",
+            "sourceId" : "20",
+            "tags" : "Relationship"
+          }, {
+            "description" : "Expone resultados para visualización",
+            "destinationId" : "16",
+            "id" : "100",
+            "sourceId" : "20",
+            "tags" : "Relationship"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Service / Oracle Vector Search"
+        }, {
+          "description" : "Publica y consume eventos Kafka relacionados con tareas, generación IA y notificaciones.",
+          "documentation" : { },
+          "id" : "21",
+          "name" : "Messaging Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "messagingComponent"
+          },
+          "relationships" : [ {
+            "description" : "Entrega resultados de generación IA",
+            "destinationId" : "18",
+            "id" : "103",
+            "sourceId" : "21",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          }, {
+            "description" : "Publica y consume eventos",
+            "destinationId" : "25",
+            "id" : "107",
+            "sourceId" : "21",
+            "tags" : "Relationship",
+            "technology" : "Kafka"
+          } ],
+          "tags" : "Element,Component",
+          "technology" : "Spring Kafka Producer / Consumer"
+        }, {
+          "description" : "Encapsula acceso a datos transaccionales, tablas vectoriales, auditoría e integridad referencial.",
+          "documentation" : { },
+          "id" : "22",
+          "name" : "Persistence Component",
+          "properties" : {
+            "structurizr.dsl.identifier" : "persistenceComponent"
+          },
+          "tags" : "Element,Component",
+          "technology" : "Spring Data JPA / Oracle JDBC"
+        } ],
         "description" : "API principal del sistema. Gestiona autenticación, autorización, usuarios, equipos, proyectos, tareas, sprints, KPIs, documentos, embeddings y detección de duplicados.",
         "documentation" : { },
         "id" : "7",
@@ -128,48 +492,48 @@
         "relationships" : [ {
           "description" : "Sirve assets estáticos del frontend embebido",
           "destinationId" : "6",
-          "id" : "40",
+          "id" : "55",
           "sourceId" : "7",
           "tags" : "Relationship"
         }, {
           "description" : "Lee y escribe datos transaccionales, embeddings y resultados de vector search",
-          "destinationId" : "12",
-          "id" : "48",
+          "destinationId" : "27",
+          "id" : "63",
           "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "JDBC / Oracle Wallet"
         }, {
           "description" : "Guarda y recupera documentos de proyecto",
-          "destinationId" : "13",
-          "id" : "49",
+          "destinationId" : "28",
+          "id" : "64",
           "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "OCI SDK / HTTPS"
         }, {
           "description" : "Publica solicitudes de generación IA y eventos de tarea",
-          "destinationId" : "10",
-          "id" : "50",
+          "destinationId" : "25",
+          "id" : "65",
           "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "Kafka"
         }, {
           "description" : "Consume respuestas de generación IA y eventos relevantes",
-          "destinationId" : "10",
-          "id" : "51",
+          "destinationId" : "25",
+          "id" : "66",
           "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "Kafka"
         }, {
           "description" : "Puede consultar estado operativo del servicio IA",
-          "destinationId" : "9",
-          "id" : "56",
+          "destinationId" : "24",
+          "id" : "71",
           "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "HTTP"
         }, {
           "description" : "Expone endpoints evaluados por pruebas de regresión",
-          "destinationId" : "14",
-          "id" : "57",
+          "destinationId" : "29",
+          "id" : "72",
           "sourceId" : "7",
           "tags" : "Relationship",
           "technology" : "HTTPS"
@@ -179,30 +543,30 @@
       }, {
         "description" : "Servicio Java/Spring Boot separado del backend principal. Atiende webhooks de Telegram, resuelve comandos conversacionales y coordina notificaciones.",
         "documentation" : { },
-        "id" : "8",
+        "id" : "23",
         "name" : "Telegram Bot Service",
         "properties" : {
           "structurizr.dsl.identifier" : "telegramBotService"
         },
         "relationships" : [ {
           "description" : "Envía respuestas y notificaciones",
-          "destinationId" : "23",
-          "id" : "45",
-          "sourceId" : "8",
+          "destinationId" : "38",
+          "id" : "60",
+          "sourceId" : "23",
           "tags" : "Relationship",
           "technology" : "HTTPS"
         }, {
           "description" : "Consulta y actualiza información de proyectos y tareas",
           "destinationId" : "7",
-          "id" : "46",
-          "sourceId" : "8",
+          "id" : "61",
+          "sourceId" : "23",
           "tags" : "Relationship",
           "technology" : "HTTPS / JSON"
         }, {
           "description" : "Publica y consume eventos de notificación",
-          "destinationId" : "10",
-          "id" : "47",
-          "sourceId" : "8",
+          "destinationId" : "25",
+          "id" : "62",
+          "sourceId" : "23",
           "tags" : "Relationship",
           "technology" : "Kafka"
         } ],
@@ -211,30 +575,30 @@
       }, {
         "description" : "Microservicio Python encargado de parsear documentos, invocar OpenAI y generar tareas sugeridas para backlog.",
         "documentation" : { },
-        "id" : "9",
+        "id" : "24",
         "name" : "AI Service",
         "properties" : {
           "structurizr.dsl.identifier" : "aiService"
         },
         "relationships" : [ {
           "description" : "Consume solicitudes de generación de backlog y publica resultados",
-          "destinationId" : "10",
-          "id" : "53",
-          "sourceId" : "9",
+          "destinationId" : "25",
+          "id" : "68",
+          "sourceId" : "24",
           "tags" : "Relationship",
           "technology" : "Kafka"
         }, {
           "description" : "Lee documentos para análisis",
-          "destinationId" : "13",
-          "id" : "54",
-          "sourceId" : "9",
+          "destinationId" : "28",
+          "id" : "69",
+          "sourceId" : "24",
           "tags" : "Relationship",
           "technology" : "OCI SDK / HTTPS"
         }, {
           "description" : "Solicita generación de tareas sugeridas",
-          "destinationId" : "24",
-          "id" : "55",
-          "sourceId" : "9",
+          "destinationId" : "39",
+          "id" : "70",
+          "sourceId" : "24",
           "tags" : "Relationship",
           "technology" : "HTTPS / JSON"
         } ],
@@ -243,16 +607,16 @@
       }, {
         "description" : "Broker de eventos autogestionado para flujos asíncronos de generación de backlog, notificaciones y coordinación entre servicios.",
         "documentation" : { },
-        "id" : "10",
+        "id" : "25",
         "name" : "Kafka Cluster",
         "properties" : {
           "structurizr.dsl.identifier" : "kafkaCluster"
         },
         "relationships" : [ {
           "description" : "Usa coordinación de brokers",
-          "destinationId" : "11",
-          "id" : "52",
-          "sourceId" : "10",
+          "destinationId" : "26",
+          "id" : "67",
+          "sourceId" : "25",
           "tags" : "Relationship",
           "technology" : "Zookeeper protocol"
         } ],
@@ -261,7 +625,7 @@
       }, {
         "description" : "Coordina el cluster Kafka autogestionado.",
         "documentation" : { },
-        "id" : "11",
+        "id" : "26",
         "name" : "Zookeeper Ensemble",
         "properties" : {
           "structurizr.dsl.identifier" : "zookeeperEnsemble"
@@ -271,7 +635,7 @@
       }, {
         "description" : "Base de datos principal. Mantiene datos transaccionales, usuarios, proyectos, tareas, documentos, sugerencias IA, embeddings vectoriales y resultados de vector search.",
         "documentation" : { },
-        "id" : "12",
+        "id" : "27",
         "name" : "Oracle Database 26ai",
         "properties" : {
           "structurizr.dsl.identifier" : "database"
@@ -281,7 +645,7 @@
       }, {
         "description" : "Almacena documentos de proyecto usados para generación de backlog con IA.",
         "documentation" : { },
-        "id" : "13",
+        "id" : "28",
         "name" : "OCI Object Storage",
         "properties" : {
           "structurizr.dsl.identifier" : "objectStorageContainer"
@@ -291,7 +655,7 @@
       }, {
         "description" : "Ejecuta pruebas automatizadas de regresión contra despliegues candidatos antes de promover tráfico de producción.",
         "documentation" : { },
-        "id" : "14",
+        "id" : "29",
         "name" : "Regression Test Runner",
         "properties" : {
           "structurizr.dsl.identifier" : "regressionTestRunner"
@@ -301,30 +665,30 @@
       }, {
         "description" : "Orquesta build, publicación de imágenes, despliegue candidato, health checks, regression tests, promoción Blue/Green y creación de tickets Jira ante fallas.",
         "documentation" : { },
-        "id" : "15",
+        "id" : "30",
         "name" : "CI/CD Orchestrator",
         "properties" : {
           "structurizr.dsl.identifier" : "cicdOrchestrator"
         },
         "relationships" : [ {
           "description" : "Ejecuta pruebas de regresión contra candidato",
-          "destinationId" : "14",
-          "id" : "58",
-          "sourceId" : "15",
+          "destinationId" : "29",
+          "id" : "73",
+          "sourceId" : "30",
           "tags" : "Relationship",
           "technology" : "CLI / HTTP"
         }, {
           "description" : "Promueve tráfico entre backend-blue y backend-green",
           "destinationId" : "5",
-          "id" : "59",
-          "sourceId" : "15",
+          "id" : "74",
+          "sourceId" : "30",
           "tags" : "Relationship",
           "technology" : "Deployment automation"
         }, {
           "description" : "Crea ticket si falla el quality gate",
-          "destinationId" : "25",
-          "id" : "60",
-          "sourceId" : "15",
+          "destinationId" : "40",
+          "id" : "75",
+          "sourceId" : "30",
           "tags" : "Relationship",
           "technology" : "HTTPS / API"
         } ],
@@ -340,38 +704,38 @@
       },
       "relationships" : [ {
         "description" : "Envía y recibe mensajes mediante webhook",
-        "destinationId" : "23",
-        "id" : "31",
+        "destinationId" : "38",
+        "id" : "46",
         "sourceId" : "4",
         "tags" : "Relationship"
       }, {
         "description" : "Solicita generación de tareas sugeridas",
-        "destinationId" : "24",
-        "id" : "32",
+        "destinationId" : "39",
+        "id" : "47",
         "sourceId" : "4",
         "tags" : "Relationship"
       }, {
         "description" : "Usa como persistencia transaccional y motor de vector search",
-        "destinationId" : "21",
-        "id" : "33",
+        "destinationId" : "36",
+        "id" : "48",
         "sourceId" : "4",
         "tags" : "Relationship"
       }, {
         "description" : "Almacena y recupera documentos de proyecto",
-        "destinationId" : "22",
-        "id" : "34",
+        "destinationId" : "37",
+        "id" : "49",
         "sourceId" : "4",
         "tags" : "Relationship"
       }, {
         "description" : "Genera tickets ante fallas del quality gate",
-        "destinationId" : "25",
-        "id" : "35",
+        "destinationId" : "40",
+        "id" : "50",
         "sourceId" : "4",
         "tags" : "Relationship"
       }, {
         "description" : "Se ejecuta como servicios contenerizados en producción",
-        "destinationId" : "20",
-        "id" : "36",
+        "destinationId" : "35",
+        "id" : "51",
         "sourceId" : "4",
         "tags" : "Relationship"
       } ],
@@ -379,79 +743,79 @@
     }, {
       "description" : "Hospeda los repositorios separados de backend, frontend, testing y AI service.",
       "documentation" : { },
-      "id" : "16",
+      "id" : "31",
       "name" : "GitHub",
       "properties" : {
         "structurizr.dsl.identifier" : "github"
       },
       "relationships" : [ {
         "description" : "Dispara workflows de integración",
-        "destinationId" : "17",
-        "id" : "61",
-        "sourceId" : "16",
+        "destinationId" : "32",
+        "id" : "108",
+        "sourceId" : "31",
         "tags" : "Relationship"
       }, {
         "description" : "Dispara pipelines por cambios en repositorios",
-        "destinationId" : "18",
-        "id" : "63",
-        "sourceId" : "16",
+        "destinationId" : "33",
+        "id" : "110",
+        "sourceId" : "31",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Software System,External System"
     }, {
       "description" : "Automatiza la construcción del frontend React/Vite y su integración hacia el backend.",
       "documentation" : { },
-      "id" : "17",
+      "id" : "32",
       "name" : "GitHub Actions",
       "properties" : {
         "structurizr.dsl.identifier" : "githubActions"
       },
       "relationships" : [ {
         "description" : "Actualiza artefactos construidos del frontend hacia el backend",
-        "destinationId" : "16",
-        "id" : "62",
-        "sourceId" : "17",
+        "destinationId" : "31",
+        "id" : "109",
+        "sourceId" : "32",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Software System,External System"
     }, {
       "description" : "Ejecuta pipelines de build, despliegue, health checks, pruebas de regresión y promoción Blue/Green.",
       "documentation" : { },
-      "id" : "18",
+      "id" : "33",
       "name" : "OCI DevOps",
       "properties" : {
         "structurizr.dsl.identifier" : "ociDevOps"
       },
       "relationships" : [ {
         "description" : "Obtiene código fuente",
-        "destinationId" : "16",
-        "id" : "64",
-        "sourceId" : "18",
+        "destinationId" : "31",
+        "id" : "111",
+        "sourceId" : "33",
         "tags" : "Relationship"
       }, {
         "description" : "Construye y publica imágenes Docker",
-        "destinationId" : "19",
-        "id" : "65",
-        "sourceId" : "18",
+        "destinationId" : "34",
+        "id" : "112",
+        "sourceId" : "33",
         "tags" : "Relationship"
       }, {
         "description" : "Despliega versiones candidatas y promueve tráfico",
-        "destinationId" : "20",
-        "id" : "66",
-        "sourceId" : "18",
+        "destinationId" : "35",
+        "id" : "113",
+        "sourceId" : "33",
         "tags" : "Relationship"
       }, {
         "description" : "Crea tickets cuando fallan pruebas o health checks",
-        "destinationId" : "25",
-        "id" : "68",
-        "sourceId" : "18",
+        "destinationId" : "40",
+        "id" : "115",
+        "sourceId" : "33",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Software System,Oracle Cloud"
     }, {
       "description" : "Almacena imágenes versionadas del backend, Telegram Bot Service, AI Service y componentes de soporte.",
       "documentation" : { },
-      "id" : "19",
+      "id" : "34",
       "name" : "OCI Container Registry",
       "properties" : {
         "structurizr.dsl.identifier" : "ocir"
@@ -460,23 +824,23 @@
     }, {
       "description" : "Plataforma objetivo de ejecución en producción, distribuida en tres Fault Domains dentro de la OCI Región Querétaro.",
       "documentation" : { },
-      "id" : "20",
+      "id" : "35",
       "name" : "OCI Kubernetes Engine",
       "properties" : {
         "structurizr.dsl.identifier" : "oke"
       },
       "relationships" : [ {
         "description" : "Obtiene imágenes de contenedor",
-        "destinationId" : "19",
-        "id" : "67",
-        "sourceId" : "20",
+        "destinationId" : "34",
+        "id" : "114",
+        "sourceId" : "35",
         "tags" : "Relationship"
       } ],
       "tags" : "Element,Software System,Oracle Cloud"
     }, {
       "description" : "Servicio administrado de base de datos Oracle utilizado por el sistema en producción.",
       "documentation" : { },
-      "id" : "21",
+      "id" : "36",
       "name" : "Oracle Database 26ai Service",
       "properties" : {
         "structurizr.dsl.identifier" : "oracleDbExternal"
@@ -485,7 +849,7 @@
     }, {
       "description" : "Servicio administrado de almacenamiento de objetos para documentos del proyecto.",
       "documentation" : { },
-      "id" : "22",
+      "id" : "37",
       "name" : "OCI Object Storage Service",
       "properties" : {
         "structurizr.dsl.identifier" : "objectStorageExternal"
@@ -494,31 +858,31 @@
     }, {
       "description" : "Canal externo para interacción conversacional y notificaciones hacia developers.",
       "documentation" : { },
-      "id" : "23",
+      "id" : "38",
       "name" : "Telegram Platform",
       "properties" : {
         "structurizr.dsl.identifier" : "telegram"
       },
       "relationships" : [ {
         "description" : "Envía actualizaciones mediante webhook",
-        "destinationId" : "8",
-        "id" : "43",
-        "sourceId" : "23",
+        "destinationId" : "23",
+        "id" : "58",
+        "sourceId" : "38",
         "tags" : "Relationship",
         "technology" : "HTTPS"
       }, {
         "description" : "Envía actualizaciones mediante webhook",
         "destinationId" : "4",
-        "id" : "44",
-        "linkedRelationshipId" : "43",
-        "sourceId" : "23",
+        "id" : "59",
+        "linkedRelationshipId" : "58",
+        "sourceId" : "38",
         "technology" : "HTTPS"
       } ],
       "tags" : "Element,Software System,External System"
     }, {
       "description" : "Servicio externo utilizado por el AI Service para generación de tareas sugeridas a partir de documentos.",
       "documentation" : { },
-      "id" : "24",
+      "id" : "39",
       "name" : "OpenAI API",
       "properties" : {
         "structurizr.dsl.identifier" : "openai"
@@ -527,7 +891,7 @@
     }, {
       "description" : "Sistema externo donde se registran tickets cuando falla el quality gate del despliegue.",
       "documentation" : { },
-      "id" : "25",
+      "id" : "40",
       "name" : "Jira Service",
       "properties" : {
         "structurizr.dsl.identifier" : "jira"
@@ -537,13 +901,167 @@
   },
   "name" : "Oracle Java Bot",
   "properties" : {
-    "structurizr.inspection.error" : "27",
-    "structurizr.dsl" : "d29ya3NwYWNlICJPcmFjbGUgSmF2YSBCb3QiICJNb2RlbG8gQzQgZGUgYXJxdWl0ZWN0dXJhIG9iamV0aXZvIHBhcmEgT3JhY2xlIEphdmEgQm90LiIgewoKICAgIG1vZGVsIHsKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBQZXJzb25hcwogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBtYW5hZ2VyID0gcGVyc29uICJNYW5hZ2VyIiAiUmVzcG9uc2FibGUgZGUgZ2VzdGlvbmFyIHByb3llY3RvcywgZXF1aXBvcywgdGFyZWFzLCBkb2N1bWVudG9zLCBtw6l0cmljYXMgeSBhbsOhbGlzaXMgZGUgZHVwbGljYWRvcy4iCiAgICAgICAgZGV2ZWxvcGVyID0gcGVyc29uICJEZXZlbG9wZXIiICJNaWVtYnJvIGRlbCBlcXVpcG8gZGUgZGVzYXJyb2xsbyBxdWUgY29uc3VsdGEgdGFyZWFzLCBhY3R1YWxpemEgYXZhbmNlcyB5IHJlY2liZSBub3RpZmljYWNpb25lcy4iCiAgICAgICAgZGV2b3BzRW5naW5lZXIgPSBwZXJzb24gIkRldk9wcyBFbmdpbmVlciIgIlJlc3BvbnNhYmxlIGRlIG9wZXJhciBsb3MgcGlwZWxpbmVzLCBkZXNwbGllZ3VlcywgcXVhbGl0eSBnYXRlcyBlIGluZnJhZXN0cnVjdHVyYSBjbG91ZC4iCgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFNpc3RlbWEgcHJpbmNpcGFsCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIG9yYWNsZUphdmFCb3QgPSBzb2Z0d2FyZVN5c3RlbSAiT3JhY2xlIEphdmEgQm90IiAiU2lzdGVtYSBjbG91ZC1uYXRpdmUgcGFyYSBnZXN0acOzbiBkZSBwcm95ZWN0b3MsIHRhcmVhcywgS1BJcywgbm90aWZpY2FjaW9uZXMsIGdlbmVyYWNpw7NuIGRlIGJhY2tsb2cgYXNpc3RpZGEgcG9yIElBIHkgZGV0ZWNjacOzbiBzZW3DoW50aWNhIGRlIGR1cGxpY2Fkb3MuIiB7CgogICAgICAgICAgICBuZ2lueEluZ3Jlc3MgPSBjb250YWluZXIgIk5naW54IC8gSW5ncmVzcyBDb250cm9sbGVyIiAiUHVudG8gZGUgZW50cmFkYSBpbnRlcm5vIHF1ZSBlbnJ1dGEgdHLDoWZpY28gaGFjaWEgbGEgdmVyc2nDs24gYWN0aXZhIGRlbCBiYWNrZW5kIHkgc29wb3J0YSBsYSBlc3RyYXRlZ2lhIEJsdWUvR3JlZW4uIiAiTmdpbnggLyBLdWJlcm5ldGVzIEluZ3Jlc3MiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkdhdGV3YXkiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHdlYkZyb250ZW5kID0gY29udGFpbmVyICJGcm9udGVuZCBXZWIgZW1iZWJpZG8iICJJbnRlcmZheiBSZWFjdC9WaXRlIGNvbnN0cnVpZGEgZGVzZGUgdW4gcmVwb3NpdG9yaW8gc2VwYXJhZG8geSBlbXBhcXVldGFkYSBjb21vIGNvbnRlbmlkbyBlc3TDoXRpY28gZGVudHJvIGRlbCBiYWNrZW5kLiIgIlJlYWN0IC8gVml0ZSAvIFN0YXRpYyBBc3NldHMiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIldlYiBBcHBsaWNhdGlvbiIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgYmFja2VuZCA9IGNvbnRhaW5lciAiU3ByaW5nIEJvb3QgQmFja2VuZCIgIkFQSSBwcmluY2lwYWwgZGVsIHNpc3RlbWEuIEdlc3Rpb25hIGF1dGVudGljYWNpw7NuLCBhdXRvcml6YWNpw7NuLCB1c3VhcmlvcywgZXF1aXBvcywgcHJveWVjdG9zLCB0YXJlYXMsIHNwcmludHMsIEtQSXMsIGRvY3VtZW50b3MsIGVtYmVkZGluZ3MgeSBkZXRlY2Npw7NuIGRlIGR1cGxpY2Fkb3MuIiAiSmF2YSAvIFNwcmluZyBCb290IiB7CiAgICAgICAgICAgICAgICB0YWdzICJBcHBsaWNhdGlvbiIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgdGVsZWdyYW1Cb3RTZXJ2aWNlID0gY29udGFpbmVyICJUZWxlZ3JhbSBCb3QgU2VydmljZSIgIlNlcnZpY2lvIEphdmEvU3ByaW5nIEJvb3Qgc2VwYXJhZG8gZGVsIGJhY2tlbmQgcHJpbmNpcGFsLiBBdGllbmRlIHdlYmhvb2tzIGRlIFRlbGVncmFtLCByZXN1ZWx2ZSBjb21hbmRvcyBjb252ZXJzYWNpb25hbGVzIHkgY29vcmRpbmEgbm90aWZpY2FjaW9uZXMuIiAiSmF2YSAvIFNwcmluZyBCb290IiB7CiAgICAgICAgICAgICAgICB0YWdzICJBcHBsaWNhdGlvbiIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgYWlTZXJ2aWNlID0gY29udGFpbmVyICJBSSBTZXJ2aWNlIiAiTWljcm9zZXJ2aWNpbyBQeXRob24gZW5jYXJnYWRvIGRlIHBhcnNlYXIgZG9jdW1lbnRvcywgaW52b2NhciBPcGVuQUkgeSBnZW5lcmFyIHRhcmVhcyBzdWdlcmlkYXMgcGFyYSBiYWNrbG9nLiIgIlB5dGhvbiAvIEZhc3RBUEkiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkFwcGxpY2F0aW9uIgogICAgICAgICAgICB9CgogICAgICAgICAgICBrYWZrYUNsdXN0ZXIgPSBjb250YWluZXIgIkthZmthIENsdXN0ZXIiICJCcm9rZXIgZGUgZXZlbnRvcyBhdXRvZ2VzdGlvbmFkbyBwYXJhIGZsdWpvcyBhc8OtbmNyb25vcyBkZSBnZW5lcmFjacOzbiBkZSBiYWNrbG9nLCBub3RpZmljYWNpb25lcyB5IGNvb3JkaW5hY2nDs24gZW50cmUgc2VydmljaW9zLiIgIkFwYWNoZSBLYWZrYSIgewogICAgICAgICAgICAgICAgdGFncyAiTWVzc2FnaW5nIgogICAgICAgICAgICB9CgogICAgICAgICAgICB6b29rZWVwZXJFbnNlbWJsZSA9IGNvbnRhaW5lciAiWm9va2VlcGVyIEVuc2VtYmxlIiAiQ29vcmRpbmEgZWwgY2x1c3RlciBLYWZrYSBhdXRvZ2VzdGlvbmFkby4iICJBcGFjaGUgWm9va2VlcGVyIiB7CiAgICAgICAgICAgICAgICB0YWdzICJNZXNzYWdpbmciCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGRhdGFiYXNlID0gY29udGFpbmVyICJPcmFjbGUgRGF0YWJhc2UgMjZhaSIgIkJhc2UgZGUgZGF0b3MgcHJpbmNpcGFsLiBNYW50aWVuZSBkYXRvcyB0cmFuc2FjY2lvbmFsZXMsIHVzdWFyaW9zLCBwcm95ZWN0b3MsIHRhcmVhcywgZG9jdW1lbnRvcywgc3VnZXJlbmNpYXMgSUEsIGVtYmVkZGluZ3MgdmVjdG9yaWFsZXMgeSByZXN1bHRhZG9zIGRlIHZlY3RvciBzZWFyY2guIiAiT3JhY2xlIERhdGFiYXNlIDI2YWkiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkRhdGFiYXNlIgogICAgICAgICAgICB9CgogICAgICAgICAgICBvYmplY3RTdG9yYWdlQ29udGFpbmVyID0gY29udGFpbmVyICJPQ0kgT2JqZWN0IFN0b3JhZ2UiICJBbG1hY2VuYSBkb2N1bWVudG9zIGRlIHByb3llY3RvIHVzYWRvcyBwYXJhIGdlbmVyYWNpw7NuIGRlIGJhY2tsb2cgY29uIElBLiIgIk9DSSBPYmplY3QgU3RvcmFnZSIgewogICAgICAgICAgICAgICAgdGFncyAiU3RvcmFnZSIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgcmVncmVzc2lvblRlc3RSdW5uZXIgPSBjb250YWluZXIgIlJlZ3Jlc3Npb24gVGVzdCBSdW5uZXIiICJFamVjdXRhIHBydWViYXMgYXV0b21hdGl6YWRhcyBkZSByZWdyZXNpw7NuIGNvbnRyYSBkZXNwbGllZ3VlcyBjYW5kaWRhdG9zIGFudGVzIGRlIHByb21vdmVyIHRyw6FmaWNvIGRlIHByb2R1Y2Npw7NuLiIgIlB5dGhvbiAvIFNlbGVuaXVtIC8gUHl0ZXN0IiB7CiAgICAgICAgICAgICAgICB0YWdzICJUZXN0aW5nIgogICAgICAgICAgICB9CgogICAgICAgICAgICBjaWNkT3JjaGVzdHJhdG9yID0gY29udGFpbmVyICJDSS9DRCBPcmNoZXN0cmF0b3IiICJPcnF1ZXN0YSBidWlsZCwgcHVibGljYWNpw7NuIGRlIGltw6FnZW5lcywgZGVzcGxpZWd1ZSBjYW5kaWRhdG8sIGhlYWx0aCBjaGVja3MsIHJlZ3Jlc3Npb24gdGVzdHMsIHByb21vY2nDs24gQmx1ZS9HcmVlbiB5IGNyZWFjacOzbiBkZSB0aWNrZXRzIEppcmEgYW50ZSBmYWxsYXMuIiAiT0NJIERldk9wcyBQaXBlbGluZSIgewogICAgICAgICAgICAgICAgdGFncyAiRGV2T3BzIgogICAgICAgICAgICB9CiAgICAgICAgfQoKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBTaXN0ZW1hcyBleHRlcm5vcyB5IHBsYXRhZm9ybWFzIGRlIHNvcG9ydGUKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCiAgICAgICAgZ2l0aHViID0gc29mdHdhcmVTeXN0ZW0gIkdpdEh1YiIgIkhvc3BlZGEgbG9zIHJlcG9zaXRvcmlvcyBzZXBhcmFkb3MgZGUgYmFja2VuZCwgZnJvbnRlbmQsIHRlc3RpbmcgeSBBSSBzZXJ2aWNlLiIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCBTeXN0ZW0iCiAgICAgICAgfQoKICAgICAgICBnaXRodWJBY3Rpb25zID0gc29mdHdhcmVTeXN0ZW0gIkdpdEh1YiBBY3Rpb25zIiAiQXV0b21hdGl6YSBsYSBjb25zdHJ1Y2Npw7NuIGRlbCBmcm9udGVuZCBSZWFjdC9WaXRlIHkgc3UgaW50ZWdyYWNpw7NuIGhhY2lhIGVsIGJhY2tlbmQuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIFN5c3RlbSIKICAgICAgICB9CgogICAgICAgIG9jaURldk9wcyA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgRGV2T3BzIiAiRWplY3V0YSBwaXBlbGluZXMgZGUgYnVpbGQsIGRlc3BsaWVndWUsIGhlYWx0aCBjaGVja3MsIHBydWViYXMgZGUgcmVncmVzacOzbiB5IHByb21vY2nDs24gQmx1ZS9HcmVlbi4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb2NpciA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgQ29udGFpbmVyIFJlZ2lzdHJ5IiAiQWxtYWNlbmEgaW3DoWdlbmVzIHZlcnNpb25hZGFzIGRlbCBiYWNrZW5kLCBUZWxlZ3JhbSBCb3QgU2VydmljZSwgQUkgU2VydmljZSB5IGNvbXBvbmVudGVzIGRlIHNvcG9ydGUuIiB7CiAgICAgICAgICAgIHRhZ3MgIk9yYWNsZSBDbG91ZCIKICAgICAgICB9CgogICAgICAgIG9rZSA9IHNvZnR3YXJlU3lzdGVtICJPQ0kgS3ViZXJuZXRlcyBFbmdpbmUiICJQbGF0YWZvcm1hIG9iamV0aXZvIGRlIGVqZWN1Y2nDs24gZW4gcHJvZHVjY2nDs24sIGRpc3RyaWJ1aWRhIGVuIHRyZXMgRmF1bHQgRG9tYWlucyBkZW50cm8gZGUgbGEgT0NJIFJlZ2nDs24gUXVlcsOpdGFyby4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb3JhY2xlRGJFeHRlcm5hbCA9IHNvZnR3YXJlU3lzdGVtICJPcmFjbGUgRGF0YWJhc2UgMjZhaSBTZXJ2aWNlIiAiU2VydmljaW8gYWRtaW5pc3RyYWRvIGRlIGJhc2UgZGUgZGF0b3MgT3JhY2xlIHV0aWxpemFkbyBwb3IgZWwgc2lzdGVtYSBlbiBwcm9kdWNjacOzbi4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb2JqZWN0U3RvcmFnZUV4dGVybmFsID0gc29mdHdhcmVTeXN0ZW0gIk9DSSBPYmplY3QgU3RvcmFnZSBTZXJ2aWNlIiAiU2VydmljaW8gYWRtaW5pc3RyYWRvIGRlIGFsbWFjZW5hbWllbnRvIGRlIG9iamV0b3MgcGFyYSBkb2N1bWVudG9zIGRlbCBwcm95ZWN0by4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgdGVsZWdyYW0gPSBzb2Z0d2FyZVN5c3RlbSAiVGVsZWdyYW0gUGxhdGZvcm0iICJDYW5hbCBleHRlcm5vIHBhcmEgaW50ZXJhY2Npw7NuIGNvbnZlcnNhY2lvbmFsIHkgbm90aWZpY2FjaW9uZXMgaGFjaWEgZGV2ZWxvcGVycy4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwgU3lzdGVtIgogICAgICAgIH0KCiAgICAgICAgb3BlbmFpID0gc29mdHdhcmVTeXN0ZW0gIk9wZW5BSSBBUEkiICJTZXJ2aWNpbyBleHRlcm5vIHV0aWxpemFkbyBwb3IgZWwgQUkgU2VydmljZSBwYXJhIGdlbmVyYWNpw7NuIGRlIHRhcmVhcyBzdWdlcmlkYXMgYSBwYXJ0aXIgZGUgZG9jdW1lbnRvcy4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwgU3lzdGVtIgogICAgICAgIH0KCiAgICAgICAgamlyYSA9IHNvZnR3YXJlU3lzdGVtICJKaXJhIFNlcnZpY2UiICJTaXN0ZW1hIGV4dGVybm8gZG9uZGUgc2UgcmVnaXN0cmFuIHRpY2tldHMgY3VhbmRvIGZhbGxhIGVsIHF1YWxpdHkgZ2F0ZSBkZWwgZGVzcGxpZWd1ZS4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwgU3lzdGVtIgogICAgICAgIH0KCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgICAgICAgLy8gUmVsYWNpb25lcyBkZSBuZWdvY2lvIHkgdXNvCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIG1hbmFnZXIgLT4gb3JhY2xlSmF2YUJvdCAiR2VzdGlvbmEgcHJveWVjdG9zLCBlcXVpcG9zLCB0YXJlYXMsIGRvY3VtZW50b3MsIEtQSXMgeSBhbsOhbGlzaXMgZGUgZHVwbGljYWRvcyIKICAgICAgICBkZXZlbG9wZXIgLT4gb3JhY2xlSmF2YUJvdCAiQ29uc3VsdGEgeSBhY3R1YWxpemEgdGFyZWFzIGRlc2RlIGxhIFdlYiBvIFRlbGVncmFtIgogICAgICAgIGRldmVsb3BlciAtPiB0ZWxlZ3JhbSAiRW52w61hIGNvbWFuZG9zIHkgcmVjaWJlIG5vdGlmaWNhY2lvbmVzIgogICAgICAgIGRldm9wc0VuZ2luZWVyIC0+IGdpdGh1YiAiTWFudGllbmUgcmVwb3NpdG9yaW9zIHkgcmV2aXNhIGNhbWJpb3MiCiAgICAgICAgZGV2b3BzRW5naW5lZXIgLT4gb2NpRGV2T3BzICJTdXBlcnZpc2EgcGlwZWxpbmVzIHkgZGVzcGxpZWd1ZXMiCgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFJlbGFjaW9uZXMgZGVsIHNpc3RlbWEgcHJpbmNpcGFsIGEgbml2ZWwgY29udGV4dG8KICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCiAgICAgICAgb3JhY2xlSmF2YUJvdCAtPiB0ZWxlZ3JhbSAiRW52w61hIHkgcmVjaWJlIG1lbnNhamVzIG1lZGlhbnRlIHdlYmhvb2siCiAgICAgICAgb3JhY2xlSmF2YUJvdCAtPiBvcGVuYWkgIlNvbGljaXRhIGdlbmVyYWNpw7NuIGRlIHRhcmVhcyBzdWdlcmlkYXMiCiAgICAgICAgb3JhY2xlSmF2YUJvdCAtPiBvcmFjbGVEYkV4dGVybmFsICJVc2EgY29tbyBwZXJzaXN0ZW5jaWEgdHJhbnNhY2Npb25hbCB5IG1vdG9yIGRlIHZlY3RvciBzZWFyY2giCiAgICAgICAgb3JhY2xlSmF2YUJvdCAtPiBvYmplY3RTdG9yYWdlRXh0ZXJuYWwgIkFsbWFjZW5hIHkgcmVjdXBlcmEgZG9jdW1lbnRvcyBkZSBwcm95ZWN0byIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IGppcmEgIkdlbmVyYSB0aWNrZXRzIGFudGUgZmFsbGFzIGRlbCBxdWFsaXR5IGdhdGUiCiAgICAgICAgb3JhY2xlSmF2YUJvdCAtPiBva2UgIlNlIGVqZWN1dGEgY29tbyBzZXJ2aWNpb3MgY29udGVuZXJpemFkb3MgZW4gcHJvZHVjY2nDs24iCgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFJlbGFjaW9uZXMgZW50cmUgY29udGFpbmVycwogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBtYW5hZ2VyIC0+IG5naW54SW5ncmVzcyAiQWNjZWRlIGFsIHNpc3RlbWEgV2ViIG1lZGlhbnRlIEhUVFBTIgogICAgICAgIGRldmVsb3BlciAtPiBuZ2lueEluZ3Jlc3MgIkFjY2VkZSBhbCBzaXN0ZW1hIFdlYiBtZWRpYW50ZSBIVFRQUyIKCiAgICAgICAgbmdpbnhJbmdyZXNzIC0+IGJhY2tlbmQgIkVucnV0YSB0csOhZmljbyBoYWNpYSBsYSB2ZXJzacOzbiBhY3RpdmEgZGVsIGJhY2tlbmQiCiAgICAgICAgYmFja2VuZCAtPiB3ZWJGcm9udGVuZCAiU2lydmUgYXNzZXRzIGVzdMOhdGljb3MgZGVsIGZyb250ZW5kIGVtYmViaWRvIgogICAgICAgIHdlYkZyb250ZW5kIC0+IGJhY2tlbmQgIkNvbnN1bWUgQVBJcyBSRVNUIHByb3RlZ2lkYXMiICJIVFRQUyAvIEpTT04iCgogICAgICAgIGRldmVsb3BlciAtPiB0ZWxlZ3JhbSAiSW50ZXJhY3TDumEgY29uIGVsIGJvdCIKICAgICAgICB0ZWxlZ3JhbSAtPiB0ZWxlZ3JhbUJvdFNlcnZpY2UgIkVudsOtYSBhY3R1YWxpemFjaW9uZXMgbWVkaWFudGUgd2ViaG9vayIgIkhUVFBTIgogICAgICAgIHRlbGVncmFtQm90U2VydmljZSAtPiB0ZWxlZ3JhbSAiRW52w61hIHJlc3B1ZXN0YXMgeSBub3RpZmljYWNpb25lcyIgIkhUVFBTIgoKICAgICAgICB0ZWxlZ3JhbUJvdFNlcnZpY2UgLT4gYmFja2VuZCAiQ29uc3VsdGEgeSBhY3R1YWxpemEgaW5mb3JtYWNpw7NuIGRlIHByb3llY3RvcyB5IHRhcmVhcyIgIkhUVFBTIC8gSlNPTiIKICAgICAgICB0ZWxlZ3JhbUJvdFNlcnZpY2UgLT4ga2Fma2FDbHVzdGVyICJQdWJsaWNhIHkgY29uc3VtZSBldmVudG9zIGRlIG5vdGlmaWNhY2nDs24iICJLYWZrYSIKCiAgICAgICAgYmFja2VuZCAtPiBkYXRhYmFzZSAiTGVlIHkgZXNjcmliZSBkYXRvcyB0cmFuc2FjY2lvbmFsZXMsIGVtYmVkZGluZ3MgeSByZXN1bHRhZG9zIGRlIHZlY3RvciBzZWFyY2giICJKREJDIC8gT3JhY2xlIFdhbGxldCIKICAgICAgICBiYWNrZW5kIC0+IG9iamVjdFN0b3JhZ2VDb250YWluZXIgIkd1YXJkYSB5IHJlY3VwZXJhIGRvY3VtZW50b3MgZGUgcHJveWVjdG8iICJPQ0kgU0RLIC8gSFRUUFMiCiAgICAgICAgYmFja2VuZCAtPiBrYWZrYUNsdXN0ZXIgIlB1YmxpY2Egc29saWNpdHVkZXMgZGUgZ2VuZXJhY2nDs24gSUEgeSBldmVudG9zIGRlIHRhcmVhIiAiS2Fma2EiCiAgICAgICAgYmFja2VuZCAtPiBrYWZrYUNsdXN0ZXIgIkNvbnN1bWUgcmVzcHVlc3RhcyBkZSBnZW5lcmFjacOzbiBJQSB5IGV2ZW50b3MgcmVsZXZhbnRlcyIgIkthZmthIgoKICAgICAgICBrYWZrYUNsdXN0ZXIgLT4gem9va2VlcGVyRW5zZW1ibGUgIlVzYSBjb29yZGluYWNpw7NuIGRlIGJyb2tlcnMiICJab29rZWVwZXIgcHJvdG9jb2wiCiAgICAgICAgYWlTZXJ2aWNlIC0+IGthZmthQ2x1c3RlciAiQ29uc3VtZSBzb2xpY2l0dWRlcyBkZSBnZW5lcmFjacOzbiBkZSBiYWNrbG9nIHkgcHVibGljYSByZXN1bHRhZG9zIiAiS2Fma2EiCiAgICAgICAgYWlTZXJ2aWNlIC0+IG9iamVjdFN0b3JhZ2VDb250YWluZXIgIkxlZSBkb2N1bWVudG9zIHBhcmEgYW7DoWxpc2lzIiAiT0NJIFNESyAvIEhUVFBTIgogICAgICAgIGFpU2VydmljZSAtPiBvcGVuYWkgIlNvbGljaXRhIGdlbmVyYWNpw7NuIGRlIHRhcmVhcyBzdWdlcmlkYXMiICJIVFRQUyAvIEpTT04iCgogICAgICAgIGJhY2tlbmQgLT4gYWlTZXJ2aWNlICJQdWVkZSBjb25zdWx0YXIgZXN0YWRvIG9wZXJhdGl2byBkZWwgc2VydmljaW8gSUEiICJIVFRQIgogICAgICAgIGJhY2tlbmQgLT4gcmVncmVzc2lvblRlc3RSdW5uZXIgIkV4cG9uZSBlbmRwb2ludHMgZXZhbHVhZG9zIHBvciBwcnVlYmFzIGRlIHJlZ3Jlc2nDs24iICJIVFRQUyIKCiAgICAgICAgY2ljZE9yY2hlc3RyYXRvciAtPiByZWdyZXNzaW9uVGVzdFJ1bm5lciAiRWplY3V0YSBwcnVlYmFzIGRlIHJlZ3Jlc2nDs24gY29udHJhIGNhbmRpZGF0byIgIkNMSSAvIEhUVFAiCiAgICAgICAgY2ljZE9yY2hlc3RyYXRvciAtPiBuZ2lueEluZ3Jlc3MgIlByb211ZXZlIHRyw6FmaWNvIGVudHJlIGJhY2tlbmQtYmx1ZSB5IGJhY2tlbmQtZ3JlZW4iICJEZXBsb3ltZW50IGF1dG9tYXRpb24iCiAgICAgICAgY2ljZE9yY2hlc3RyYXRvciAtPiBqaXJhICJDcmVhIHRpY2tldCBzaSBmYWxsYSBlbCBxdWFsaXR5IGdhdGUiICJIVFRQUyAvIEFQSSIKCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgICAgICAgLy8gUmVsYWNpb25lcyBEZXZPcHMKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCiAgICAgICAgZ2l0aHViIC0+IGdpdGh1YkFjdGlvbnMgIkRpc3BhcmEgd29ya2Zsb3dzIGRlIGludGVncmFjacOzbiIKICAgICAgICBnaXRodWJBY3Rpb25zIC0+IGdpdGh1YiAiQWN0dWFsaXphIGFydGVmYWN0b3MgY29uc3RydWlkb3MgZGVsIGZyb250ZW5kIGhhY2lhIGVsIGJhY2tlbmQiCiAgICAgICAgZ2l0aHViIC0+IG9jaURldk9wcyAiRGlzcGFyYSBwaXBlbGluZXMgcG9yIGNhbWJpb3MgZW4gcmVwb3NpdG9yaW9zIgogICAgICAgIG9jaURldk9wcyAtPiBnaXRodWIgIk9idGllbmUgY8OzZGlnbyBmdWVudGUiCiAgICAgICAgb2NpRGV2T3BzIC0+IG9jaXIgIkNvbnN0cnV5ZSB5IHB1YmxpY2EgaW3DoWdlbmVzIERvY2tlciIKICAgICAgICBvY2lEZXZPcHMgLT4gb2tlICJEZXNwbGllZ2EgdmVyc2lvbmVzIGNhbmRpZGF0YXMgeSBwcm9tdWV2ZSB0csOhZmljbyIKICAgICAgICBva2UgLT4gb2NpciAiT2J0aWVuZSBpbcOhZ2VuZXMgZGUgY29udGVuZWRvciIKICAgICAgICBvY2lEZXZPcHMgLT4gamlyYSAiQ3JlYSB0aWNrZXRzIGN1YW5kbyBmYWxsYW4gcHJ1ZWJhcyBvIGhlYWx0aCBjaGVja3MiCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUxhbmRzY2FwZSAiU3lzdGVtTGFuZHNjYXBlIiB7CiAgICAgICAgICAgIHRpdGxlICJTeXN0ZW0gTGFuZHNjYXBlIC0gRWNvc2lzdGVtYSBPcmFjbGUgSmF2YSBCb3QiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBnZW5lcmFsIGRlbCBlY29zaXN0ZW1hIGRlIHNpc3RlbWFzLCBwbGF0YWZvcm1hcyB5IGFjdG9yZXMgcXVlIGludGVyYWN0w7phbiBjb24gT3JhY2xlIEphdmEgQm90LiIKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIHN5c3RlbUNvbnRleHQgb3JhY2xlSmF2YUJvdCAiU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICB0aXRsZSAiU3lzdGVtIENvbnRleHQgLSBPcmFjbGUgSmF2YSBCb3QiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBkZSBjb250ZXh0byBkZWwgc2lzdGVtYSBPcmFjbGUgSmF2YSBCb3QsIHN1cyB1c3VhcmlvcyBwcmluY2lwYWxlcyB5IGRlcGVuZGVuY2lhcyBleHRlcm5hcy4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBjb250YWluZXIgb3JhY2xlSmF2YUJvdCAiQ29udGFpbmVyc1J1bnRpbWUiIHsKICAgICAgICAgICAgdGl0bGUgIkNvbnRhaW5lciBEaWFncmFtIC0gUnVudGltZSBPcmFjbGUgSmF2YSBCb3QiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBkZSBydW50aW1lIHByaW5jaXBhbCBkZWwgc2lzdGVtYTogZW50cmFkYSBXZWIsIGJhY2tlbmQsIFRlbGVncmFtIEJvdCBTZXJ2aWNlLCBBSSBTZXJ2aWNlLCBtZW5zYWplcsOtYSB5IHBlcnNpc3RlbmNpYS4iCiAgICAgICAgICAgIGluY2x1ZGUgbWFuYWdlcgogICAgICAgICAgICBpbmNsdWRlIGRldmVsb3BlcgogICAgICAgICAgICBpbmNsdWRlIHRlbGVncmFtCiAgICAgICAgICAgIGluY2x1ZGUgb3BlbmFpCiAgICAgICAgICAgIGluY2x1ZGUgbmdpbnhJbmdyZXNzCiAgICAgICAgICAgIGluY2x1ZGUgd2ViRnJvbnRlbmQKICAgICAgICAgICAgaW5jbHVkZSBiYWNrZW5kCiAgICAgICAgICAgIGluY2x1ZGUgdGVsZWdyYW1Cb3RTZXJ2aWNlCiAgICAgICAgICAgIGluY2x1ZGUgYWlTZXJ2aWNlCiAgICAgICAgICAgIGluY2x1ZGUga2Fma2FDbHVzdGVyCiAgICAgICAgICAgIGluY2x1ZGUgem9va2VlcGVyRW5zZW1ibGUKICAgICAgICAgICAgaW5jbHVkZSBkYXRhYmFzZQogICAgICAgICAgICBpbmNsdWRlIG9iamVjdFN0b3JhZ2VDb250YWluZXIKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIG9yYWNsZUphdmFCb3QgIkNvbnRhaW5lcnNEZXZPcHMiIHsKICAgICAgICAgICAgdGl0bGUgIkNvbnRhaW5lciBEaWFncmFtIC0gRGV2T3BzIHkgQmx1ZS9HcmVlbiIKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlZpc3RhIGRlIGludGVncmFjacOzbiB5IGRlc3BsaWVndWUgY29udGludW86IHJlcG9zaXRvcmlvcywgcGlwZWxpbmVzLCByZWdpc3RyeSwgcHJ1ZWJhcywgcHJvbW9jacOzbiBCbHVlL0dyZWVuIHkgSmlyYS4iCiAgICAgICAgICAgIGluY2x1ZGUgZGV2b3BzRW5naW5lZXIKICAgICAgICAgICAgaW5jbHVkZSBnaXRodWIKICAgICAgICAgICAgaW5jbHVkZSBnaXRodWJBY3Rpb25zCiAgICAgICAgICAgIGluY2x1ZGUgb2NpRGV2T3BzCiAgICAgICAgICAgIGluY2x1ZGUgb2NpcgogICAgICAgICAgICBpbmNsdWRlIG9rZQogICAgICAgICAgICBpbmNsdWRlIGppcmEKICAgICAgICAgICAgaW5jbHVkZSBjaWNkT3JjaGVzdHJhdG9yCiAgICAgICAgICAgIGluY2x1ZGUgcmVncmVzc2lvblRlc3RSdW5uZXIKICAgICAgICAgICAgaW5jbHVkZSBuZ2lueEluZ3Jlc3MKICAgICAgICAgICAgaW5jbHVkZSBiYWNrZW5kCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIGNvbnRhaW5lciBvcmFjbGVKYXZhQm90ICJDb250YWluZXJzRGF0YUFJIiB7CiAgICAgICAgICAgIHRpdGxlICJDb250YWluZXIgRGlhZ3JhbSAtIERhdG9zIGUgSUEiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBkZSBjYXBhY2lkYWRlcyBkZSBkYXRvcyBlIGludGVsaWdlbmNpYSBhcnRpZmljaWFsOiBkb2N1bWVudG9zLCBnZW5lcmFjacOzbiBkZSBiYWNrbG9nLCBlbWJlZGRpbmdzLCB2ZWN0b3Igc2VhcmNoIHkgcmVzdWx0YWRvcyBkZSBkdXBsaWNpZGFkLiIKICAgICAgICAgICAgaW5jbHVkZSBtYW5hZ2VyCiAgICAgICAgICAgIGluY2x1ZGUgb3BlbmFpCiAgICAgICAgICAgIGluY2x1ZGUgYmFja2VuZAogICAgICAgICAgICBpbmNsdWRlIGFpU2VydmljZQogICAgICAgICAgICBpbmNsdWRlIGthZmthQ2x1c3RlcgogICAgICAgICAgICBpbmNsdWRlIGRhdGFiYXNlCiAgICAgICAgICAgIGluY2x1ZGUgb2JqZWN0U3RvcmFnZUNvbnRhaW5lcgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsKICAgICAgICAgICAgICAgIHNoYXBlIHBlcnNvbgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMDg0MjdCCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMTE2OEJECiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkV4dGVybmFsIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjOTk5OTk5CiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIk9yYWNsZSBDbG91ZCIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjQzc0NjM0CiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkFwcGxpY2F0aW9uIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0MzhERDUKICAgICAgICAgICAgICAgIGNvbG9yICNGRkZGRkYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiV2ViIEFwcGxpY2F0aW9uIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICMyRjk1RDYKICAgICAgICAgICAgICAgIGNvbG9yICNGRkZGRkYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiR2F0ZXdheSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjRjM5QzEyCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIk1lc3NhZ2luZyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjOEU0NEFECiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMjdBRTYwCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIlN0b3JhZ2UiIHsKICAgICAgICAgICAgICAgIHNoYXBlIGN5bGluZGVyCiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICMxNkEwODUKICAgICAgICAgICAgICAgIGNvbG9yICNGRkZGRkYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiVGVzdGluZyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjN0Y4QzhECiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkRldk9wcyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMzQ0OTVFCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHRoZW1lIGRlZmF1bHQKICAgIH0KfQ==",
+    "structurizr.inspection.error" : "52",
+    "structurizr.dsl" : "d29ya3NwYWNlICJPcmFjbGUgSmF2YSBCb3QiICJNb2RlbG8gQzQgZGUgYXJxdWl0ZWN0dXJhIG9iamV0aXZvIHBhcmEgT3JhY2xlIEphdmEgQm90LiIgewoKICAgIG1vZGVsIHsKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBQZXJzb25hcwogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBtYW5hZ2VyID0gcGVyc29uICJNYW5hZ2VyIiAiUmVzcG9uc2FibGUgZGUgZ2VzdGlvbmFyIHByb3llY3RvcywgZXF1aXBvcywgdGFyZWFzLCBkb2N1bWVudG9zLCBtw6l0cmljYXMgeSBhbsOhbGlzaXMgZGUgZHVwbGljYWRvcy4iCiAgICAgICAgZGV2ZWxvcGVyID0gcGVyc29uICJEZXZlbG9wZXIiICJNaWVtYnJvIGRlbCBlcXVpcG8gZGUgZGVzYXJyb2xsbyBxdWUgY29uc3VsdGEgdGFyZWFzLCBhY3R1YWxpemEgYXZhbmNlcyB5IHJlY2liZSBub3RpZmljYWNpb25lcy4iCiAgICAgICAgZGV2b3BzRW5naW5lZXIgPSBwZXJzb24gIkRldk9wcyBFbmdpbmVlciIgIlJlc3BvbnNhYmxlIGRlIG9wZXJhciBsb3MgcGlwZWxpbmVzLCBkZXNwbGllZ3VlcywgcXVhbGl0eSBnYXRlcyBlIGluZnJhZXN0cnVjdHVyYSBjbG91ZC4iCgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFNpc3RlbWEgcHJpbmNpcGFsCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIG9yYWNsZUphdmFCb3QgPSBzb2Z0d2FyZVN5c3RlbSAiT3JhY2xlIEphdmEgQm90IiAiU2lzdGVtYSBjbG91ZC1uYXRpdmUgcGFyYSBnZXN0acOzbiBkZSBwcm95ZWN0b3MsIHRhcmVhcywgS1BJcywgbm90aWZpY2FjaW9uZXMsIGdlbmVyYWNpw7NuIGRlIGJhY2tsb2cgYXNpc3RpZGEgcG9yIElBIHkgZGV0ZWNjacOzbiBzZW3DoW50aWNhIGRlIGR1cGxpY2Fkb3MuIiB7CgogICAgICAgICAgICBuZ2lueEluZ3Jlc3MgPSBjb250YWluZXIgIk5naW54IC8gSW5ncmVzcyBDb250cm9sbGVyIiAiUHVudG8gZGUgZW50cmFkYSBpbnRlcm5vIHF1ZSBlbnJ1dGEgdHLDoWZpY28gaGFjaWEgbGEgdmVyc2nDs24gYWN0aXZhIGRlbCBiYWNrZW5kIHkgc29wb3J0YSBsYSBlc3RyYXRlZ2lhIEJsdWUvR3JlZW4uIiAiTmdpbnggLyBLdWJlcm5ldGVzIEluZ3Jlc3MiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkdhdGV3YXkiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHdlYkZyb250ZW5kID0gY29udGFpbmVyICJGcm9udGVuZCBXZWIgZW1iZWJpZG8iICJJbnRlcmZheiBSZWFjdC9WaXRlIGNvbnN0cnVpZGEgZGVzZGUgdW4gcmVwb3NpdG9yaW8gc2VwYXJhZG8geSBlbXBhcXVldGFkYSBjb21vIGNvbnRlbmlkbyBlc3TDoXRpY28gZGVudHJvIGRlbCBiYWNrZW5kLiIgIlJlYWN0IC8gVml0ZSAvIFN0YXRpYyBBc3NldHMiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIldlYiBBcHBsaWNhdGlvbiIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgYmFja2VuZCA9IGNvbnRhaW5lciAiU3ByaW5nIEJvb3QgQmFja2VuZCIgIkFQSSBwcmluY2lwYWwgZGVsIHNpc3RlbWEuIEdlc3Rpb25hIGF1dGVudGljYWNpw7NuLCBhdXRvcml6YWNpw7NuLCB1c3VhcmlvcywgZXF1aXBvcywgcHJveWVjdG9zLCB0YXJlYXMsIHNwcmludHMsIEtQSXMsIGRvY3VtZW50b3MsIGVtYmVkZGluZ3MgeSBkZXRlY2Npw7NuIGRlIGR1cGxpY2Fkb3MuIiAiSmF2YSAvIFNwcmluZyBCb290IiB7CiAgICAgICAgICAgICAgICB0YWdzICJBcHBsaWNhdGlvbiIKCiAgICAgICAgICAgICAgICBhdXRoQ29tcG9uZW50ID0gY29tcG9uZW50ICJBdXRoZW50aWNhdGlvbiBDb21wb25lbnQiICJWYWxpZGEgY3JlZGVuY2lhbGVzLCBlbWl0ZSB0b2tlbnMgSldUIHkgaGFiaWxpdGEgZWwgYWNjZXNvIGluaWNpYWwgYWwgc2lzdGVtYS4iICJTcHJpbmcgTVZDIENvbnRyb2xsZXIgLyBTZXJ2aWNlIgogICAgICAgICAgICAgICAgc2VjdXJpdHlDb21wb25lbnQgPSBjb21wb25lbnQgIkF1dGhvcml6YXRpb24gYW5kIFNlY3VyaXR5IENvbXBvbmVudCIgIlZhbGlkYSBwZXJtaXNvcywgcm9sZXMgeSBhY2Nlc28gYSByZWN1cnNvcyBwcm90ZWdpZG9zIG1lZGlhbnRlIGZpbHRyb3MgSldUIHkgY29uZmlndXJhY2nDs24gZGUgc2VndXJpZGFkLiIgIlNwcmluZyBTZWN1cml0eSAvIEpXVCBGaWx0ZXIiCgogICAgICAgICAgICAgICAgdXNlck1hbmFnZW1lbnRDb21wb25lbnQgPSBjb21wb25lbnQgIlVzZXIgTWFuYWdlbWVudCBDb21wb25lbnQiICJBZG1pbmlzdHJhIHVzdWFyaW9zLCBjcmVkZW5jaWFsZXMsIHJvbGVzLCBlc3RhZG8gZGUgdXN1YXJpbyB5IGRhdG9zIG9wZXJhdGl2b3MuIiAiU3ByaW5nIFNlcnZpY2UgLyBSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgdGVhbU1hbmFnZW1lbnRDb21wb25lbnQgPSBjb21wb25lbnQgIlRlYW0gTWFuYWdlbWVudCBDb21wb25lbnQiICJBZG1pbmlzdHJhIGVxdWlwb3MsIG1pZW1icm9zIHkgcmVsYWNpb25lcyBlbnRyZSB1c3Vhcmlvcy4iICJTcHJpbmcgU2VydmljZSAvIFJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICBwcm9qZWN0TWFuYWdlbWVudENvbXBvbmVudCA9IGNvbXBvbmVudCAiUHJvamVjdCBNYW5hZ2VtZW50IENvbXBvbmVudCIgIkFkbWluaXN0cmEgcHJveWVjdG9zLCBtaWVtYnJvcyBkZWwgcHJveWVjdG8geSBkb2N1bWVudG9zIGFzb2NpYWRvcy4iICJTcHJpbmcgU2VydmljZSAvIFJlcG9zaXRvcnkiCgogICAgICAgICAgICAgICAgdGFza01hbmFnZW1lbnRDb21wb25lbnQgPSBjb21wb25lbnQgIlRhc2sgTWFuYWdlbWVudCBDb21wb25lbnQiICJHZXN0aW9uYSBjaWNsbyBkZSB2aWRhIGRlIHRhcmVhczogY3JlYWNpw7NuLCBlZGljacOzbiwgZWxpbWluYWNpw7NuLCBlc3RhZG8sIHByaW9yaWRhZCwgY29tZW50YXJpb3MgeSBhc2lnbmFjaW9uZXMuIiAiU3ByaW5nIFNlcnZpY2UgLyBSZXBvc2l0b3J5IgogICAgICAgICAgICAgICAgc3ByaW50TWFuYWdlbWVudENvbXBvbmVudCA9IGNvbXBvbmVudCAiU3ByaW50IE1hbmFnZW1lbnQgQ29tcG9uZW50IiAiQWRtaW5pc3RyYSBzcHJpbnRzIHkgcmVsYWNpw7NuIGRlIHRhcmVhcyBjb24gcGVyaW9kb3MgZGUgdHJhYmFqby4iICJTcHJpbmcgU2VydmljZSAvIFJlcG9zaXRvcnkiCiAgICAgICAgICAgICAgICBhc3NpZ25tZW50Q29tcG9uZW50ID0gY29tcG9uZW50ICJBc3NpZ25tZW50IENvbXBvbmVudCIgIkdlc3Rpb25hIHJlc3BvbnNhYmxlcyB5IHJlbGFjaW9uZXMgdXN1YXJpby10YXJlYS4iICJTcHJpbmcgU2VydmljZSAvIFJlcG9zaXRvcnkiCgogICAgICAgICAgICAgICAgZGFzaGJvYXJkS3BpQ29tcG9uZW50ID0gY29tcG9uZW50ICJEYXNoYm9hcmQgYW5kIEtQSSBDb21wb25lbnQiICJDYWxjdWxhIHByb2dyZXNvIGRlIHByb3llY3RvcywgbcOpdHJpY2FzIGRlIHNwcmludCB5IGRlc2VtcGXDsW8gZGUgZGV2ZWxvcGVycy4iICJTcHJpbmcgU2VydmljZSAvIFJlcG9zaXRvcnkiCgogICAgICAgICAgICAgICAgZG9jdW1lbnRTdG9yYWdlQ29tcG9uZW50ID0gY29tcG9uZW50ICJEb2N1bWVudCBTdG9yYWdlIENvbXBvbmVudCIgIlJlZ2lzdHJhIG1ldGFkYXRvcyBkZSBkb2N1bWVudG9zIHkgY29vcmRpbmEgYWxtYWNlbmFtaWVudG8gZW4gT0NJIE9iamVjdCBTdG9yYWdlLiIgIlNwcmluZyBTZXJ2aWNlIC8gT0NJIFNESyIKCiAgICAgICAgICAgICAgICBhaUJhY2tsb2dDb21wb25lbnQgPSBjb21wb25lbnQgIkFJIEJhY2tsb2cgR2VuZXJhdGlvbiBDb21wb25lbnQiICJPcnF1ZXN0YSBsYSBnZW5lcmFjacOzbiBkZSB0YXJlYXMgc3VnZXJpZGFzIGEgcGFydGlyIGRlIGRvY3VtZW50b3MgbWVkaWFudGUgS2Fma2EgeSBBSSBTZXJ2aWNlLiIgIlNwcmluZyBTZXJ2aWNlIC8gS2Fma2EgUHJvZHVjZXItQ29uc3VtZXIiCiAgICAgICAgICAgICAgICB2ZWN0b3JFbWJlZGRpbmdDb21wb25lbnQgPSBjb21wb25lbnQgIlZlY3RvciBFbWJlZGRpbmcgQ29tcG9uZW50IiAiR2VuZXJhIHkgYWN0dWFsaXphIGVtYmVkZGluZ3MgdmVjdG9yaWFsZXMgZGUgdGFyZWFzIGVuIE9yYWNsZSBEYXRhYmFzZSAyNmFpLiIgIlNwcmluZyBTZXJ2aWNlIC8gT3JhY2xlIDI2YWkiCiAgICAgICAgICAgICAgICBkdXBsaWNhdGVEZXRlY3Rpb25Db21wb25lbnQgPSBjb21wb25lbnQgIlNlbWFudGljIER1cGxpY2F0ZSBEZXRlY3Rpb24gQ29tcG9uZW50IiAiRWplY3V0YSBkZXRlY2Npw7NuIGRlIGR1cGxpY2Fkb3MgbWVkaWFudGUgT3JhY2xlIFZlY3RvciBTZWFyY2ggeSBwZXJzaXN0ZSByZXN1bHRhZG9zLiIgIlNwcmluZyBTZXJ2aWNlIC8gT3JhY2xlIFZlY3RvciBTZWFyY2giCgogICAgICAgICAgICAgICAgbWVzc2FnaW5nQ29tcG9uZW50ID0gY29tcG9uZW50ICJNZXNzYWdpbmcgQ29tcG9uZW50IiAiUHVibGljYSB5IGNvbnN1bWUgZXZlbnRvcyBLYWZrYSByZWxhY2lvbmFkb3MgY29uIHRhcmVhcywgZ2VuZXJhY2nDs24gSUEgeSBub3RpZmljYWNpb25lcy4iICJTcHJpbmcgS2Fma2EgUHJvZHVjZXIgLyBDb25zdW1lciIKICAgICAgICAgICAgICAgIHBlcnNpc3RlbmNlQ29tcG9uZW50ID0gY29tcG9uZW50ICJQZXJzaXN0ZW5jZSBDb21wb25lbnQiICJFbmNhcHN1bGEgYWNjZXNvIGEgZGF0b3MgdHJhbnNhY2Npb25hbGVzLCB0YWJsYXMgdmVjdG9yaWFsZXMsIGF1ZGl0b3LDrWEgZSBpbnRlZ3JpZGFkIHJlZmVyZW5jaWFsLiIgIlNwcmluZyBEYXRhIEpQQSAvIE9yYWNsZSBKREJDIgogICAgICAgICAgICB9CgogICAgICAgICAgICB0ZWxlZ3JhbUJvdFNlcnZpY2UgPSBjb250YWluZXIgIlRlbGVncmFtIEJvdCBTZXJ2aWNlIiAiU2VydmljaW8gSmF2YS9TcHJpbmcgQm9vdCBzZXBhcmFkbyBkZWwgYmFja2VuZCBwcmluY2lwYWwuIEF0aWVuZGUgd2ViaG9va3MgZGUgVGVsZWdyYW0sIHJlc3VlbHZlIGNvbWFuZG9zIGNvbnZlcnNhY2lvbmFsZXMgeSBjb29yZGluYSBub3RpZmljYWNpb25lcy4iICJKYXZhIC8gU3ByaW5nIEJvb3QiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIkFwcGxpY2F0aW9uIgogICAgICAgICAgICB9CgogICAgICAgICAgICBhaVNlcnZpY2UgPSBjb250YWluZXIgIkFJIFNlcnZpY2UiICJNaWNyb3NlcnZpY2lvIFB5dGhvbiBlbmNhcmdhZG8gZGUgcGFyc2VhciBkb2N1bWVudG9zLCBpbnZvY2FyIE9wZW5BSSB5IGdlbmVyYXIgdGFyZWFzIHN1Z2VyaWRhcyBwYXJhIGJhY2tsb2cuIiAiUHl0aG9uIC8gRmFzdEFQSSIgewogICAgICAgICAgICAgICAgdGFncyAiQXBwbGljYXRpb24iCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGthZmthQ2x1c3RlciA9IGNvbnRhaW5lciAiS2Fma2EgQ2x1c3RlciIgIkJyb2tlciBkZSBldmVudG9zIGF1dG9nZXN0aW9uYWRvIHBhcmEgZmx1am9zIGFzw61uY3Jvbm9zIGRlIGdlbmVyYWNpw7NuIGRlIGJhY2tsb2csIG5vdGlmaWNhY2lvbmVzIHkgY29vcmRpbmFjacOzbiBlbnRyZSBzZXJ2aWNpb3MuIiAiQXBhY2hlIEthZmthIiB7CiAgICAgICAgICAgICAgICB0YWdzICJNZXNzYWdpbmciCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIHpvb2tlZXBlckVuc2VtYmxlID0gY29udGFpbmVyICJab29rZWVwZXIgRW5zZW1ibGUiICJDb29yZGluYSBlbCBjbHVzdGVyIEthZmthIGF1dG9nZXN0aW9uYWRvLiIgIkFwYWNoZSBab29rZWVwZXIiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIk1lc3NhZ2luZyIKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZGF0YWJhc2UgPSBjb250YWluZXIgIk9yYWNsZSBEYXRhYmFzZSAyNmFpIiAiQmFzZSBkZSBkYXRvcyBwcmluY2lwYWwuIE1hbnRpZW5lIGRhdG9zIHRyYW5zYWNjaW9uYWxlcywgdXN1YXJpb3MsIHByb3llY3RvcywgdGFyZWFzLCBkb2N1bWVudG9zLCBzdWdlcmVuY2lhcyBJQSwgZW1iZWRkaW5ncyB2ZWN0b3JpYWxlcyB5IHJlc3VsdGFkb3MgZGUgdmVjdG9yIHNlYXJjaC4iICJPcmFjbGUgRGF0YWJhc2UgMjZhaSIgewogICAgICAgICAgICAgICAgdGFncyAiRGF0YWJhc2UiCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIG9iamVjdFN0b3JhZ2VDb250YWluZXIgPSBjb250YWluZXIgIk9DSSBPYmplY3QgU3RvcmFnZSIgIkFsbWFjZW5hIGRvY3VtZW50b3MgZGUgcHJveWVjdG8gdXNhZG9zIHBhcmEgZ2VuZXJhY2nDs24gZGUgYmFja2xvZyBjb24gSUEuIiAiT0NJIE9iamVjdCBTdG9yYWdlIiB7CiAgICAgICAgICAgICAgICB0YWdzICJTdG9yYWdlIgogICAgICAgICAgICB9CgogICAgICAgICAgICByZWdyZXNzaW9uVGVzdFJ1bm5lciA9IGNvbnRhaW5lciAiUmVncmVzc2lvbiBUZXN0IFJ1bm5lciIgIkVqZWN1dGEgcHJ1ZWJhcyBhdXRvbWF0aXphZGFzIGRlIHJlZ3Jlc2nDs24gY29udHJhIGRlc3BsaWVndWVzIGNhbmRpZGF0b3MgYW50ZXMgZGUgcHJvbW92ZXIgdHLDoWZpY28gZGUgcHJvZHVjY2nDs24uIiAiUHl0aG9uIC8gU2VsZW5pdW0gLyBQeXRlc3QiIHsKICAgICAgICAgICAgICAgIHRhZ3MgIlRlc3RpbmciCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGNpY2RPcmNoZXN0cmF0b3IgPSBjb250YWluZXIgIkNJL0NEIE9yY2hlc3RyYXRvciIgIk9ycXVlc3RhIGJ1aWxkLCBwdWJsaWNhY2nDs24gZGUgaW3DoWdlbmVzLCBkZXNwbGllZ3VlIGNhbmRpZGF0bywgaGVhbHRoIGNoZWNrcywgcmVncmVzc2lvbiB0ZXN0cywgcHJvbW9jacOzbiBCbHVlL0dyZWVuIHkgY3JlYWNpw7NuIGRlIHRpY2tldHMgSmlyYSBhbnRlIGZhbGxhcy4iICJPQ0kgRGV2T3BzIFBpcGVsaW5lIiB7CiAgICAgICAgICAgICAgICB0YWdzICJEZXZPcHMiCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogICAgICAgIC8vIFNpc3RlbWFzIGV4dGVybm9zIHkgcGxhdGFmb3JtYXMgZGUgc29wb3J0ZQogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBnaXRodWIgPSBzb2Z0d2FyZVN5c3RlbSAiR2l0SHViIiAiSG9zcGVkYSBsb3MgcmVwb3NpdG9yaW9zIHNlcGFyYWRvcyBkZSBiYWNrZW5kLCBmcm9udGVuZCwgdGVzdGluZyB5IEFJIHNlcnZpY2UuIiB7CiAgICAgICAgICAgIHRhZ3MgIkV4dGVybmFsIFN5c3RlbSIKICAgICAgICB9CgogICAgICAgIGdpdGh1YkFjdGlvbnMgPSBzb2Z0d2FyZVN5c3RlbSAiR2l0SHViIEFjdGlvbnMiICJBdXRvbWF0aXphIGxhIGNvbnN0cnVjY2nDs24gZGVsIGZyb250ZW5kIFJlYWN0L1ZpdGUgeSBzdSBpbnRlZ3JhY2nDs24gaGFjaWEgZWwgYmFja2VuZC4iIHsKICAgICAgICAgICAgdGFncyAiRXh0ZXJuYWwgU3lzdGVtIgogICAgICAgIH0KCiAgICAgICAgb2NpRGV2T3BzID0gc29mdHdhcmVTeXN0ZW0gIk9DSSBEZXZPcHMiICJFamVjdXRhIHBpcGVsaW5lcyBkZSBidWlsZCwgZGVzcGxpZWd1ZSwgaGVhbHRoIGNoZWNrcywgcHJ1ZWJhcyBkZSByZWdyZXNpw7NuIHkgcHJvbW9jacOzbiBCbHVlL0dyZWVuLiIgewogICAgICAgICAgICB0YWdzICJPcmFjbGUgQ2xvdWQiCiAgICAgICAgfQoKICAgICAgICBvY2lyID0gc29mdHdhcmVTeXN0ZW0gIk9DSSBDb250YWluZXIgUmVnaXN0cnkiICJBbG1hY2VuYSBpbcOhZ2VuZXMgdmVyc2lvbmFkYXMgZGVsIGJhY2tlbmQsIFRlbGVncmFtIEJvdCBTZXJ2aWNlLCBBSSBTZXJ2aWNlIHkgY29tcG9uZW50ZXMgZGUgc29wb3J0ZS4iIHsKICAgICAgICAgICAgdGFncyAiT3JhY2xlIENsb3VkIgogICAgICAgIH0KCiAgICAgICAgb2tlID0gc29mdHdhcmVTeXN0ZW0gIk9DSSBLdWJlcm5ldGVzIEVuZ2luZSIgIlBsYXRhZm9ybWEgb2JqZXRpdm8gZGUgZWplY3VjacOzbiBlbiBwcm9kdWNjacOzbiwgZGlzdHJpYnVpZGEgZW4gdHJlcyBGYXVsdCBEb21haW5zIGRlbnRybyBkZSBsYSBPQ0kgUmVnacOzbiBRdWVyw6l0YXJvLiIgewogICAgICAgICAgICB0YWdzICJPcmFjbGUgQ2xvdWQiCiAgICAgICAgfQoKICAgICAgICBvcmFjbGVEYkV4dGVybmFsID0gc29mdHdhcmVTeXN0ZW0gIk9yYWNsZSBEYXRhYmFzZSAyNmFpIFNlcnZpY2UiICJTZXJ2aWNpbyBhZG1pbmlzdHJhZG8gZGUgYmFzZSBkZSBkYXRvcyBPcmFjbGUgdXRpbGl6YWRvIHBvciBlbCBzaXN0ZW1hIGVuIHByb2R1Y2Npw7NuLiIgewogICAgICAgICAgICB0YWdzICJPcmFjbGUgQ2xvdWQiCiAgICAgICAgfQoKICAgICAgICBvYmplY3RTdG9yYWdlRXh0ZXJuYWwgPSBzb2Z0d2FyZVN5c3RlbSAiT0NJIE9iamVjdCBTdG9yYWdlIFNlcnZpY2UiICJTZXJ2aWNpbyBhZG1pbmlzdHJhZG8gZGUgYWxtYWNlbmFtaWVudG8gZGUgb2JqZXRvcyBwYXJhIGRvY3VtZW50b3MgZGVsIHByb3llY3RvLiIgewogICAgICAgICAgICB0YWdzICJPcmFjbGUgQ2xvdWQiCiAgICAgICAgfQoKICAgICAgICB0ZWxlZ3JhbSA9IHNvZnR3YXJlU3lzdGVtICJUZWxlZ3JhbSBQbGF0Zm9ybSIgIkNhbmFsIGV4dGVybm8gcGFyYSBpbnRlcmFjY2nDs24gY29udmVyc2FjaW9uYWwgeSBub3RpZmljYWNpb25lcyBoYWNpYSBkZXZlbG9wZXJzLiIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCBTeXN0ZW0iCiAgICAgICAgfQoKICAgICAgICBvcGVuYWkgPSBzb2Z0d2FyZVN5c3RlbSAiT3BlbkFJIEFQSSIgIlNlcnZpY2lvIGV4dGVybm8gdXRpbGl6YWRvIHBvciBlbCBBSSBTZXJ2aWNlIHBhcmEgZ2VuZXJhY2nDs24gZGUgdGFyZWFzIHN1Z2VyaWRhcyBhIHBhcnRpciBkZSBkb2N1bWVudG9zLiIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCBTeXN0ZW0iCiAgICAgICAgfQoKICAgICAgICBqaXJhID0gc29mdHdhcmVTeXN0ZW0gIkppcmEgU2VydmljZSIgIlNpc3RlbWEgZXh0ZXJubyBkb25kZSBzZSByZWdpc3RyYW4gdGlja2V0cyBjdWFuZG8gZmFsbGEgZWwgcXVhbGl0eSBnYXRlIGRlbCBkZXNwbGllZ3VlLiIgewogICAgICAgICAgICB0YWdzICJFeHRlcm5hbCBTeXN0ZW0iCiAgICAgICAgfQoKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBSZWxhY2lvbmVzIGRlIG5lZ29jaW8geSB1c28KICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCiAgICAgICAgbWFuYWdlciAtPiBvcmFjbGVKYXZhQm90ICJHZXN0aW9uYSBwcm95ZWN0b3MsIGVxdWlwb3MsIHRhcmVhcywgZG9jdW1lbnRvcywgS1BJcyB5IGFuw6FsaXNpcyBkZSBkdXBsaWNhZG9zIgogICAgICAgIGRldmVsb3BlciAtPiBvcmFjbGVKYXZhQm90ICJDb25zdWx0YSB5IGFjdHVhbGl6YSB0YXJlYXMgZGVzZGUgbGEgV2ViIG8gVGVsZWdyYW0iCiAgICAgICAgZGV2ZWxvcGVyIC0+IHRlbGVncmFtICJFbnbDrWEgY29tYW5kb3MgeSByZWNpYmUgbm90aWZpY2FjaW9uZXMiCiAgICAgICAgZGV2b3BzRW5naW5lZXIgLT4gZ2l0aHViICJNYW50aWVuZSByZXBvc2l0b3Jpb3MgeSByZXZpc2EgY2FtYmlvcyIKICAgICAgICBkZXZvcHNFbmdpbmVlciAtPiBvY2lEZXZPcHMgIlN1cGVydmlzYSBwaXBlbGluZXMgeSBkZXNwbGllZ3VlcyIKCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgICAgICAgLy8gUmVsYWNpb25lcyBkZWwgc2lzdGVtYSBwcmluY2lwYWwgYSBuaXZlbCBjb250ZXh0bwogICAgICAgIC8vID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQoKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IHRlbGVncmFtICJFbnbDrWEgeSByZWNpYmUgbWVuc2FqZXMgbWVkaWFudGUgd2ViaG9vayIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9wZW5haSAiU29saWNpdGEgZ2VuZXJhY2nDs24gZGUgdGFyZWFzIHN1Z2VyaWRhcyIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9yYWNsZURiRXh0ZXJuYWwgIlVzYSBjb21vIHBlcnNpc3RlbmNpYSB0cmFuc2FjY2lvbmFsIHkgbW90b3IgZGUgdmVjdG9yIHNlYXJjaCIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9iamVjdFN0b3JhZ2VFeHRlcm5hbCAiQWxtYWNlbmEgeSByZWN1cGVyYSBkb2N1bWVudG9zIGRlIHByb3llY3RvIgogICAgICAgIG9yYWNsZUphdmFCb3QgLT4gamlyYSAiR2VuZXJhIHRpY2tldHMgYW50ZSBmYWxsYXMgZGVsIHF1YWxpdHkgZ2F0ZSIKICAgICAgICBvcmFjbGVKYXZhQm90IC0+IG9rZSAiU2UgZWplY3V0YSBjb21vIHNlcnZpY2lvcyBjb250ZW5lcml6YWRvcyBlbiBwcm9kdWNjacOzbiIKCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgICAgICAgLy8gUmVsYWNpb25lcyBlbnRyZSBjb250YWluZXJzCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIG1hbmFnZXIgLT4gbmdpbnhJbmdyZXNzICJBY2NlZGUgYWwgc2lzdGVtYSBXZWIgbWVkaWFudGUgSFRUUFMiCiAgICAgICAgZGV2ZWxvcGVyIC0+IG5naW54SW5ncmVzcyAiQWNjZWRlIGFsIHNpc3RlbWEgV2ViIG1lZGlhbnRlIEhUVFBTIgoKICAgICAgICBuZ2lueEluZ3Jlc3MgLT4gYmFja2VuZCAiRW5ydXRhIHRyw6FmaWNvIGhhY2lhIGxhIHZlcnNpw7NuIGFjdGl2YSBkZWwgYmFja2VuZCIKICAgICAgICBiYWNrZW5kIC0+IHdlYkZyb250ZW5kICJTaXJ2ZSBhc3NldHMgZXN0w6F0aWNvcyBkZWwgZnJvbnRlbmQgZW1iZWJpZG8iCiAgICAgICAgd2ViRnJvbnRlbmQgLT4gYmFja2VuZCAiQ29uc3VtZSBBUElzIFJFU1QgcHJvdGVnaWRhcyIgIkhUVFBTIC8gSlNPTiIKCiAgICAgICAgZGV2ZWxvcGVyIC0+IHRlbGVncmFtICJJbnRlcmFjdMO6YSBjb24gZWwgYm90IgogICAgICAgIHRlbGVncmFtIC0+IHRlbGVncmFtQm90U2VydmljZSAiRW52w61hIGFjdHVhbGl6YWNpb25lcyBtZWRpYW50ZSB3ZWJob29rIiAiSFRUUFMiCiAgICAgICAgdGVsZWdyYW1Cb3RTZXJ2aWNlIC0+IHRlbGVncmFtICJFbnbDrWEgcmVzcHVlc3RhcyB5IG5vdGlmaWNhY2lvbmVzIiAiSFRUUFMiCgogICAgICAgIHRlbGVncmFtQm90U2VydmljZSAtPiBiYWNrZW5kICJDb25zdWx0YSB5IGFjdHVhbGl6YSBpbmZvcm1hY2nDs24gZGUgcHJveWVjdG9zIHkgdGFyZWFzIiAiSFRUUFMgLyBKU09OIgogICAgICAgIHRlbGVncmFtQm90U2VydmljZSAtPiBrYWZrYUNsdXN0ZXIgIlB1YmxpY2EgeSBjb25zdW1lIGV2ZW50b3MgZGUgbm90aWZpY2FjacOzbiIgIkthZmthIgoKICAgICAgICBiYWNrZW5kIC0+IGRhdGFiYXNlICJMZWUgeSBlc2NyaWJlIGRhdG9zIHRyYW5zYWNjaW9uYWxlcywgZW1iZWRkaW5ncyB5IHJlc3VsdGFkb3MgZGUgdmVjdG9yIHNlYXJjaCIgIkpEQkMgLyBPcmFjbGUgV2FsbGV0IgogICAgICAgIGJhY2tlbmQgLT4gb2JqZWN0U3RvcmFnZUNvbnRhaW5lciAiR3VhcmRhIHkgcmVjdXBlcmEgZG9jdW1lbnRvcyBkZSBwcm95ZWN0byIgIk9DSSBTREsgLyBIVFRQUyIKICAgICAgICBiYWNrZW5kIC0+IGthZmthQ2x1c3RlciAiUHVibGljYSBzb2xpY2l0dWRlcyBkZSBnZW5lcmFjacOzbiBJQSB5IGV2ZW50b3MgZGUgdGFyZWEiICJLYWZrYSIKICAgICAgICBiYWNrZW5kIC0+IGthZmthQ2x1c3RlciAiQ29uc3VtZSByZXNwdWVzdGFzIGRlIGdlbmVyYWNpw7NuIElBIHkgZXZlbnRvcyByZWxldmFudGVzIiAiS2Fma2EiCgogICAgICAgIGthZmthQ2x1c3RlciAtPiB6b29rZWVwZXJFbnNlbWJsZSAiVXNhIGNvb3JkaW5hY2nDs24gZGUgYnJva2VycyIgIlpvb2tlZXBlciBwcm90b2NvbCIKICAgICAgICBhaVNlcnZpY2UgLT4ga2Fma2FDbHVzdGVyICJDb25zdW1lIHNvbGljaXR1ZGVzIGRlIGdlbmVyYWNpw7NuIGRlIGJhY2tsb2cgeSBwdWJsaWNhIHJlc3VsdGFkb3MiICJLYWZrYSIKICAgICAgICBhaVNlcnZpY2UgLT4gb2JqZWN0U3RvcmFnZUNvbnRhaW5lciAiTGVlIGRvY3VtZW50b3MgcGFyYSBhbsOhbGlzaXMiICJPQ0kgU0RLIC8gSFRUUFMiCiAgICAgICAgYWlTZXJ2aWNlIC0+IG9wZW5haSAiU29saWNpdGEgZ2VuZXJhY2nDs24gZGUgdGFyZWFzIHN1Z2VyaWRhcyIgIkhUVFBTIC8gSlNPTiIKCiAgICAgICAgYmFja2VuZCAtPiBhaVNlcnZpY2UgIlB1ZWRlIGNvbnN1bHRhciBlc3RhZG8gb3BlcmF0aXZvIGRlbCBzZXJ2aWNpbyBJQSIgIkhUVFAiCiAgICAgICAgYmFja2VuZCAtPiByZWdyZXNzaW9uVGVzdFJ1bm5lciAiRXhwb25lIGVuZHBvaW50cyBldmFsdWFkb3MgcG9yIHBydWViYXMgZGUgcmVncmVzacOzbiIgIkhUVFBTIgoKICAgICAgICBjaWNkT3JjaGVzdHJhdG9yIC0+IHJlZ3Jlc3Npb25UZXN0UnVubmVyICJFamVjdXRhIHBydWViYXMgZGUgcmVncmVzacOzbiBjb250cmEgY2FuZGlkYXRvIiAiQ0xJIC8gSFRUUCIKICAgICAgICBjaWNkT3JjaGVzdHJhdG9yIC0+IG5naW54SW5ncmVzcyAiUHJvbXVldmUgdHLDoWZpY28gZW50cmUgYmFja2VuZC1ibHVlIHkgYmFja2VuZC1ncmVlbiIgIkRlcGxveW1lbnQgYXV0b21hdGlvbiIKICAgICAgICBjaWNkT3JjaGVzdHJhdG9yIC0+IGppcmEgIkNyZWEgdGlja2V0IHNpIGZhbGxhIGVsIHF1YWxpdHkgZ2F0ZSIgIkhUVFBTIC8gQVBJIgoKICAgICAgICAKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KICAgICAgICAvLyBSZWxhY2lvbmVzIGludGVybmFzIGRlbCBTcHJpbmcgQm9vdCBCYWNrZW5kCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CgogICAgICAgIHdlYkZyb250ZW5kIC0+IGF1dGhDb21wb25lbnQgIlNvbGljaXRhIGF1dGVudGljYWNpw7NuIHkgcmVjaWJlIHRva2VuIEpXVCIgIkhUVFBTIC8gSlNPTiIKICAgICAgICB3ZWJGcm9udGVuZCAtPiBzZWN1cml0eUNvbXBvbmVudCAiRW52w61hIHNvbGljaXR1ZGVzIHByb3RlZ2lkYXMgY29uIHRva2VuIEpXVCIgIkhUVFBTIC8gSlNPTiIKCiAgICAgICAgYXV0aENvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiQ29uc3VsdGEgY3JlZGVuY2lhbGVzIHkgZGF0b3MgZGUgdXN1YXJpbyIKICAgICAgICBzZWN1cml0eUNvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiQ29uc3VsdGEgcm9sZXMsIHBlcm1pc29zIHkgbWVtYnJlc8OtYXMiCgogICAgICAgIHNlY3VyaXR5Q29tcG9uZW50IC0+IHVzZXJNYW5hZ2VtZW50Q29tcG9uZW50ICJBdXRvcml6YSBvcGVyYWNpb25lcyBkZSB1c3VhcmlvcyIKICAgICAgICBzZWN1cml0eUNvbXBvbmVudCAtPiB0ZWFtTWFuYWdlbWVudENvbXBvbmVudCAiQXV0b3JpemEgb3BlcmFjaW9uZXMgZGUgZXF1aXBvcyIKICAgICAgICBzZWN1cml0eUNvbXBvbmVudCAtPiBwcm9qZWN0TWFuYWdlbWVudENvbXBvbmVudCAiQXV0b3JpemEgb3BlcmFjaW9uZXMgZGUgcHJveWVjdG9zIgogICAgICAgIHNlY3VyaXR5Q29tcG9uZW50IC0+IHRhc2tNYW5hZ2VtZW50Q29tcG9uZW50ICJBdXRvcml6YSBvcGVyYWNpb25lcyBkZSB0YXJlYXMiCiAgICAgICAgc2VjdXJpdHlDb21wb25lbnQgLT4gZGFzaGJvYXJkS3BpQ29tcG9uZW50ICJBdXRvcml6YSBjb25zdWx0YSBkZSBtw6l0cmljYXMiCiAgICAgICAgc2VjdXJpdHlDb21wb25lbnQgLT4gYWlCYWNrbG9nQ29tcG9uZW50ICJBdXRvcml6YSBnZW5lcmFjacOzbiBkZSBiYWNrbG9nIElBIgogICAgICAgIHNlY3VyaXR5Q29tcG9uZW50IC0+IGR1cGxpY2F0ZURldGVjdGlvbkNvbXBvbmVudCAiQXV0b3JpemEgYW7DoWxpc2lzIGRlIGR1cGxpY2Fkb3MiCgogICAgICAgIHVzZXJNYW5hZ2VtZW50Q29tcG9uZW50IC0+IHBlcnNpc3RlbmNlQ29tcG9uZW50ICJQZXJzaXN0ZSB1c3VhcmlvcywgY3JlZGVuY2lhbGVzLCByb2xlcyB5IGVzdGFkbyIKICAgICAgICB0ZWFtTWFuYWdlbWVudENvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiUGVyc2lzdGUgZXF1aXBvcyB5IG1pZW1icm9zIgogICAgICAgIHByb2plY3RNYW5hZ2VtZW50Q29tcG9uZW50IC0+IHBlcnNpc3RlbmNlQ29tcG9uZW50ICJQZXJzaXN0ZSBwcm95ZWN0b3MsIG1pZW1icm9zIHkgZG9jdW1lbnRvcyIKICAgICAgICB0YXNrTWFuYWdlbWVudENvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiUGVyc2lzdGUgdGFyZWFzLCBjb21lbnRhcmlvcywgcHJpb3JpZGFkZXMsIGVzdGFkb3MgeSBhc2lnbmFjaW9uZXMiCiAgICAgICAgc3ByaW50TWFuYWdlbWVudENvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiUGVyc2lzdGUgc3ByaW50cyIKICAgICAgICBhc3NpZ25tZW50Q29tcG9uZW50IC0+IHBlcnNpc3RlbmNlQ29tcG9uZW50ICJQZXJzaXN0ZSByZWxhY2lvbmVzIHVzdWFyaW8tdGFyZWEiCiAgICAgICAgZGFzaGJvYXJkS3BpQ29tcG9uZW50IC0+IHBlcnNpc3RlbmNlQ29tcG9uZW50ICJDb25zdWx0YSBkYXRvcyBwYXJhIEtQSXMgeSBwcm9ncmVzbyIKCiAgICAgICAgcHJvamVjdE1hbmFnZW1lbnRDb21wb25lbnQgLT4gZG9jdW1lbnRTdG9yYWdlQ29tcG9uZW50ICJDb29yZGluYSBjYXJnYSB5IGNvbnN1bHRhIGRlIGRvY3VtZW50b3MiCiAgICAgICAgZG9jdW1lbnRTdG9yYWdlQ29tcG9uZW50IC0+IG9iamVjdFN0b3JhZ2VDb250YWluZXIgIkd1YXJkYSB5IHJlY3VwZXJhIGFyY2hpdm9zIiAiT0NJIFNESyAvIEhUVFBTIgogICAgICAgIGRvY3VtZW50U3RvcmFnZUNvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiUGVyc2lzdGUgbWV0YWRhdG9zIGRlIGRvY3VtZW50b3MiCgogICAgICAgIHRhc2tNYW5hZ2VtZW50Q29tcG9uZW50IC0+IHZlY3RvckVtYmVkZGluZ0NvbXBvbmVudCAiU29saWNpdGEgZ2VuZXJhY2nDs24gbyBhY3R1YWxpemFjacOzbiBkZSBlbWJlZGRpbmdzIgogICAgICAgIHZlY3RvckVtYmVkZGluZ0NvbXBvbmVudCAtPiBwZXJzaXN0ZW5jZUNvbXBvbmVudCAiUGVyc2lzdGUgZW1iZWRkaW5ncyBlbiBUQVNLX1ZFQ1RPUl9FTUJFRERJTkciCiAgICAgICAgZHVwbGljYXRlRGV0ZWN0aW9uQ29tcG9uZW50IC0+IHBlcnNpc3RlbmNlQ29tcG9uZW50ICJDb25zdWx0YSBlbWJlZGRpbmdzIHkgcGVyc2lzdGUgcnVucy9yZXN1bHRhZG9zIgogICAgICAgIGR1cGxpY2F0ZURldGVjdGlvbkNvbXBvbmVudCAtPiBkYXNoYm9hcmRLcGlDb21wb25lbnQgIkV4cG9uZSByZXN1bHRhZG9zIHBhcmEgdmlzdWFsaXphY2nDs24iCgogICAgICAgIHByb2plY3RNYW5hZ2VtZW50Q29tcG9uZW50IC0+IGFpQmFja2xvZ0NvbXBvbmVudCAiU29saWNpdGEgZ2VuZXJhY2nDs24gZGUgYmFja2xvZyBkZXNkZSBkb2N1bWVudG9zIgogICAgICAgIGFpQmFja2xvZ0NvbXBvbmVudCAtPiBtZXNzYWdpbmdDb21wb25lbnQgIlB1YmxpY2Egc29saWNpdHVkIGRlIGdlbmVyYWNpw7NuIElBIiAiS2Fma2EiCiAgICAgICAgbWVzc2FnaW5nQ29tcG9uZW50IC0+IGFpQmFja2xvZ0NvbXBvbmVudCAiRW50cmVnYSByZXN1bHRhZG9zIGRlIGdlbmVyYWNpw7NuIElBIiAiS2Fma2EiCiAgICAgICAgYWlCYWNrbG9nQ29tcG9uZW50IC0+IHRhc2tNYW5hZ2VtZW50Q29tcG9uZW50ICJDcmVhIHRhcmVhcyBhcHJvYmFkYXMgZGVzZGUgc3VnZXJlbmNpYXMgSUEiCiAgICAgICAgYWlCYWNrbG9nQ29tcG9uZW50IC0+IHBlcnNpc3RlbmNlQ29tcG9uZW50ICJQZXJzaXN0ZSBzdWdlcmVuY2lhcyBlbiBUQVJFQV9BSV9TVUdFUklEQSIKCiAgICAgICAgdGFza01hbmFnZW1lbnRDb21wb25lbnQgLT4gbWVzc2FnaW5nQ29tcG9uZW50ICJQdWJsaWNhIGV2ZW50b3MgZGUgdGFyZWEiICJLYWZrYSIKICAgICAgICBtZXNzYWdpbmdDb21wb25lbnQgLT4ga2Fma2FDbHVzdGVyICJQdWJsaWNhIHkgY29uc3VtZSBldmVudG9zIiAiS2Fma2EiCiAgICAgICAgCiAgICAgICAgLy8gPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09CiAgICAgICAgLy8gUmVsYWNpb25lcyBEZXZPcHMKICAgICAgICAvLyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0KCiAgICAgICAgZ2l0aHViIC0+IGdpdGh1YkFjdGlvbnMgIkRpc3BhcmEgd29ya2Zsb3dzIGRlIGludGVncmFjacOzbiIKICAgICAgICBnaXRodWJBY3Rpb25zIC0+IGdpdGh1YiAiQWN0dWFsaXphIGFydGVmYWN0b3MgY29uc3RydWlkb3MgZGVsIGZyb250ZW5kIGhhY2lhIGVsIGJhY2tlbmQiCiAgICAgICAgZ2l0aHViIC0+IG9jaURldk9wcyAiRGlzcGFyYSBwaXBlbGluZXMgcG9yIGNhbWJpb3MgZW4gcmVwb3NpdG9yaW9zIgogICAgICAgIG9jaURldk9wcyAtPiBnaXRodWIgIk9idGllbmUgY8OzZGlnbyBmdWVudGUiCiAgICAgICAgb2NpRGV2T3BzIC0+IG9jaXIgIkNvbnN0cnV5ZSB5IHB1YmxpY2EgaW3DoWdlbmVzIERvY2tlciIKICAgICAgICBvY2lEZXZPcHMgLT4gb2tlICJEZXNwbGllZ2EgdmVyc2lvbmVzIGNhbmRpZGF0YXMgeSBwcm9tdWV2ZSB0csOhZmljbyIKICAgICAgICBva2UgLT4gb2NpciAiT2J0aWVuZSBpbcOhZ2VuZXMgZGUgY29udGVuZWRvciIKICAgICAgICBvY2lEZXZPcHMgLT4gamlyYSAiQ3JlYSB0aWNrZXRzIGN1YW5kbyBmYWxsYW4gcHJ1ZWJhcyBvIGhlYWx0aCBjaGVja3MiCiAgICB9CgogICAgdmlld3MgewogICAgICAgIHN5c3RlbUxhbmRzY2FwZSAiU3lzdGVtTGFuZHNjYXBlIiB7CiAgICAgICAgICAgIHRpdGxlICJTeXN0ZW0gTGFuZHNjYXBlIC0gRWNvc2lzdGVtYSBPcmFjbGUgSmF2YSBCb3QiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBnZW5lcmFsIGRlbCBlY29zaXN0ZW1hIGRlIHNpc3RlbWFzLCBwbGF0YWZvcm1hcyB5IGFjdG9yZXMgcXVlIGludGVyYWN0w7phbiBjb24gT3JhY2xlIEphdmEgQm90LiIKICAgICAgICAgICAgaW5jbHVkZSAqCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIHN5c3RlbUNvbnRleHQgb3JhY2xlSmF2YUJvdCAiU3lzdGVtQ29udGV4dCIgewogICAgICAgICAgICB0aXRsZSAiU3lzdGVtIENvbnRleHQgLSBPcmFjbGUgSmF2YSBCb3QiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBkZSBjb250ZXh0byBkZWwgc2lzdGVtYSBPcmFjbGUgSmF2YSBCb3QsIHN1cyB1c3VhcmlvcyBwcmluY2lwYWxlcyB5IGRlcGVuZGVuY2lhcyBleHRlcm5hcy4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBjb250YWluZXIgb3JhY2xlSmF2YUJvdCAiQ29udGFpbmVyc1J1bnRpbWUiIHsKICAgICAgICAgICAgdGl0bGUgIkNvbnRhaW5lciBEaWFncmFtIC0gUnVudGltZSBPcmFjbGUgSmF2YSBCb3QiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBkZSBydW50aW1lIHByaW5jaXBhbCBkZWwgc2lzdGVtYTogZW50cmFkYSBXZWIsIGJhY2tlbmQsIFRlbGVncmFtIEJvdCBTZXJ2aWNlLCBBSSBTZXJ2aWNlLCBtZW5zYWplcsOtYSB5IHBlcnNpc3RlbmNpYS4iCiAgICAgICAgICAgIGluY2x1ZGUgbWFuYWdlcgogICAgICAgICAgICBpbmNsdWRlIGRldmVsb3BlcgogICAgICAgICAgICBpbmNsdWRlIHRlbGVncmFtCiAgICAgICAgICAgIGluY2x1ZGUgb3BlbmFpCiAgICAgICAgICAgIGluY2x1ZGUgbmdpbnhJbmdyZXNzCiAgICAgICAgICAgIGluY2x1ZGUgd2ViRnJvbnRlbmQKICAgICAgICAgICAgaW5jbHVkZSBiYWNrZW5kCiAgICAgICAgICAgIGluY2x1ZGUgdGVsZWdyYW1Cb3RTZXJ2aWNlCiAgICAgICAgICAgIGluY2x1ZGUgYWlTZXJ2aWNlCiAgICAgICAgICAgIGluY2x1ZGUga2Fma2FDbHVzdGVyCiAgICAgICAgICAgIGluY2x1ZGUgem9va2VlcGVyRW5zZW1ibGUKICAgICAgICAgICAgaW5jbHVkZSBkYXRhYmFzZQogICAgICAgICAgICBpbmNsdWRlIG9iamVjdFN0b3JhZ2VDb250YWluZXIKICAgICAgICAgICAgYXV0b2xheW91dCBscgogICAgICAgIH0KCiAgICAgICAgY29udGFpbmVyIG9yYWNsZUphdmFCb3QgIkNvbnRhaW5lcnNEZXZPcHMiIHsKICAgICAgICAgICAgdGl0bGUgIkNvbnRhaW5lciBEaWFncmFtIC0gRGV2T3BzIHkgQmx1ZS9HcmVlbiIKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlZpc3RhIGRlIGludGVncmFjacOzbiB5IGRlc3BsaWVndWUgY29udGludW86IHJlcG9zaXRvcmlvcywgcGlwZWxpbmVzLCByZWdpc3RyeSwgcHJ1ZWJhcywgcHJvbW9jacOzbiBCbHVlL0dyZWVuIHkgSmlyYS4iCiAgICAgICAgICAgIGluY2x1ZGUgZGV2b3BzRW5naW5lZXIKICAgICAgICAgICAgaW5jbHVkZSBnaXRodWIKICAgICAgICAgICAgaW5jbHVkZSBnaXRodWJBY3Rpb25zCiAgICAgICAgICAgIGluY2x1ZGUgb2NpRGV2T3BzCiAgICAgICAgICAgIGluY2x1ZGUgb2NpcgogICAgICAgICAgICBpbmNsdWRlIG9rZQogICAgICAgICAgICBpbmNsdWRlIGppcmEKICAgICAgICAgICAgaW5jbHVkZSBjaWNkT3JjaGVzdHJhdG9yCiAgICAgICAgICAgIGluY2x1ZGUgcmVncmVzc2lvblRlc3RSdW5uZXIKICAgICAgICAgICAgaW5jbHVkZSBuZ2lueEluZ3Jlc3MKICAgICAgICAgICAgaW5jbHVkZSBiYWNrZW5kCiAgICAgICAgICAgIGF1dG9sYXlvdXQgbHIKICAgICAgICB9CgogICAgICAgIGNvbnRhaW5lciBvcmFjbGVKYXZhQm90ICJDb250YWluZXJzRGF0YUFJIiB7CiAgICAgICAgICAgIHRpdGxlICJDb250YWluZXIgRGlhZ3JhbSAtIERhdG9zIGUgSUEiCiAgICAgICAgICAgIGRlc2NyaXB0aW9uICJWaXN0YSBkZSBjYXBhY2lkYWRlcyBkZSBkYXRvcyBlIGludGVsaWdlbmNpYSBhcnRpZmljaWFsOiBkb2N1bWVudG9zLCBnZW5lcmFjacOzbiBkZSBiYWNrbG9nLCBlbWJlZGRpbmdzLCB2ZWN0b3Igc2VhcmNoIHkgcmVzdWx0YWRvcyBkZSBkdXBsaWNpZGFkLiIKICAgICAgICAgICAgaW5jbHVkZSBtYW5hZ2VyCiAgICAgICAgICAgIGluY2x1ZGUgb3BlbmFpCiAgICAgICAgICAgIGluY2x1ZGUgYmFja2VuZAogICAgICAgICAgICBpbmNsdWRlIGFpU2VydmljZQogICAgICAgICAgICBpbmNsdWRlIGthZmthQ2x1c3RlcgogICAgICAgICAgICBpbmNsdWRlIGRhdGFiYXNlCiAgICAgICAgICAgIGluY2x1ZGUgb2JqZWN0U3RvcmFnZUNvbnRhaW5lcgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBjb21wb25lbnQgYmFja2VuZCAiQmFja2VuZENvbXBvbmVudHMiIHsKICAgICAgICAgICAgdGl0bGUgIkNvbXBvbmVudCBEaWFncmFtIC0gU3ByaW5nIEJvb3QgQmFja2VuZCIKICAgICAgICAgICAgZGVzY3JpcHRpb24gIlZpc3RhIGludGVybmEgZGVsIGJhY2tlbmQgU3ByaW5nIEJvb3QsIGJhc2FkYSBlbiBsb3MgY29tcG9uZW50ZXMgaWRlbnRpZmljYWRvcyBwb3IgRXZlbnQgU3Rvcm1pbmcgeSByZWZsZWphZG9zIGVuIGxhIGVzdHJ1Y3R1cmEgcG9yIGZlYXR1cmVzIGRlbCByZXBvc2l0b3Jpby4iCiAgICAgICAgICAgIGluY2x1ZGUgKgogICAgICAgICAgICBhdXRvbGF5b3V0IGxyCiAgICAgICAgfQoKICAgICAgICBzdHlsZXMgewogICAgICAgICAgICBlbGVtZW50ICJQZXJzb24iIHsKICAgICAgICAgICAgICAgIHNoYXBlIHBlcnNvbgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMDg0MjdCCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIlNvZnR3YXJlIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMTE2OEJECiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkV4dGVybmFsIFN5c3RlbSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjOTk5OTk5CiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIk9yYWNsZSBDbG91ZCIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjQzc0NjM0CiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkFwcGxpY2F0aW9uIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICM0MzhERDUKICAgICAgICAgICAgICAgIGNvbG9yICNGRkZGRkYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiV2ViIEFwcGxpY2F0aW9uIiB7CiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICMyRjk1RDYKICAgICAgICAgICAgICAgIGNvbG9yICNGRkZGRkYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiR2F0ZXdheSIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjRjM5QzEyCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIk1lc3NhZ2luZyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjOEU0NEFECiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkRhdGFiYXNlIiB7CiAgICAgICAgICAgICAgICBzaGFwZSBjeWxpbmRlcgogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMjdBRTYwCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIlN0b3JhZ2UiIHsKICAgICAgICAgICAgICAgIHNoYXBlIGN5bGluZGVyCiAgICAgICAgICAgICAgICBiYWNrZ3JvdW5kICMxNkEwODUKICAgICAgICAgICAgICAgIGNvbG9yICNGRkZGRkYKICAgICAgICAgICAgfQoKICAgICAgICAgICAgZWxlbWVudCAiVGVzdGluZyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjN0Y4QzhECiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KCiAgICAgICAgICAgIGVsZW1lbnQgIkRldk9wcyIgewogICAgICAgICAgICAgICAgYmFja2dyb3VuZCAjMzQ0OTVFCiAgICAgICAgICAgICAgICBjb2xvciAjRkZGRkZGCiAgICAgICAgICAgIH0KICAgICAgICB9CgogICAgICAgIHRoZW1lIGRlZmF1bHQKICAgIH0KfQ==",
     "structurizr.inspection.info" : "0",
     "structurizr.inspection.ignore" : "0",
     "structurizr.inspection.warning" : "0"
   },
   "views" : {
+    "componentViews" : [ {
+      "automaticLayout" : {
+        "edgeSeparation" : 50,
+        "nodeSeparation" : 50,
+        "rankDirection" : "LeftRight",
+        "rankSeparation" : 100,
+        "vertices" : true
+      },
+      "containerId" : "7",
+      "description" : "Vista interna del backend Spring Boot, basada en los componentes identificados por Event Storming y reflejados en la estructura por features del repositorio.",
+      "elements" : [ {
+        "id" : "6",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "8",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "9",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "10",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "11",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "12",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "13",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "14",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "15",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "16",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "17",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "18",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "19",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "20",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "21",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "22",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "25",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "28",
+        "x" : 0,
+        "y" : 0
+      } ],
+      "externalContainerBoundariesVisible" : false,
+      "key" : "BackendComponents",
+      "name" : "Component View: Oracle Java Bot - Spring Boot Backend",
+      "order" : 6,
+      "relationships" : [ {
+        "id" : "100"
+      }, {
+        "id" : "101"
+      }, {
+        "id" : "102"
+      }, {
+        "id" : "103"
+      }, {
+        "id" : "104"
+      }, {
+        "id" : "105"
+      }, {
+        "id" : "106"
+      }, {
+        "id" : "107"
+      }, {
+        "id" : "76"
+      }, {
+        "id" : "77"
+      }, {
+        "id" : "78"
+      }, {
+        "id" : "79"
+      }, {
+        "id" : "80"
+      }, {
+        "id" : "81"
+      }, {
+        "id" : "82"
+      }, {
+        "id" : "83"
+      }, {
+        "id" : "84"
+      }, {
+        "id" : "85"
+      }, {
+        "id" : "86"
+      }, {
+        "id" : "87"
+      }, {
+        "id" : "88"
+      }, {
+        "id" : "89"
+      }, {
+        "id" : "90"
+      }, {
+        "id" : "91"
+      }, {
+        "id" : "92"
+      }, {
+        "id" : "93"
+      }, {
+        "id" : "94"
+      }, {
+        "id" : "95"
+      }, {
+        "id" : "96"
+      }, {
+        "id" : "97"
+      }, {
+        "id" : "98"
+      }, {
+        "id" : "99"
+      } ],
+      "title" : "Component Diagram - Spring Boot Backend"
+    } ],
     "configuration" : {
       "styles" : {
         "elements" : [ {
@@ -632,35 +1150,35 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "8",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "9",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "10",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "11",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "12",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "13",
-        "x" : 0,
-        "y" : 0
-      }, {
         "id" : "23",
         "x" : 0,
         "y" : 0
       }, {
         "id" : "24",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "25",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "26",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "27",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "28",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "38",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "39",
         "x" : 0,
         "y" : 0
       } ],
@@ -669,35 +1187,7 @@
       "name" : "Container View: Oracle Java Bot",
       "order" : 3,
       "relationships" : [ {
-        "id" : "28"
-      }, {
-        "id" : "37"
-      }, {
-        "id" : "38"
-      }, {
-        "id" : "39"
-      }, {
-        "id" : "40"
-      }, {
-        "id" : "41"
-      }, {
-        "id" : "42"
-      }, {
         "id" : "43"
-      }, {
-        "id" : "45"
-      }, {
-        "id" : "46"
-      }, {
-        "id" : "47"
-      }, {
-        "id" : "48"
-      }, {
-        "id" : "49"
-      }, {
-        "id" : "50"
-      }, {
-        "id" : "51"
       }, {
         "id" : "52"
       }, {
@@ -708,6 +1198,34 @@
         "id" : "55"
       }, {
         "id" : "56"
+      }, {
+        "id" : "57"
+      }, {
+        "id" : "58"
+      }, {
+        "id" : "60"
+      }, {
+        "id" : "61"
+      }, {
+        "id" : "62"
+      }, {
+        "id" : "63"
+      }, {
+        "id" : "64"
+      }, {
+        "id" : "65"
+      }, {
+        "id" : "66"
+      }, {
+        "id" : "67"
+      }, {
+        "id" : "68"
+      }, {
+        "id" : "69"
+      }, {
+        "id" : "70"
+      }, {
+        "id" : "71"
       } ],
       "softwareSystemId" : "4",
       "title" : "Container Diagram - Runtime Oracle Java Bot"
@@ -733,35 +1251,35 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "14",
+        "id" : "29",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "15",
+        "id" : "30",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "16",
+        "id" : "31",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "17",
+        "id" : "32",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "18",
+        "id" : "33",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "19",
+        "id" : "34",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "20",
+        "id" : "35",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "25",
+        "id" : "40",
         "x" : 0,
         "y" : 0
       } ],
@@ -770,35 +1288,35 @@
       "name" : "Container View: Oracle Java Bot",
       "order" : 4,
       "relationships" : [ {
-        "id" : "29"
+        "id" : "108"
       }, {
-        "id" : "30"
+        "id" : "109"
       }, {
-        "id" : "39"
+        "id" : "110"
       }, {
-        "id" : "57"
+        "id" : "111"
       }, {
-        "id" : "58"
+        "id" : "112"
       }, {
-        "id" : "59"
+        "id" : "113"
       }, {
-        "id" : "60"
+        "id" : "114"
       }, {
-        "id" : "61"
+        "id" : "115"
       }, {
-        "id" : "62"
+        "id" : "44"
       }, {
-        "id" : "63"
+        "id" : "45"
       }, {
-        "id" : "64"
+        "id" : "54"
       }, {
-        "id" : "65"
+        "id" : "72"
       }, {
-        "id" : "66"
+        "id" : "73"
       }, {
-        "id" : "67"
+        "id" : "74"
       }, {
-        "id" : "68"
+        "id" : "75"
       } ],
       "softwareSystemId" : "4",
       "title" : "Container Diagram - DevOps y Blue/Green"
@@ -820,23 +1338,23 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "9",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "10",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "12",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "13",
-        "x" : 0,
-        "y" : 0
-      }, {
         "id" : "24",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "25",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "27",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "28",
+        "x" : 0,
+        "y" : 0
+      }, {
+        "id" : "39",
         "x" : 0,
         "y" : 0
       } ],
@@ -845,21 +1363,21 @@
       "name" : "Container View: Oracle Java Bot",
       "order" : 5,
       "relationships" : [ {
-        "id" : "48"
+        "id" : "63"
       }, {
-        "id" : "49"
+        "id" : "64"
       }, {
-        "id" : "50"
+        "id" : "65"
       }, {
-        "id" : "51"
+        "id" : "66"
       }, {
-        "id" : "53"
+        "id" : "68"
       }, {
-        "id" : "54"
+        "id" : "69"
       }, {
-        "id" : "55"
+        "id" : "70"
       }, {
-        "id" : "56"
+        "id" : "71"
       } ],
       "softwareSystemId" : "4",
       "title" : "Container Diagram - Datos e IA"
@@ -886,27 +1404,27 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "20",
+        "id" : "35",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "21",
+        "id" : "36",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "22",
+        "id" : "37",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "23",
+        "id" : "38",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "24",
+        "id" : "39",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "25",
+        "id" : "40",
         "x" : 0,
         "y" : 0
       } ],
@@ -915,27 +1433,27 @@
       "name" : "System Context View: Oracle Java Bot",
       "order" : 2,
       "relationships" : [ {
-        "id" : "26"
-      }, {
-        "id" : "27"
-      }, {
-        "id" : "28"
-      }, {
-        "id" : "31"
-      }, {
-        "id" : "32"
-      }, {
-        "id" : "33"
-      }, {
-        "id" : "34"
-      }, {
-        "id" : "35"
-      }, {
-        "id" : "36"
+        "id" : "41"
       }, {
         "id" : "42"
       }, {
-        "id" : "44"
+        "id" : "43"
+      }, {
+        "id" : "46"
+      }, {
+        "id" : "47"
+      }, {
+        "id" : "48"
+      }, {
+        "id" : "49"
+      }, {
+        "id" : "50"
+      }, {
+        "id" : "51"
+      }, {
+        "id" : "57"
+      }, {
+        "id" : "59"
       } ],
       "softwareSystemId" : "4",
       "title" : "System Context - Oracle Java Bot"
@@ -966,43 +1484,43 @@
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "16",
+        "id" : "31",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "17",
+        "id" : "32",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "18",
+        "id" : "33",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "19",
+        "id" : "34",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "20",
+        "id" : "35",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "21",
+        "id" : "36",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "22",
+        "id" : "37",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "23",
+        "id" : "38",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "24",
+        "id" : "39",
         "x" : 0,
         "y" : 0
       }, {
-        "id" : "25",
+        "id" : "40",
         "x" : 0,
         "y" : 0
       } ],
@@ -1011,47 +1529,47 @@
       "name" : "System Landscape View",
       "order" : 1,
       "relationships" : [ {
-        "id" : "26"
+        "id" : "108"
       }, {
-        "id" : "27"
+        "id" : "109"
       }, {
-        "id" : "28"
+        "id" : "110"
       }, {
-        "id" : "29"
+        "id" : "111"
       }, {
-        "id" : "30"
+        "id" : "112"
       }, {
-        "id" : "31"
+        "id" : "113"
       }, {
-        "id" : "32"
+        "id" : "114"
       }, {
-        "id" : "33"
+        "id" : "115"
       }, {
-        "id" : "34"
-      }, {
-        "id" : "35"
-      }, {
-        "id" : "36"
+        "id" : "41"
       }, {
         "id" : "42"
       }, {
+        "id" : "43"
+      }, {
         "id" : "44"
       }, {
-        "id" : "61"
+        "id" : "45"
       }, {
-        "id" : "62"
+        "id" : "46"
       }, {
-        "id" : "63"
+        "id" : "47"
       }, {
-        "id" : "64"
+        "id" : "48"
       }, {
-        "id" : "65"
+        "id" : "49"
       }, {
-        "id" : "66"
+        "id" : "50"
       }, {
-        "id" : "67"
+        "id" : "51"
       }, {
-        "id" : "68"
+        "id" : "57"
+      }, {
+        "id" : "59"
       } ],
       "title" : "System Landscape - Ecosistema Oracle Java Bot"
     } ]

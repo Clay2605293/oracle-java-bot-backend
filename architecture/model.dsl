@@ -25,6 +25,28 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
             backend = container "Spring Boot Backend" "API principal del sistema. Gestiona autenticación, autorización, usuarios, equipos, proyectos, tareas, sprints, KPIs, documentos, embeddings y detección de duplicados." "Java / Spring Boot" {
                 tags "Application"
+
+                authComponent = component "Authentication Component" "Valida credenciales, emite tokens JWT y habilita el acceso inicial al sistema." "Spring MVC Controller / Service"
+                securityComponent = component "Authorization and Security Component" "Valida permisos, roles y acceso a recursos protegidos mediante filtros JWT y configuración de seguridad." "Spring Security / JWT Filter"
+
+                userManagementComponent = component "User Management Component" "Administra usuarios, credenciales, roles, estado de usuario y datos operativos." "Spring Service / Repository"
+                teamManagementComponent = component "Team Management Component" "Administra equipos, miembros y relaciones entre usuarios." "Spring Service / Repository"
+                projectManagementComponent = component "Project Management Component" "Administra proyectos, miembros del proyecto y documentos asociados." "Spring Service / Repository"
+
+                taskManagementComponent = component "Task Management Component" "Gestiona ciclo de vida de tareas: creación, edición, eliminación, estado, prioridad, comentarios y asignaciones." "Spring Service / Repository"
+                sprintManagementComponent = component "Sprint Management Component" "Administra sprints y relación de tareas con periodos de trabajo." "Spring Service / Repository"
+                assignmentComponent = component "Assignment Component" "Gestiona responsables y relaciones usuario-tarea." "Spring Service / Repository"
+
+                dashboardKpiComponent = component "Dashboard and KPI Component" "Calcula progreso de proyectos, métricas de sprint y desempeño de developers." "Spring Service / Repository"
+
+                documentStorageComponent = component "Document Storage Component" "Registra metadatos de documentos y coordina almacenamiento en OCI Object Storage." "Spring Service / OCI SDK"
+
+                aiBacklogComponent = component "AI Backlog Generation Component" "Orquesta la generación de tareas sugeridas a partir de documentos mediante Kafka y AI Service." "Spring Service / Kafka Producer-Consumer"
+                vectorEmbeddingComponent = component "Vector Embedding Component" "Genera y actualiza embeddings vectoriales de tareas en Oracle Database 26ai." "Spring Service / Oracle 26ai"
+                duplicateDetectionComponent = component "Semantic Duplicate Detection Component" "Ejecuta detección de duplicados mediante Oracle Vector Search y persiste resultados." "Spring Service / Oracle Vector Search"
+
+                messagingComponent = component "Messaging Component" "Publica y consume eventos Kafka relacionados con tareas, generación IA y notificaciones." "Spring Kafka Producer / Consumer"
+                persistenceComponent = component "Persistence Component" "Encapsula acceso a datos transaccionales, tablas vectoriales, auditoría e integridad referencial." "Spring Data JPA / Oracle JDBC"
             }
 
             telegramBotService = container "Telegram Bot Service" "Servicio Java/Spring Boot separado del backend principal. Atiende webhooks de Telegram, resuelve comandos conversacionales y coordina notificaciones." "Java / Spring Boot" {
@@ -160,6 +182,51 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         cicdOrchestrator -> nginxIngress "Promueve tráfico entre backend-blue y backend-green" "Deployment automation"
         cicdOrchestrator -> jira "Crea ticket si falla el quality gate" "HTTPS / API"
 
+        
+        // =========================================================
+        // Relaciones internas del Spring Boot Backend
+        // =========================================================
+
+        webFrontend -> authComponent "Solicita autenticación y recibe token JWT" "HTTPS / JSON"
+        webFrontend -> securityComponent "Envía solicitudes protegidas con token JWT" "HTTPS / JSON"
+
+        authComponent -> persistenceComponent "Consulta credenciales y datos de usuario"
+        securityComponent -> persistenceComponent "Consulta roles, permisos y membresías"
+
+        securityComponent -> userManagementComponent "Autoriza operaciones de usuarios"
+        securityComponent -> teamManagementComponent "Autoriza operaciones de equipos"
+        securityComponent -> projectManagementComponent "Autoriza operaciones de proyectos"
+        securityComponent -> taskManagementComponent "Autoriza operaciones de tareas"
+        securityComponent -> dashboardKpiComponent "Autoriza consulta de métricas"
+        securityComponent -> aiBacklogComponent "Autoriza generación de backlog IA"
+        securityComponent -> duplicateDetectionComponent "Autoriza análisis de duplicados"
+
+        userManagementComponent -> persistenceComponent "Persiste usuarios, credenciales, roles y estado"
+        teamManagementComponent -> persistenceComponent "Persiste equipos y miembros"
+        projectManagementComponent -> persistenceComponent "Persiste proyectos, miembros y documentos"
+        taskManagementComponent -> persistenceComponent "Persiste tareas, comentarios, prioridades, estados y asignaciones"
+        sprintManagementComponent -> persistenceComponent "Persiste sprints"
+        assignmentComponent -> persistenceComponent "Persiste relaciones usuario-tarea"
+        dashboardKpiComponent -> persistenceComponent "Consulta datos para KPIs y progreso"
+
+        projectManagementComponent -> documentStorageComponent "Coordina carga y consulta de documentos"
+        documentStorageComponent -> objectStorageContainer "Guarda y recupera archivos" "OCI SDK / HTTPS"
+        documentStorageComponent -> persistenceComponent "Persiste metadatos de documentos"
+
+        taskManagementComponent -> vectorEmbeddingComponent "Solicita generación o actualización de embeddings"
+        vectorEmbeddingComponent -> persistenceComponent "Persiste embeddings en TASK_VECTOR_EMBEDDING"
+        duplicateDetectionComponent -> persistenceComponent "Consulta embeddings y persiste runs/resultados"
+        duplicateDetectionComponent -> dashboardKpiComponent "Expone resultados para visualización"
+
+        projectManagementComponent -> aiBacklogComponent "Solicita generación de backlog desde documentos"
+        aiBacklogComponent -> messagingComponent "Publica solicitud de generación IA" "Kafka"
+        messagingComponent -> aiBacklogComponent "Entrega resultados de generación IA" "Kafka"
+        aiBacklogComponent -> taskManagementComponent "Crea tareas aprobadas desde sugerencias IA"
+        aiBacklogComponent -> persistenceComponent "Persiste sugerencias en TAREA_AI_SUGERIDA"
+
+        taskManagementComponent -> messagingComponent "Publica eventos de tarea" "Kafka"
+        messagingComponent -> kafkaCluster "Publica y consume eventos" "Kafka"
+        
         // =========================================================
         // Relaciones DevOps
         // =========================================================
@@ -235,6 +302,13 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             include kafkaCluster
             include database
             include objectStorageContainer
+            autolayout lr
+        }
+
+        component backend "BackendComponents" {
+            title "Component Diagram - Spring Boot Backend"
+            description "Vista interna del backend Spring Boot, basada en los componentes identificados por Event Storming y reflejados en la estructura por features del repositorio."
+            include *
             autolayout lr
         }
 
