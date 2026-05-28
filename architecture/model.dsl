@@ -262,6 +262,16 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
         taskManagementComponent -> messagingComponent "Publica eventos de tarea" "Kafka"
         messagingComponent -> kafkaCluster "Publica y consume eventos" "Kafka"
+
+        manager -> webFrontend "Usa la interfaz Web para gestionar tareas y consultar resultados"
+        webFrontend -> taskManagementComponent "Solicita creación o actualización de tareas" "HTTPS / JSON"
+        webFrontend -> duplicateDetectionComponent "Solicita detección de tareas duplicadas" "HTTPS / JSON"
+        webFrontend -> dashboardKpiComponent "Consulta resultados de duplicidad y métricas" "HTTPS / JSON"
+
+        persistenceComponent -> database "Ejecuta consultas y persistencia sobre Oracle Database 26ai" "JDBC / Oracle Wallet"
+        vectorEmbeddingComponent -> database "Genera o actualiza embeddings vectoriales de tareas" "Oracle 26ai Vector"
+        duplicateDetectionComponent -> database "Ejecuta búsqueda semántica con Oracle Vector Search" "Oracle Vector Search"
+        dashboardKpiComponent -> webFrontend "Entrega resultados para visualización" "HTTPS / JSON"
         
         // =========================================================
         // Relaciones internas del Telegram Bot Service
@@ -511,6 +521,31 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             regressionTestRunner -> backend "11. Valida endpoints críticos del backend candidato"
             cicdOrchestrator -> nginxIngress "12. Si el quality gate pasa, promueve tráfico hacia el color candidato"
             cicdOrchestrator -> jira "13. Si el quality gate falla, registra ticket con evidencia accionable"
+
+            autolayout lr
+
+        }
+
+
+        dynamic backend "DynamicDuplicateDetection" {
+            title "Dynamic Diagram - Detección de duplicados con Oracle Vector Search"
+            description "Secuencia funcional para crear o actualizar una tarea, generar embeddings vectoriales y ejecutar detección semántica de duplicados usando Oracle Database 26ai."
+
+            manager -> webFrontend "1. Crea o actualiza una tarea desde la interfaz Web"
+            webFrontend -> securityComponent "2. Envía solicitud protegida con token JWT"
+            securityComponent -> taskManagementComponent "3. Autoriza la operación de tarea"
+            taskManagementComponent -> persistenceComponent "4. Persiste los datos transaccionales de la tarea"
+            persistenceComponent -> database "5. Guarda tarea, estado, prioridad, proyecto y asignaciones"
+            taskManagementComponent -> vectorEmbeddingComponent "6. Solicita generar o actualizar embedding de la tarea"
+            vectorEmbeddingComponent -> database "7. Guarda embedding vectorial en TASK_VECTOR_EMBEDDING"
+
+            manager -> webFrontend "8. Solicita detección de tareas duplicadas"
+            webFrontend -> duplicateDetectionComponent "9. Envía solicitud de análisis semántico"
+            duplicateDetectionComponent -> database "10. Ejecuta búsqueda semántica con Oracle Vector Search"
+            duplicateDetectionComponent -> persistenceComponent "11. Persiste run y resultados de duplicidad"
+            persistenceComponent -> database "12. Guarda AI_VECTOR_DUP_DETECTION_RUN y AI_VECTOR_DUP_RESULT"
+            duplicateDetectionComponent -> dashboardKpiComponent "13. Expone resultados para visualización"
+            dashboardKpiComponent -> webFrontend "14. Muestra posibles duplicados al Manager"
 
             autolayout lr
         }
