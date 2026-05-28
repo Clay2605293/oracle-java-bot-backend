@@ -75,6 +75,22 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
             aiService = container "AI Service" "Microservicio Python encargado de parsear documentos, invocar OpenAI y generar tareas sugeridas para backlog." "Python / FastAPI" {
                 tags "Application"
+
+                aiHealthApiComponent = component "AI Health API Component" "Expone endpoints de salud y verificación operativa del microservicio IA." "FastAPI Controller"
+
+                aiKafkaConsumerComponent = component "AI Kafka Consumer Component" "Consume solicitudes de generación de backlog publicadas por el backend." "Kafka Consumer"
+
+                aiKafkaProducerComponent = component "AI Kafka Producer Component" "Publica resultados de generación de backlog hacia el backend." "Kafka Producer"
+
+                documentRetrievalComponent = component "Document Retrieval Component" "Recupera documentos del proyecto desde OCI Object Storage para análisis." "Python Service / OCI SDK"
+
+                documentParserComponent = component "Document Parser Component" "Extrae texto relevante de documentos cargados por el manager." "Python Service"
+
+                backlogGenerationComponent = component "Backlog Generation Component" "Orquesta la generación de tareas sugeridas a partir del contenido del documento." "Python Service"
+
+                openAiClientComponent = component "OpenAI Client Component" "Invoca OpenAI para transformar contenido de documentos en tareas sugeridas." "HTTP Client"
+
+                suggestionFormatterComponent = component "Suggestion Formatter Component" "Normaliza la respuesta de IA en un formato estructurado de tareas sugeridas." "Python Service"
             }
 
             kafkaCluster = container "Kafka Cluster" "Broker de eventos autogestionado para flujos asíncronos de generación de backlog, notificaciones y coordinación entre servicios." "Apache Kafka" {
@@ -279,6 +295,26 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         botNotificationComponent -> botUserResolutionComponent "Resuelve destinatarios Telegram"
 
         // =========================================================
+        // Relaciones internas del AI Service
+        // =========================================================
+
+        backend -> aiHealthApiComponent "Consulta estado operativo del servicio IA" "HTTP"
+
+        aiKafkaConsumerComponent -> kafkaCluster "Consume solicitudes de generación de backlog" "Kafka"
+        aiKafkaConsumerComponent -> documentRetrievalComponent "Entrega referencia del documento a procesar"
+
+        documentRetrievalComponent -> objectStorageContainer "Recupera archivo de proyecto" "OCI SDK / HTTPS"
+        documentRetrievalComponent -> documentParserComponent "Entrega documento descargado"
+
+        documentParserComponent -> backlogGenerationComponent "Entrega texto extraído del documento"
+        backlogGenerationComponent -> openAiClientComponent "Solicita generación de tareas sugeridas"
+        openAiClientComponent -> openai "Invoca modelo externo" "HTTPS / JSON"
+
+        openAiClientComponent -> suggestionFormatterComponent "Entrega respuesta generada"
+        suggestionFormatterComponent -> aiKafkaProducerComponent "Entrega tareas sugeridas estructuradas"
+        aiKafkaProducerComponent -> kafkaCluster "Publica resultado de generación de backlog" "Kafka"
+
+        // =========================================================
         // Relaciones DevOps
         // =========================================================
 
@@ -366,6 +402,13 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
         component telegramBotService "TelegramBotComponents" {
             title "Component Diagram - Telegram Bot Service"
             description "Vista interna del Telegram Bot Service objetivo, separado del backend principal y basado en webhook para soportar despliegues replicados."
+            include *
+            autolayout lr
+        }
+
+        component aiService "AIServiceComponents" {
+            title "Component Diagram - AI Service"
+            description "Vista interna del microservicio IA encargado de generación de backlog desde documentos usando Kafka, OCI Object Storage y OpenAI."
             include *
             autolayout lr
         }
