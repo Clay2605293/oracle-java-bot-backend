@@ -3,7 +3,7 @@
   "description" : "Modelo C4 de arquitectura objetivo para Oracle Java Bot.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2026-05-28T00:46:33Z",
+  "lastModifiedDate" : "2026-05-28T00:52:32Z",
   "model" : {
     "people" : [ {
       "description" : "Responsable de gestionar proyectos, tareas, equipos y métricas.",
