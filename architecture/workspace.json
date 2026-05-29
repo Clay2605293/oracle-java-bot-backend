@@ -5,7 +5,7 @@
   "description" : "Modelo C4 de arquitectura objetivo para Oracle Java Bot.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2026-05-28T23:29:20Z",
+  "lastModifiedDate" : "2026-05-29T02:51:07Z",
   "model" : {
     "deploymentNodes" : [ {
       "children" : [ {
@@ -17,7 +17,7 @@
               "id" : "190",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "b581c0a9-dc93-41c3-bdfa-fc3166660e4d"
+                "structurizr.dsl.identifier" : "9ea63008-dd56-4a6d-944a-a6e27ba21e68"
               },
               "relationships" : [ {
                 "description" : "Enruta tráfico hacia la versión activa del backend",
@@ -45,7 +45,7 @@
               "id" : "191",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "636b3721-bba7-4437-99f5-593e85fe689e"
+                "structurizr.dsl.identifier" : "ab788168-3f79-4693-8e0f-71ccc4b30154"
               },
               "relationships" : [ {
                 "description" : "Puede consultar estado operativo del servicio IA",
@@ -153,7 +153,7 @@
               "id" : "193",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "37179368-8f48-4ead-a440-40e49f3a471b"
+                "structurizr.dsl.identifier" : "1a921986-f386-48f8-8a20-a8e5432710b6"
               },
               "relationships" : [ {
                 "description" : "Consulta y actualiza información de proyectos y tareas",
@@ -205,7 +205,7 @@
               "id" : "195",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "78608729-7277-4f87-b460-4c7bf43d48dd"
+                "structurizr.dsl.identifier" : "8e229f14-2084-45ff-81c2-cb8a4c5f1e89"
               },
               "relationships" : [ {
                 "description" : "Consume solicitudes de generación de backlog y publica resultados",
@@ -264,7 +264,7 @@
               "id" : "198",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "105e3ef0-c6aa-4c87-8680-fa2807d463b9"
+                "structurizr.dsl.identifier" : "93cf32b4-c48e-479c-a495-0b24301d213c"
               },
               "relationships" : [ {
                 "description" : "Entrega resultados de generación de backlog",
@@ -337,7 +337,7 @@
               "id" : "206",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "f85a11e7-8323-48b7-bb9a-d02904a54a06"
+                "structurizr.dsl.identifier" : "71ee2bc5-e40b-4d83-8854-e93681e342c8"
               },
               "tags" : "Container Instance"
             } ],
@@ -347,7 +347,7 @@
             "instances" : "1",
             "name" : "Worker Node FD1",
             "properties" : {
-              "structurizr.dsl.identifier" : "7619fd97-1a81-4e75-8de9-218a8871f2c9"
+              "structurizr.dsl.identifier" : "7bf6424d-30fd-4a62-8fb7-550c128351b2"
             },
             "tags" : "Element,Deployment Node",
             "technology" : "OKE Worker Node"
@@ -358,7 +358,7 @@
           "instances" : "1",
           "name" : "Fault Domain 1",
           "properties" : {
-            "structurizr.dsl.identifier" : "8c570847-ba00-4edf-a9ff-92bc1dbd5e06"
+            "structurizr.dsl.identifier" : "4e46a8af-0707-44e9-a10f-ff685730f066"
           },
           "tags" : "Element,Deployment Node",
           "technology" : "OCI Fault Domain"
@@ -370,7 +370,7 @@
               "id" : "211",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "54a1d0b1-b812-4bc2-9bcf-6c6678a6e5ea"
+                "structurizr.dsl.identifier" : "fcfdfb27-04be-40e5-8d89-816650debb28"
               },
               "relationships" : [ {
                 "description" : "Enruta tráfico hacia la versión activa del backend",
@@ -398,7 +398,7 @@
               "id" : "213",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "33212366-5c8a-45e4-b08a-1fe9770b9d28"
+                "structurizr.dsl.identifier" : "cfec34e6-12b0-4403-9734-c5010ca2a66e"
               },
               "relationships" : [ {
                 "description" : "Puede consultar estado operativo del servicio IA",
@@ -506,7 +506,7 @@
               "id" : "222",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "2081adf9-8f47-48fa-adf1-448752e879db"
+                "structurizr.dsl.identifier" : "54e4d1bc-df4d-4a6c-98b4-2ebc34bf41ed"
               },
               "relationships" : [ {
                 "description" : "Consulta y actualiza información de proyectos y tareas",
@@ -558,7 +558,7 @@
               "id" : "226",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "c2263edd-e289-4417-9cec-2d6f6b44bc19"
+                "structurizr.dsl.identifier" : "4b235685-509a-44be-af71-69cf0b99a38f"
               },
               "relationships" : [ {
                 "description" : "Consume solicitudes de generación de backlog y publica resultados",
@@ -617,7 +617,7 @@
               "id" : "234",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "b21d4809-8edb-4be0-aa74-08916eb3058a"
+                "structurizr.dsl.identifier" : "bebdc673-ffe3-45af-988e-459258cf7b72"
               },
               "relationships" : [ {
                 "description" : "Entrega resultados de generación de backlog",
@@ -690,7 +690,7 @@
               "id" : "250",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "6445fb5e-72aa-48b9-bc97-8d8a763ef607"
+                "structurizr.dsl.identifier" : "f1f5e5d6-654f-4297-9cd1-2393d40583e9"
               },
               "tags" : "Container Instance"
             } ],
@@ -700,7 +700,7 @@
             "instances" : "1",
             "name" : "Worker Node FD2",
             "properties" : {
-              "structurizr.dsl.identifier" : "34ac4a6e-5f00-45a4-9865-e40071feda7a"
+              "structurizr.dsl.identifier" : "538ee170-281f-4fbb-932d-f3eef1550ac0"
             },
             "tags" : "Element,Deployment Node",
             "technology" : "OKE Worker Node"
@@ -711,7 +711,7 @@
           "instances" : "1",
           "name" : "Fault Domain 2",
           "properties" : {
-            "structurizr.dsl.identifier" : "5f51eba2-0178-4dc4-be98-51493a9a0ffd"
+            "structurizr.dsl.identifier" : "676c5cf9-fb37-411a-8e7c-45ec9a34db6f"
           },
           "tags" : "Element,Deployment Node",
           "technology" : "OCI Fault Domain"
@@ -723,7 +723,7 @@
               "id" : "255",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "bdffaeca-a45e-43c0-b1c0-c20b3e04d856"
+                "structurizr.dsl.identifier" : "1b2787bd-479b-4172-9965-1553e65ee497"
               },
               "relationships" : [ {
                 "description" : "Enruta tráfico hacia la versión activa del backend",
@@ -751,7 +751,7 @@
               "id" : "258",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "aceda2e5-ab8e-482b-9397-18d900bc36f5"
+                "structurizr.dsl.identifier" : "308e26c0-fcd4-44c2-a869-b1fdd02692af"
               },
               "relationships" : [ {
                 "description" : "Puede consultar estado operativo del servicio IA",
@@ -859,7 +859,7 @@
               "id" : "274",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "fbdad61c-04d1-41b2-aeeb-0aab926401b8"
+                "structurizr.dsl.identifier" : "e494d5d2-bcdf-400c-aaef-22e1c322afca"
               },
               "relationships" : [ {
                 "description" : "Consulta y actualiza información de proyectos y tareas",
@@ -911,7 +911,7 @@
               "id" : "280",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "39497596-a44d-49c6-8c82-75c54d8160b3"
+                "structurizr.dsl.identifier" : "2e1c96fe-3328-495a-b3e8-37c78d4915ea"
               },
               "relationships" : [ {
                 "description" : "Consume solicitudes de generación de backlog y publica resultados",
@@ -970,7 +970,7 @@
               "id" : "293",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "c07a3a78-2744-4863-80fb-ef9971c34710"
+                "structurizr.dsl.identifier" : "2db349e7-cd9b-446d-ab55-dca6087a47c9"
               },
               "relationships" : [ {
                 "description" : "Entrega resultados de generación de backlog",
@@ -1043,7 +1043,7 @@
               "id" : "317",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "96a74929-03b0-456d-a5c7-c8cd6cef8120"
+                "structurizr.dsl.identifier" : "c09073d3-a0e6-4d92-9f1c-8aa4e5fd117b"
               },
               "tags" : "Container Instance"
             } ],
@@ -1053,7 +1053,7 @@
             "instances" : "1",
             "name" : "Worker Node FD3",
             "properties" : {
-              "structurizr.dsl.identifier" : "5a34d453-3964-43d6-af52-c36b8c3ff5ce"
+              "structurizr.dsl.identifier" : "1d614d1d-0e72-4c4b-9e6a-daafe8448c7e"
             },
             "tags" : "Element,Deployment Node",
             "technology" : "OKE Worker Node"
@@ -1064,7 +1064,7 @@
           "instances" : "1",
           "name" : "Fault Domain 3",
           "properties" : {
-            "structurizr.dsl.identifier" : "87c3e22b-b778-4887-8fc3-9f2dc02c348f"
+            "structurizr.dsl.identifier" : "5d6a23c3-07bc-4998-8b19-f22c50d889ec"
           },
           "tags" : "Element,Deployment Node",
           "technology" : "OCI Fault Domain"
@@ -1075,7 +1075,7 @@
         "instances" : "1",
         "name" : "OKE Cluster",
         "properties" : {
-          "structurizr.dsl.identifier" : "155735ac-9125-41c3-90fe-857dd99d7cee"
+          "structurizr.dsl.identifier" : "fc9432c0-6171-42a3-8085-b309dcf4a374"
         },
         "tags" : "Element,Deployment Node,Oracle Cloud",
         "technology" : "OCI Kubernetes Engine"
@@ -1086,7 +1086,7 @@
           "id" : "322",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "1bd6d04c-c397-4f2e-9c24-008f6a2e21b5"
+            "structurizr.dsl.identifier" : "c203322e-e85c-45ad-b4de-ea376015a244"
           },
           "tags" : "Container Instance"
         } ],
@@ -1096,7 +1096,7 @@
         "instances" : "1",
         "name" : "Oracle Database 26ai Service",
         "properties" : {
-          "structurizr.dsl.identifier" : "e8ba1be0-26ff-4d24-9ce5-3f114f52dd4e"
+          "structurizr.dsl.identifier" : "a04138dd-9bc8-46a7-bafb-47689a6fb2d5"
         },
         "tags" : "Element,Deployment Node,Database",
         "technology" : "Oracle Database 26ai"
@@ -1107,7 +1107,7 @@
           "id" : "327",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "1e102943-66fa-40ae-8ffc-3b9d8146dd31"
+            "structurizr.dsl.identifier" : "d287a6be-531e-443c-a3e2-f24982451eb6"
           },
           "tags" : "Container Instance"
         } ],
@@ -1117,7 +1117,7 @@
         "instances" : "1",
         "name" : "OCI Object Storage Service",
         "properties" : {
-          "structurizr.dsl.identifier" : "84ab9a26-84e4-477f-9f27-8cedd0892800"
+          "structurizr.dsl.identifier" : "7b8124d9-9bee-41b1-8472-202c635afce5"
         },
         "tags" : "Element,Deployment Node,Storage",
         "technology" : "OCI Object Storage"
@@ -1128,7 +1128,7 @@
           "id" : "335",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "2f8dd713-5129-4f77-9877-82513e4f2e8f"
+            "structurizr.dsl.identifier" : "24724b03-0b98-45d4-ae0e-9e3667423e80"
           },
           "relationships" : [ {
             "description" : "Promueve tráfico entre backend-blue y backend-green",
@@ -1166,7 +1166,7 @@
         "instances" : "1",
         "name" : "OCI DevOps Service",
         "properties" : {
-          "structurizr.dsl.identifier" : "bd10465f-b73c-46ba-adc3-a8a9ea8c0473"
+          "structurizr.dsl.identifier" : "912f7eff-af65-41f0-a8fd-6029f667ca93"
         },
         "tags" : "Element,Deployment Node,DevOps",
         "technology" : "OCI DevOps"
@@ -1177,14 +1177,14 @@
         "instances" : "1",
         "name" : "OCI Container Registry",
         "properties" : {
-          "structurizr.dsl.identifier" : "db3d5b3d-a540-41b5-8b1a-93ade65f46d3"
+          "structurizr.dsl.identifier" : "554db72b-1f1e-4c7f-aecd-615e1585b82f"
         },
         "softwareSystemInstances" : [ {
           "environment" : "Produccion",
           "id" : "340",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "97e6a6b0-d565-427b-8827-76f8d193aaa9"
+            "structurizr.dsl.identifier" : "bfc24a02-e599-4f02-90d4-f51fa69f1bc1"
           },
           "softwareSystemId" : "52",
           "tags" : "Software System Instance"
@@ -1217,7 +1217,7 @@
       "instances" : "1",
       "name" : "OCI Región Querétaro",
       "properties" : {
-        "structurizr.dsl.identifier" : "ec7ab0d6-d4cb-4408-b6a0-9c334409b2a6"
+        "structurizr.dsl.identifier" : "bd026429-7195-420c-a0ca-e523405af4b0"
       },
       "tags" : "Element,Deployment Node,Oracle Cloud",
       "technology" : "Oracle Cloud Infrastructure"
@@ -4197,7 +4197,7 @@
         "rankSeparation" : 100,
         "vertices" : true
       },
-      "description" : "Vista de contexto del sistema Oracle Java Bot, sus usuarios principales y dependencias externas.",
+      "description" : "Vista de contexto funcional del sistema Oracle Java Bot como caja negra, mostrando usuarios principales y dependencias externas directas.",
       "elements" : [ {
         "id" : "1",
         "x" : 0,
@@ -4208,18 +4208,6 @@
         "y" : 0
       }, {
         "id" : "4",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "51",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "52",
-        "x" : 0,
-        "y" : 0
-      }, {
-        "id" : "53",
         "x" : 0,
         "y" : 0
       }, {
@@ -4248,18 +4236,6 @@
       "name" : "System Context View: Oracle Java Bot",
       "order" : 2,
       "relationships" : [ {
-        "id" : "175"
-      }, {
-        "id" : "176"
-      }, {
-        "id" : "177"
-      }, {
-        "id" : "178"
-      }, {
-        "id" : "180"
-      }, {
-        "id" : "182"
-      }, {
         "id" : "59"
       }, {
         "id" : "60"
@@ -4275,8 +4251,6 @@
         "id" : "67"
       }, {
         "id" : "68"
-      }, {
-        "id" : "69"
       }, {
         "id" : "75"
       }, {

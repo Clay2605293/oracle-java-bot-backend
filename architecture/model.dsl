@@ -443,8 +443,17 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
 
         systemContext oracleJavaBot "SystemContext" {
             title "System Context - Oracle Java Bot"
-            description "Vista de contexto del sistema Oracle Java Bot, sus usuarios principales y dependencias externas."
-            include *
+            description "Vista de contexto funcional del sistema Oracle Java Bot como caja negra, mostrando usuarios principales y dependencias externas directas."
+
+            include manager
+            include developer
+            include oracleJavaBot
+            include telegram
+            include openai
+            include oracleDbExternal
+            include objectStorageExternal
+            include jira
+
             autolayout lr
         }
 
