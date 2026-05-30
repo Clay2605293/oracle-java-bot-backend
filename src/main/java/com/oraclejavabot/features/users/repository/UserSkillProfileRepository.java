@@ -36,6 +36,7 @@ public class UserSkillProfileRepository {
                 "CARD_TYPE"
             FROM "CHATBOT_USER"."VW_USUARIO_SKILL_GRAPHQL"
             WHERE "PRIMARY_SKILL_CATEGORY" IS NOT NULL
+                AND "ESTADO_ID" = 1
             ORDER BY "PRIMARY_SKILL_CATEGORY", "PRIMER_NOMBRE", "APELLIDO"
             """;
 
@@ -57,6 +58,7 @@ public class UserSkillProfileRepository {
                 "CARD_TYPE"
             FROM "CHATBOT_USER"."VW_USUARIO_SKILL_GRAPHQL"
             WHERE "PRIMARY_SKILL_CATEGORY" = ?
+                AND "ESTADO_ID" = 1
             ORDER BY "PRIMER_NOMBRE", "APELLIDO"
             """;
 
@@ -79,6 +81,7 @@ public class UserSkillProfileRepository {
             FROM "CHATBOT_USER"."VW_USUARIO_SKILL_GRAPHQL"
             WHERE "USER_ID" = HEXTORAW(?)
               AND "PRIMARY_SKILL_CATEGORY" IS NOT NULL
+                AND "ESTADO_ID" = 1
             """;
 
         List<UserSkillProfileDTO> result = jdbcTemplate.query(sql, this::mapRow, userIdHex);
@@ -116,6 +119,7 @@ public class UserSkillProfileRepository {
                 v."CARD_TYPE"
             FROM "CHATBOT_USER"."VW_USUARIO_SKILL_GRAPHQL" v
             WHERE v."PRIMARY_SKILL_CATEGORY" IS NOT NULL
+            AND v."ESTADO_ID" = 1
             AND (
                     LOWER(v."PRIMER_NOMBRE") LIKE ?
                 OR LOWER(v."APELLIDO") LIKE ?
@@ -124,6 +128,7 @@ public class UserSkillProfileRepository {
                 OR LOWER(v."PRIMARY_SKILL_CODE") LIKE ?
                 OR LOWER(v."PRIMARY_SKILL_NAME") LIKE ?
             )
+            
             ORDER BY v."PRIMARY_SKILL_CATEGORY", v."PRIMER_NOMBRE", v."APELLIDO"
             """;
 

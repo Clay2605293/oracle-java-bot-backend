@@ -88,6 +88,14 @@ public class AuthService {
                 .orElseThrow(() -> new RuntimeException(
                         "Credencial no encontrada para usuario: " + user.getEmail()));
 
+        if (user.getEstadoId() == null || user.getEstadoId() != 1) {
+            throw new RuntimeException("Usuario inactivo");
+        }
+
+        if (credential.getActivo() == null || credential.getActivo() != 1) {
+            throw new RuntimeException("Credencial inactiva");
+        }
+
         boolean passwordCorrect =
                 passwordEncoder.matches(request.getPassword(), credential.getPasswordHash());
 

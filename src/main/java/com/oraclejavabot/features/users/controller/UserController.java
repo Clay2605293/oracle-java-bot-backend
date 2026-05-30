@@ -1,7 +1,9 @@
 package com.oraclejavabot.features.users.controller;
 
+import com.oraclejavabot.features.users.dto.UserOperationResponseDTO;
 import com.oraclejavabot.features.users.dto.UserRequestDTO;
 import com.oraclejavabot.features.users.dto.UserResponseDTO;
+import com.oraclejavabot.features.users.dto.UserUpdateRequestDTO;
 import com.oraclejavabot.features.users.model.UserEntity;
 import com.oraclejavabot.features.users.service.UserService;
 
@@ -10,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -23,25 +26,25 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    /**
-     * Crea un nuevo usuario a partir de los datos recibidos.
-     *
-     * @param request DTO con los datos para crear el usuario
-     * @return DTO con los datos del usuario creado
-     * @throws IllegalArgumentException si ya existe un usuario con el mismo email o
-     *                                  telegramId
-     */
     public UserResponseDTO createUser(@Valid @RequestBody UserRequestDTO request) {
         return userService.createUser(request);
     }
 
     @GetMapping
-    /**
-     * Recupera la lista de usuarios registrados.
-     *
-     * @return lista de {@link UserEntity} con los usuarios almacenados
-     */
     public List<UserEntity> getUsers() {
         return userService.getUsers();
+    }
+
+    @PutMapping("/{userId}")
+    public UserOperationResponseDTO updateUser(
+            @PathVariable UUID userId,
+            @Valid @RequestBody UserUpdateRequestDTO request
+    ) {
+        return userService.updateUser(userId, request);
+    }
+
+    @DeleteMapping("/{userId}")
+    public UserOperationResponseDTO deleteUser(@PathVariable UUID userId) {
+        return userService.deactivateUser(userId);
     }
 }
