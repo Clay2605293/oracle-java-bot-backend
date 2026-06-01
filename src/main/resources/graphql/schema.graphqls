@@ -4,6 +4,14 @@ type Query {
   userSkillProfileById(id: ID!): UserSkillProfile
   searchUserSkillProfiles(text: String!): [UserSkillProfile!]!
   skillCategories: [SkillCategoryOption!]!
+
+  dashboardSprintOptions(projectId: ID!): [DashboardSprintOption!]!
+  dashboardDeveloperOptions(projectId: ID!): [DashboardDeveloperOption!]!
+  projectDashboardKpis(
+    projectId: ID!
+    sprintId: ID
+    developerId: ID
+  ): ProjectDashboardKpi!
 }
 
 enum SkillCategory {
@@ -34,4 +42,53 @@ type SkillCategoryOption {
   name: String!
   description: String
   cardType: String!
+}
+
+type DashboardSprintOption {
+  id: ID!
+  name: String!
+  startDate: String
+  endDate: String
+}
+
+type DashboardDeveloperOption {
+  id: ID!
+  name: String!
+  email: String!
+}
+
+type ProjectDashboardKpi {
+  projectId: ID!
+  sprintId: ID
+  sprintName: String
+  developerId: ID
+  developerName: String
+  scopeLabel: String!
+  summary: DashboardSummary!
+  sprintHistory: [DashboardSprintHistoryPoint!]!
+}
+
+type DashboardSummary {
+  totalTasks: Int!
+  completedTasks: Int!
+  onTimeTasks: Int!
+  delayedTasks: Int!
+  totalEstimatedHours: Float!
+  totalRealHours: Float!
+  completionRate: Float!
+  onTimeRate: Float!
+  estimationAccuracy: Float!
+  avgTasksPerDeveloper: Float!
+  avgHoursPerDeveloper: Float!
+}
+
+type DashboardSprintHistoryPoint {
+  sprintId: ID!
+  sprintName: String!
+  totalTasks: Int!
+  completedTasks: Int!
+  onTimeTasks: Int!
+  delayedTasks: Int!
+  totalEstimatedHours: Float!
+  totalRealHours: Float!
 }
