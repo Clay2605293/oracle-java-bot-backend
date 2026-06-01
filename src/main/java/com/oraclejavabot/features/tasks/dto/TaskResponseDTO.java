@@ -1,4 +1,5 @@
 package com.oraclejavabot.features.tasks.dto;
+import java.util.List;
 
 public class TaskResponseDTO {
 
@@ -21,6 +22,8 @@ public class TaskResponseDTO {
 
     private Double tiempoEstimado;
     private Double tiempoReal;
+
+    private List<TaskUserDTO> responsables;
 
     public String getTaskId() {
         return taskId;
@@ -125,5 +128,13 @@ public class TaskResponseDTO {
 
     public void setTiempoReal(Double tiempoReal) {
         this.tiempoReal = tiempoReal;
+    }
+
+    public List<TaskUserDTO> getResponsables() {
+        return responsables;
+    }
+
+    public void setResponsables(List<TaskUserDTO> responsables) {
+        this.responsables = responsables;
     }
 }

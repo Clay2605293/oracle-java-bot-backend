@@ -14,21 +14,26 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+
+
 @Service
 public class TaskService {
 
     private final TaskRepository repository;
     private final SprintRepository sprintRepository;
     private final TaskVectorEmbeddingService taskVectorEmbeddingService;
+    private final TaskUserService taskUserService;
 
     public TaskService(
             TaskRepository repository,
             SprintRepository sprintRepository,
-            TaskVectorEmbeddingService taskVectorEmbeddingService
+            TaskVectorEmbeddingService taskVectorEmbeddingService,
+            TaskUserService taskUserService
     ) {
         this.repository = repository;
         this.sprintRepository = sprintRepository;
         this.taskVectorEmbeddingService = taskVectorEmbeddingService;
+        this.taskUserService = taskUserService; 
     }
 
     public TaskResponseDTO createTask(String projectId, TaskRequestDTO request) {
@@ -301,6 +306,10 @@ public class TaskService {
 
         dto.setTiempoEstimado(task.getTiempoEstimado());
         dto.setTiempoReal(task.getTiempoReal());
+
+        dto.setResponsables(
+                taskUserService.getUsersByTask(uuidToHex(task.getTaskId()))
+        );
 
         return dto;
     }
