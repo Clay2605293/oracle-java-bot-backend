@@ -55,9 +55,19 @@ public class ProjectDashboardKpiRepository {
             JOIN "CHATBOT_USER"."USUARIO" u
                 ON u."USER_ID" = ue."USER_ID"
             WHERE p."PROJECT_ID" = HEXTORAW(?)
-              AND u."ESTADO_ID" = 1
-              AND u."ROL_ID" = 2
-            ORDER BY u."PRIMER_NOMBRE", u."APELLIDO"
+            AND u."ESTADO_ID" = 1
+            AND (
+                    u."ROL_ID" = 2
+                    OR EXISTS (
+                        SELECT 1
+                        FROM "CHATBOT_USER"."USUARIO_A_TAREA" uat
+                        JOIN "CHATBOT_USER"."TAREA" t
+                            ON t."TASK_ID" = uat."TASK_ID"
+                        WHERE uat."USER_ID" = u."USER_ID"
+                        AND t."PROJECT_ID" = p."PROJECT_ID"
+                    )
+            )
+ORDER BY u."PRIMER_NOMBRE", u."APELLIDO"
             """;
 
         return jdbcTemplate.query(
@@ -281,8 +291,18 @@ public class ProjectDashboardKpiRepository {
             JOIN "CHATBOT_USER"."USUARIO" u
                 ON u."USER_ID" = ue."USER_ID"
             WHERE p."PROJECT_ID" = HEXTORAW(?)
-              AND u."ESTADO_ID" = 1
-              AND u."ROL_ID" = 2
+            AND u."ESTADO_ID" = 1
+            AND (
+                    u."ROL_ID" = 2
+                    OR EXISTS (
+                        SELECT 1
+                        FROM "CHATBOT_USER"."USUARIO_A_TAREA" uat
+                        JOIN "CHATBOT_USER"."TAREA" t
+                            ON t."TASK_ID" = uat."TASK_ID"
+                        WHERE uat."USER_ID" = u."USER_ID"
+                        AND t."PROJECT_ID" = p."PROJECT_ID"
+                    )
+            )
             """;
 
         Integer count = jdbcTemplate.queryForObject(
