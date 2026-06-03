@@ -12,6 +12,8 @@ type Query {
     sprintId: ID
     developerId: ID
   ): ProjectDashboardKpi!
+
+  githubContributions(projectId: ID!): [GitHubContribution!]!
 }
 
 enum SkillCategory {
@@ -91,4 +93,14 @@ type DashboardSprintHistoryPoint {
   delayedTasks: Int!
   totalEstimatedHours: Float!
   totalRealHours: Float!
+}
+
+type GitHubContribution {
+  userId: ID!
+  name: String!
+  email: String!
+  githubUsername: String!
+  totalCommits: Int!
+  openedIssues: Int!
+  closedIssues: Int!
 }
