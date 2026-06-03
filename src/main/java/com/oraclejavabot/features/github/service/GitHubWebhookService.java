@@ -10,8 +10,8 @@ import com.oraclejavabot.features.github.repository.GitHubIssueRepository;
 import com.oraclejavabot.features.github.repository.ProjectRepositoryJpaRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 @Service
@@ -42,7 +42,10 @@ public class GitHubWebhookService {
 
       if ("issues".equals(event)) {
         processIssuesEvent(payload);
+        return;
       }
+
+      System.out.println("GitHub event ignored in service: " + event);
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException("Error processing GitHub webhook event: " + event, e);
@@ -64,6 +67,7 @@ public class GitHubWebhookService {
     JsonNode commits = root.path("commits");
 
     if (!commits.isArray()) {
+      System.out.println("Push event has no commits array.");
       return;
     }
 
@@ -75,8 +79,11 @@ public class GitHubWebhookService {
       }
 
       if (gitHubCommitRepository.existsById(sha)) {
+        System.out.println("Commit already exists. Skipping: " + sha);
         continue;
       }
+
+      String message = truncate(commitNode.path("message").asText(null), 500);
 
       GitHubCommitEntity commit = new GitHubCommitEntity();
       commit.setCommitSha(sha);
@@ -87,15 +94,18 @@ public class GitHubWebhookService {
       commit.setAuthorEmail(commitNode.path("author").path("email").asText(null));
       commit.setAuthorUsername(commitNode.path("author").path("username").asText(null));
 
-      commit.setCommitMessage(truncate(commitNode.path("message").asText(null), 500));
+      commit.setCommitMessage(message);
       commit.setCommitUrl(commitNode.path("url").asText(null));
       commit.setBranchName(branchName);
       commit.setCommitDate(parseGitHubDate(commitNode.path("timestamp").asText(null)));
-      String message = truncate(commitNode.path("message").asText(null), 500);
-      commit.setCommitMessage(message);
       commit.setIsMergeCommit(isMergeCommit(message) ? 1 : 0);
 
+      // Importante: evita insertar NULL en columna NOT NULL.
+      commit.setCreatedAt(LocalDateTime.now());
+
       gitHubCommitRepository.save(commit);
+
+      System.out.println("Saved GitHub commit: " + sha);
     }
   }
 
@@ -112,15 +122,18 @@ public class GitHubWebhookService {
 
     JsonNode issueNode = root.path("issue");
     if (issueNode.isMissingNode() || issueNode.isNull()) {
+      System.out.println("Issues event has no issue object.");
       return;
     }
 
     boolean isPullRequest = issueNode.has("pull_request");
     if (isPullRequest) {
+      System.out.println("Issue event belongs to a pull request. Ignoring.");
       return;
     }
 
     Long issueId = issueNode.path("id").asLong();
+
     GitHubIssueEntity issue = gitHubIssueRepository.findById(issueId)
         .orElseGet(GitHubIssueEntity::new);
 
@@ -151,7 +164,12 @@ public class GitHubWebhookService {
       issue.setClosedByUsername(root.path("sender").path("login").asText(null));
     }
 
+    // Importante: evita insertar NULL en columna NOT NULL.
+    issue.setSyncedAt(LocalDateTime.now());
+
     gitHubIssueRepository.save(issue);
+
+    System.out.println("Saved GitHub issue: #" + issue.getIssueNumber());
   }
 
   private Optional<ProjectRepositoryEntity> findRepository(JsonNode root) {
@@ -167,7 +185,7 @@ public class GitHubWebhookService {
     System.out.println("GitHub payload repo owner: " + owner);
     System.out.println("GitHub payload repo name: " + repoName);
 
-    if (owner == null || repoName == null) {
+    if (owner == null || owner.isBlank() || repoName == null || repoName.isBlank()) {
       return Optional.empty();
     }
 
@@ -180,7 +198,7 @@ public class GitHubWebhookService {
   }
 
   private String extractBranchName(String ref) {
-    if (ref == null) {
+    if (ref == null || ref.isBlank()) {
       return null;
     }
 
