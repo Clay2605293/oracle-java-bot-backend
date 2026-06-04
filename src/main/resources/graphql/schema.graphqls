@@ -13,9 +13,9 @@ type Query {
     developerId: ID
   ): ProjectDashboardKpi!
 
-  githubContributions(projectId: ID!): [GitHubContribution!]!
+  githubContributions(projectId: ID!, sprintId: ID): [GitHubContribution!]!
   githubSprintActivity(projectId: ID!): [GitHubSprintActivity!]!
-  githubRepositoryActivity(projectId: ID!): [GitHubRepositoryActivity!]!
+  githubRepositoryActivity(projectId: ID!, sprintId: ID): [GitHubRepositoryActivity!]!
 }
 
 enum SkillCategory {
@@ -104,6 +104,7 @@ type GitHubContribution {
   githubUsername: String!
   totalCommits: Int!
   openedIssues: Int!
+  activeIssues: Int!
   closedIssues: Int!
 }
 
@@ -121,5 +122,6 @@ type GitHubRepositoryActivity {
   repoName: String!
   totalCommits: Int!
   openedIssues: Int!
+  activeIssues: Int!
   closedIssues: Int!
 }

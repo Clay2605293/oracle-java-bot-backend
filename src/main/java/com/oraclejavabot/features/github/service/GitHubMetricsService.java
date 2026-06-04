@@ -17,15 +17,15 @@ public class GitHubMetricsService {
     this.contributionRepository = contributionRepository;
   }
 
-  public List<GitHubContributionDTO> getProjectContributions(String projectId) {
-    return contributionRepository.findContributionsByProjectId(projectId);
+  public List<GitHubContributionDTO> getProjectContributions(String projectId, String sprintId) {
+    return contributionRepository.findContributionsByProjectId(projectId, sprintId);
   }
   
   public List<GitHubSprintActivityDTO> getSprintActivity(String projectId) {
     return contributionRepository.findSprintActivityByProjectId(projectId);
   }
 
-  public List<GitHubRepositoryActivityDTO> getRepositoryActivity(String projectId) {
-      return contributionRepository.findRepositoryActivityByProjectId(projectId);
+  public List<GitHubRepositoryActivityDTO> getRepositoryActivity(String projectId, String sprintId) {
+    return contributionRepository.findRepositoryActivityByProjectId(projectId, sprintId);
   }
 }

@@ -1,8 +1,8 @@
 package com.oraclejavabot.features.github.repository;
 
 import com.oraclejavabot.features.github.dto.GitHubContributionDTO;
-import com.oraclejavabot.features.github.dto.GitHubSprintActivityDTO;
 import com.oraclejavabot.features.github.dto.GitHubRepositoryActivityDTO;
+import com.oraclejavabot.features.github.dto.GitHubSprintActivityDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -17,7 +17,7 @@ public class GitHubContributionRepository {
   @PersistenceContext
   private EntityManager entityManager;
 
-  public List<GitHubContributionDTO> findContributionsByProjectId(String projectIdHex) {
+  public List<GitHubContributionDTO> findContributionsByProjectId(String projectIdHex, String sprintIdHex) {
     String sql = """
             SELECT
                 RAWTOHEX(u.USER_ID) AS USER_ID,
@@ -30,6 +30,22 @@ public class GitHubContributionRepository {
                     FROM GITHUB_COMMIT gc
                     WHERE gc.PROJECT_ID = HEXTORAW(:projectId)
                       AND LOWER(gc.AUTHOR_USERNAME) = LOWER(u.GITHUB_USERNAME)
+                      AND (
+                        :sprintId IS NULL
+                        OR gc.COMMIT_DATE >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gc.COMMIT_DATE < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
                 ) AS TOTAL_COMMITS,
 
                 (
@@ -37,13 +53,70 @@ public class GitHubContributionRepository {
                     FROM GITHUB_ISSUE gi
                     WHERE gi.PROJECT_ID = HEXTORAW(:projectId)
                       AND LOWER(gi.AUTHOR_USERNAME) = LOWER(u.GITHUB_USERNAME)
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
                 ) AS OPENED_ISSUES,
 
                 (
                     SELECT COUNT(*)
                     FROM GITHUB_ISSUE gi
                     WHERE gi.PROJECT_ID = HEXTORAW(:projectId)
+                      AND LOWER(gi.AUTHOR_USERNAME) = LOWER(u.GITHUB_USERNAME)
+                      AND gi.STATE = 'open'
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                ) AS ACTIVE_ISSUES,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_ISSUE gi
+                    WHERE gi.PROJECT_ID = HEXTORAW(:projectId)
                       AND LOWER(gi.CLOSED_BY_USERNAME) = LOWER(u.GITHUB_USERNAME)
+                      AND gi.CLOSED_AT_GITHUB IS NOT NULL
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CLOSED_AT_GITHUB >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CLOSED_AT_GITHUB < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
                 ) AS CLOSED_ISSUES
 
             FROM PROYECTO p
@@ -58,6 +131,7 @@ public class GitHubContributionRepository {
 
     Query query = entityManager.createNativeQuery(sql);
     query.setParameter("projectId", projectIdHex);
+    query.setParameter("sprintId", normalizeOptionalHex(sprintIdHex));
 
     List<Object[]> rows = query.getResultList();
     List<GitHubContributionDTO> result = new ArrayList<>();
@@ -70,12 +144,13 @@ public class GitHubContributionRepository {
           row[3] != null ? row[3].toString() : null,
           row[4] != null ? ((Number) row[4]).longValue() : 0,
           row[5] != null ? ((Number) row[5]).longValue() : 0,
-          row[6] != null ? ((Number) row[6]).longValue() : 0));
+          row[6] != null ? ((Number) row[6]).longValue() : 0,
+          row[7] != null ? ((Number) row[7]).longValue() : 0));
     }
 
     return result;
   }
-  
+
   public List<GitHubSprintActivityDTO> findSprintActivityByProjectId(String projectIdHex) {
     String sql = """
             SELECT
@@ -129,8 +204,8 @@ public class GitHubContributionRepository {
 
     return result;
   }
-  
-  public List<GitHubRepositoryActivityDTO> findRepositoryActivityByProjectId(String projectIdHex) {
+
+  public List<GitHubRepositoryActivityDTO> findRepositoryActivityByProjectId(String projectIdHex, String sprintIdHex) {
     String sql = """
             SELECT
                 RAWTOHEX(pr.REPOSITORY_ID) AS REPOSITORY_ID,
@@ -141,19 +216,91 @@ public class GitHubContributionRepository {
                     SELECT COUNT(*)
                     FROM GITHUB_COMMIT gc
                     WHERE gc.REPOSITORY_ID = pr.REPOSITORY_ID
+                      AND (
+                        :sprintId IS NULL
+                        OR gc.COMMIT_DATE >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gc.COMMIT_DATE < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
                 ) AS TOTAL_COMMITS,
 
                 (
                     SELECT COUNT(*)
                     FROM GITHUB_ISSUE gi
                     WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
                 ) AS OPENED_ISSUES,
 
                 (
                     SELECT COUNT(*)
                     FROM GITHUB_ISSUE gi
                     WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
+                      AND gi.STATE = 'open'
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CREATED_AT_GITHUB < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                ) AS ACTIVE_ISSUES,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_ISSUE gi
+                    WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
                       AND gi.STATE = 'closed'
+                      AND gi.CLOSED_AT_GITHUB IS NOT NULL
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CLOSED_AT_GITHUB >= (
+                            SELECT s.FECHA_INICIO
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
+                      AND (
+                        :sprintId IS NULL
+                        OR gi.CLOSED_AT_GITHUB < (
+                            SELECT s.FECHA_FIN + 1
+                            FROM SPRINT s
+                            WHERE s.SPRINT_ID = HEXTORAW(:sprintId)
+                        )
+                      )
                 ) AS CLOSED_ISSUES
 
             FROM PROJECT_REPOSITORY pr
@@ -164,6 +311,7 @@ public class GitHubContributionRepository {
 
     Query query = entityManager.createNativeQuery(sql);
     query.setParameter("projectId", projectIdHex);
+    query.setParameter("sprintId", normalizeOptionalHex(sprintIdHex));
 
     List<Object[]> rows = query.getResultList();
     List<GitHubRepositoryActivityDTO> result = new ArrayList<>();
@@ -175,9 +323,18 @@ public class GitHubContributionRepository {
           row[2] != null ? row[2].toString() : null,
           row[3] != null ? ((Number) row[3]).longValue() : 0,
           row[4] != null ? ((Number) row[4]).longValue() : 0,
-          row[5] != null ? ((Number) row[5]).longValue() : 0));
+          row[5] != null ? ((Number) row[5]).longValue() : 0,
+          row[6] != null ? ((Number) row[6]).longValue() : 0));
     }
 
     return result;
+  }
+
+  private String normalizeOptionalHex(String value) {
+    if (value == null || value.isBlank() || "all".equalsIgnoreCase(value)) {
+      return null;
+    }
+
+    return value;
   }
 }

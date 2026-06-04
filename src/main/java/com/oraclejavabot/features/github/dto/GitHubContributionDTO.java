@@ -8,6 +8,7 @@ public class GitHubContributionDTO {
   private String githubUsername;
   private long totalCommits;
   private long openedIssues;
+  private long activeIssues;
   private long closedIssues;
 
   public GitHubContributionDTO(
@@ -17,6 +18,7 @@ public class GitHubContributionDTO {
       String githubUsername,
       long totalCommits,
       long openedIssues,
+      long activeIssues,
       long closedIssues) {
     this.userId = userId;
     this.name = name;
@@ -24,6 +26,7 @@ public class GitHubContributionDTO {
     this.githubUsername = githubUsername;
     this.totalCommits = totalCommits;
     this.openedIssues = openedIssues;
+    this.activeIssues = activeIssues;
     this.closedIssues = closedIssues;
   }
 
@@ -49,6 +52,10 @@ public class GitHubContributionDTO {
 
   public long getOpenedIssues() {
     return openedIssues;
+  }
+
+  public long getActiveIssues() {
+    return activeIssues;
   }
 
   public long getClosedIssues() {

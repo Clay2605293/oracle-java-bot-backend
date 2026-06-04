@@ -7,6 +7,7 @@ public class GitHubRepositoryActivityDTO {
   private String repoName;
   private long totalCommits;
   private long openedIssues;
+  private long activeIssues;
   private long closedIssues;
 
   public GitHubRepositoryActivityDTO(
@@ -15,12 +16,14 @@ public class GitHubRepositoryActivityDTO {
       String repoName,
       long totalCommits,
       long openedIssues,
+      long activeIssues,
       long closedIssues) {
     this.repositoryId = repositoryId;
     this.owner = owner;
     this.repoName = repoName;
     this.totalCommits = totalCommits;
     this.openedIssues = openedIssues;
+    this.activeIssues = activeIssues;
     this.closedIssues = closedIssues;
   }
 
@@ -42,6 +45,10 @@ public class GitHubRepositoryActivityDTO {
 
   public long getOpenedIssues() {
     return openedIssues;
+  }
+
+  public long getActiveIssues() {
+    return activeIssues;
   }
 
   public long getClosedIssues() {

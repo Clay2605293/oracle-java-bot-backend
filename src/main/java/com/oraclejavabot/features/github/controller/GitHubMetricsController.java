@@ -18,7 +18,8 @@ public class GitHubMetricsController {
 
   @GetMapping("/contributions")
   public List<GitHubContributionDTO> getProjectContributions(
-      @PathVariable String projectId) {
-    return gitHubMetricsService.getProjectContributions(projectId);
+      @PathVariable String projectId,
+      @RequestParam(required = false) String sprintId) {
+    return gitHubMetricsService.getProjectContributions(projectId, sprintId);
   }
 }

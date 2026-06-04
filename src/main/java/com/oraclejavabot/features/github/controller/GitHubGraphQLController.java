@@ -20,16 +20,21 @@ public class GitHubGraphQLController {
   }
 
   @QueryMapping
-  public List<GitHubContributionDTO> githubContributions(@Argument String projectId) {
-    return gitHubMetricsService.getProjectContributions(projectId);
-  }
-  @QueryMapping
-  public List<GitHubSprintActivityDTO> githubSprintActivity(@Argument String projectId) {
-      return gitHubMetricsService.getSprintActivity(projectId);
+  public List<GitHubContributionDTO> githubContributions(
+      @Argument String projectId,
+      @Argument String sprintId) {
+    return gitHubMetricsService.getProjectContributions(projectId, sprintId);
   }
 
-@QueryMapping
-  public List<GitHubRepositoryActivityDTO> githubRepositoryActivity(@Argument String projectId) {
-      return gitHubMetricsService.getRepositoryActivity(projectId);
+  @QueryMapping
+  public List<GitHubSprintActivityDTO> githubSprintActivity(@Argument String projectId) {
+    return gitHubMetricsService.getSprintActivity(projectId);
+  }
+
+  @QueryMapping
+  public List<GitHubRepositoryActivityDTO> githubRepositoryActivity(
+      @Argument String projectId,
+      @Argument String sprintId) {
+    return gitHubMetricsService.getRepositoryActivity(projectId, sprintId);
   }
 }
