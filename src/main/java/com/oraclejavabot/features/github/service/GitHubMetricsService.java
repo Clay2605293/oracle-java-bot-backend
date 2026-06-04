@@ -25,7 +25,7 @@ public class GitHubMetricsService {
     return contributionRepository.findSprintActivityByProjectId(projectId);
   }
 
-  public List<GitHubRepositoryActivityDTO> getRepositoryActivity(String projectId, String sprintId) {
-    return contributionRepository.findRepositoryActivityByProjectId(projectId, sprintId);
+  public List<GitHubRepositoryActivityDTO> getRepositoryActivity(String projectId, String sprintId, String developerId) {
+    return contributionRepository.findRepositoryActivityByProjectId(projectId, sprintId, developerId);
   }
 }

@@ -34,7 +34,8 @@ public class GitHubGraphQLController {
   @QueryMapping
   public List<GitHubRepositoryActivityDTO> githubRepositoryActivity(
       @Argument String projectId,
-      @Argument String sprintId) {
-    return gitHubMetricsService.getRepositoryActivity(projectId, sprintId);
+      @Argument String sprintId,
+      @Argument String developerId) {
+    return gitHubMetricsService.getRepositoryActivity(projectId, sprintId, developerId);
   }
 }

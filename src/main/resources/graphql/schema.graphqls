@@ -15,7 +15,7 @@ type Query {
 
   githubContributions(projectId: ID!, sprintId: ID): [GitHubContribution!]!
   githubSprintActivity(projectId: ID!): [GitHubSprintActivity!]!
-  githubRepositoryActivity(projectId: ID!, sprintId: ID): [GitHubRepositoryActivity!]!
+  githubRepositoryActivity(projectId: ID!, sprintId: ID, developerId: ID): [GitHubRepositoryActivity!]!
 }
 
 enum SkillCategory {

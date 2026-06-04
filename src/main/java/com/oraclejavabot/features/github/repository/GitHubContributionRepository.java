@@ -205,7 +205,10 @@ public class GitHubContributionRepository {
     return result;
   }
 
-  public List<GitHubRepositoryActivityDTO> findRepositoryActivityByProjectId(String projectIdHex, String sprintIdHex) {
+  public List<GitHubRepositoryActivityDTO> findRepositoryActivityByProjectId(
+      String projectIdHex,
+      String sprintIdHex,
+      String developerIdHex) {
     String sql = """
             SELECT
                 RAWTOHEX(pr.REPOSITORY_ID) AS REPOSITORY_ID,
@@ -216,6 +219,14 @@ public class GitHubContributionRepository {
                     SELECT COUNT(*)
                     FROM GITHUB_COMMIT gc
                     WHERE gc.REPOSITORY_ID = pr.REPOSITORY_ID
+                      AND (
+                        :developerId IS NULL
+                        OR LOWER(gc.AUTHOR_USERNAME) = (
+                            SELECT LOWER(u.GITHUB_USERNAME)
+                            FROM USUARIO u
+                            WHERE u.USER_ID = HEXTORAW(:developerId)
+                        )
+                      )
                       AND (
                         :sprintId IS NULL
                         OR gc.COMMIT_DATE >= (
@@ -238,6 +249,14 @@ public class GitHubContributionRepository {
                     SELECT COUNT(*)
                     FROM GITHUB_ISSUE gi
                     WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
+                      AND (
+                        :developerId IS NULL
+                        OR LOWER(gi.AUTHOR_USERNAME) = (
+                            SELECT LOWER(u.GITHUB_USERNAME)
+                            FROM USUARIO u
+                            WHERE u.USER_ID = HEXTORAW(:developerId)
+                        )
+                      )
                       AND (
                         :sprintId IS NULL
                         OR gi.CREATED_AT_GITHUB >= (
@@ -262,6 +281,14 @@ public class GitHubContributionRepository {
                     WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
                       AND gi.STATE = 'open'
                       AND (
+                        :developerId IS NULL
+                        OR LOWER(gi.AUTHOR_USERNAME) = (
+                            SELECT LOWER(u.GITHUB_USERNAME)
+                            FROM USUARIO u
+                            WHERE u.USER_ID = HEXTORAW(:developerId)
+                        )
+                      )
+                      AND (
                         :sprintId IS NULL
                         OR gi.CREATED_AT_GITHUB >= (
                             SELECT s.FECHA_INICIO
@@ -285,6 +312,14 @@ public class GitHubContributionRepository {
                     WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
                       AND gi.STATE = 'closed'
                       AND gi.CLOSED_AT_GITHUB IS NOT NULL
+                      AND (
+                        :developerId IS NULL
+                        OR LOWER(gi.CLOSED_BY_USERNAME) = (
+                            SELECT LOWER(u.GITHUB_USERNAME)
+                            FROM USUARIO u
+                            WHERE u.USER_ID = HEXTORAW(:developerId)
+                        )
+                      )
                       AND (
                         :sprintId IS NULL
                         OR gi.CLOSED_AT_GITHUB >= (
@@ -312,6 +347,7 @@ public class GitHubContributionRepository {
     Query query = entityManager.createNativeQuery(sql);
     query.setParameter("projectId", projectIdHex);
     query.setParameter("sprintId", normalizeOptionalHex(sprintIdHex));
+    query.setParameter("developerId", normalizeOptionalHex(developerIdHex));
 
     List<Object[]> rows = query.getResultList();
     List<GitHubRepositoryActivityDTO> result = new ArrayList<>();
@@ -331,10 +367,15 @@ public class GitHubContributionRepository {
   }
 
   private String normalizeOptionalHex(String value) {
-    if (value == null || value.isBlank() || "all".equalsIgnoreCase(value)) {
+    if (value == null || value.isBlank()) {
       return null;
     }
 
-    return value;
+    String trimmedValue = value.trim();
+    if ("all".equalsIgnoreCase(trimmedValue)) {
+      return null;
+    }
+
+    return trimmedValue;
   }
 }
