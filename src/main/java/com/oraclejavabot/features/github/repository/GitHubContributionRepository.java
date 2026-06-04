@@ -1,6 +1,8 @@
 package com.oraclejavabot.features.github.repository;
 
 import com.oraclejavabot.features.github.dto.GitHubContributionDTO;
+import com.oraclejavabot.features.github.dto.GitHubSprintActivityDTO;
+import com.oraclejavabot.features.github.dto.GitHubRepositoryActivityDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
@@ -69,6 +71,111 @@ public class GitHubContributionRepository {
           row[4] != null ? ((Number) row[4]).longValue() : 0,
           row[5] != null ? ((Number) row[5]).longValue() : 0,
           row[6] != null ? ((Number) row[6]).longValue() : 0));
+    }
+
+    return result;
+  }
+  
+  public List<GitHubSprintActivityDTO> findSprintActivityByProjectId(String projectIdHex) {
+    String sql = """
+            SELECT
+                RAWTOHEX(s.SPRINT_ID) AS SPRINT_ID,
+                s.NOMBRE AS SPRINT_NAME,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_COMMIT gc
+                    WHERE gc.PROJECT_ID = s.PROJECT_ID
+                      AND gc.COMMIT_DATE >= s.FECHA_INICIO
+                      AND gc.COMMIT_DATE <= s.FECHA_FIN
+                ) AS TOTAL_COMMITS,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_ISSUE gi
+                    WHERE gi.PROJECT_ID = s.PROJECT_ID
+                      AND gi.CREATED_AT_GITHUB >= s.FECHA_INICIO
+                      AND gi.CREATED_AT_GITHUB <= s.FECHA_FIN
+                ) AS OPENED_ISSUES,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_ISSUE gi
+                    WHERE gi.PROJECT_ID = s.PROJECT_ID
+                      AND gi.CLOSED_AT_GITHUB IS NOT NULL
+                      AND gi.CLOSED_AT_GITHUB >= s.FECHA_INICIO
+                      AND gi.CLOSED_AT_GITHUB <= s.FECHA_FIN
+                ) AS CLOSED_ISSUES
+
+            FROM SPRINT s
+            WHERE s.PROJECT_ID = HEXTORAW(:projectId)
+            ORDER BY s.FECHA_INICIO
+        """;
+
+    Query query = entityManager.createNativeQuery(sql);
+    query.setParameter("projectId", projectIdHex);
+
+    List<Object[]> rows = query.getResultList();
+    List<GitHubSprintActivityDTO> result = new ArrayList<>();
+
+    for (Object[] row : rows) {
+      result.add(new GitHubSprintActivityDTO(
+          row[0] != null ? row[0].toString() : null,
+          row[1] != null ? row[1].toString() : null,
+          row[2] != null ? ((Number) row[2]).longValue() : 0,
+          row[3] != null ? ((Number) row[3]).longValue() : 0,
+          row[4] != null ? ((Number) row[4]).longValue() : 0));
+    }
+
+    return result;
+  }
+  
+  public List<GitHubRepositoryActivityDTO> findRepositoryActivityByProjectId(String projectIdHex) {
+    String sql = """
+            SELECT
+                RAWTOHEX(pr.REPOSITORY_ID) AS REPOSITORY_ID,
+                pr.OWNER AS OWNER,
+                pr.REPO_NAME AS REPO_NAME,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_COMMIT gc
+                    WHERE gc.REPOSITORY_ID = pr.REPOSITORY_ID
+                ) AS TOTAL_COMMITS,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_ISSUE gi
+                    WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
+                ) AS OPENED_ISSUES,
+
+                (
+                    SELECT COUNT(*)
+                    FROM GITHUB_ISSUE gi
+                    WHERE gi.REPOSITORY_ID = pr.REPOSITORY_ID
+                      AND gi.STATE = 'closed'
+                ) AS CLOSED_ISSUES
+
+            FROM PROJECT_REPOSITORY pr
+            WHERE pr.PROJECT_ID = HEXTORAW(:projectId)
+              AND pr.IS_ACTIVE = 1
+            ORDER BY pr.REPO_NAME
+        """;
+
+    Query query = entityManager.createNativeQuery(sql);
+    query.setParameter("projectId", projectIdHex);
+
+    List<Object[]> rows = query.getResultList();
+    List<GitHubRepositoryActivityDTO> result = new ArrayList<>();
+
+    for (Object[] row : rows) {
+      result.add(new GitHubRepositoryActivityDTO(
+          row[0] != null ? row[0].toString() : null,
+          row[1] != null ? row[1].toString() : null,
+          row[2] != null ? row[2].toString() : null,
+          row[3] != null ? ((Number) row[3]).longValue() : 0,
+          row[4] != null ? ((Number) row[4]).longValue() : 0,
+          row[5] != null ? ((Number) row[5]).longValue() : 0));
     }
 
     return result;

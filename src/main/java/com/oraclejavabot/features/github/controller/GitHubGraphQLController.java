@@ -1,6 +1,8 @@
 package com.oraclejavabot.features.github.controller;
 
 import com.oraclejavabot.features.github.dto.GitHubContributionDTO;
+import com.oraclejavabot.features.github.dto.GitHubRepositoryActivityDTO;
+import com.oraclejavabot.features.github.dto.GitHubSprintActivityDTO;
 import com.oraclejavabot.features.github.service.GitHubMetricsService;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -20,5 +22,14 @@ public class GitHubGraphQLController {
   @QueryMapping
   public List<GitHubContributionDTO> githubContributions(@Argument String projectId) {
     return gitHubMetricsService.getProjectContributions(projectId);
+  }
+  @QueryMapping
+  public List<GitHubSprintActivityDTO> githubSprintActivity(@Argument String projectId) {
+      return gitHubMetricsService.getSprintActivity(projectId);
+  }
+
+@QueryMapping
+  public List<GitHubRepositoryActivityDTO> githubRepositoryActivity(@Argument String projectId) {
+      return gitHubMetricsService.getRepositoryActivity(projectId);
   }
 }
