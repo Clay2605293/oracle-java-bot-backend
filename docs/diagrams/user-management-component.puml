@@ -18,7 +18,7 @@ class SkillCategoryOptionDTO {
 	{method} +cardType () : String
 	{method} +code () : SkillCategory
 	{method} +description () : String
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +hashCode () : int
 	{method} +name () : String
 	{method} +toString () : String
@@ -134,7 +134,7 @@ class UserSkillProfileDTO {
 	{field} -primarySkillYears : Double
 	{method} +cardType () : String
 	{method} +email () : String
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +firstName () : String
 	{method} +hashCode () : int
 	{method} +id () : String

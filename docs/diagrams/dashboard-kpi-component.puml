@@ -5,7 +5,7 @@ class DashboardDeveloperOptionDTO {
 	{field} -id : String
 	{field} -name : String
 	{method} +email () : String
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +hashCode () : int
 	{method} +id () : String
 	{method} +name () : String
@@ -24,7 +24,7 @@ class DashboardSprintHistoryPointDTO {
 	{field} -totalTasks : int
 	{method} +completedTasks () : int
 	{method} +delayedTasks () : int
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +hashCode () : int
 	{method} +onTimeTasks () : int
 	{method} +sprintId () : String
@@ -42,7 +42,7 @@ class DashboardSprintOptionDTO {
 	{field} -name : String
 	{field} -startDate : String
 	{method} +endDate () : String
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +hashCode () : int
 	{method} +id () : String
 	{method} +name () : String
@@ -68,7 +68,7 @@ class DashboardSummaryDTO {
 	{method} +completedTasks () : int
 	{method} +completionRate () : double
 	{method} +delayedTasks () : int
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +estimationAccuracy () : double
 	{method} +hashCode () : int
 	{method} +onTimeRate () : double
@@ -133,7 +133,7 @@ class ProjectDashboardKpiDTO {
 	{field} -sprintName : String
 	{method} +developerId () : String
 	{method} +developerName () : String
-	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +equals ( o : Object ) : boolean
 	{method} +hashCode () : int
 	{method} +projectId () : String
 	{method} +scopeLabel () : String
