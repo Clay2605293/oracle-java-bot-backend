@@ -15,7 +15,9 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Component
-@ConditionalOnProperty(prefix = "telegram.bot", name = "enabled", havingValue = "true")
+// Gated by polling-enabled (NOT enabled): only the active blue/green instance long-polls,
+// so two instances never hit Telegram's single-getUpdates-consumer limit (HTTP 409).
+@ConditionalOnProperty(prefix = "telegram.bot", name = "polling-enabled", havingValue = "true")
 public class TelegramTaskBotController implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramTaskBotController.class);
@@ -63,6 +65,7 @@ public class TelegramTaskBotController implements SpringLongPollingBot, LongPoll
 
     @AfterBotRegistration
     public void afterRegistration(BotSession botSession) {
-        logger.info("Telegram bot registered. Running state: {}", botSession.isRunning());
+        logger.info("Telegram long-polling ACTIVE on this instance (polling-enabled=true). Running state: {}",
+                botSession.isRunning());
     }
 }
