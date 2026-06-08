@@ -36,26 +36,54 @@ workspace "Oracle Java Bot" "Modelo C4 de arquitectura objetivo para Oracle Java
             backend = container "Spring Boot Backend" "API principal del sistema. Gestiona autenticación, autorización, usuarios, equipos, proyectos, tareas, sprints, KPIs, documentos, embeddings y detección de duplicados." "Java / Spring Boot" {
                 tags "Application"
 
-                authComponent = component "Authentication Component" "Valida credenciales, emite tokens JWT y habilita el acceso inicial al sistema." "Spring MVC Controller / Service"
-                securityComponent = component "Authorization and Security Component" "Valida permisos, roles y acceso a recursos protegidos mediante filtros JWT y configuración de seguridad." "Spring Security / JWT Filter"
+                authComponent = component "Authentication Component" "Valida credenciales, emite tokens JWT y habilita el acceso inicial al sistema." "Spring MVC Controller / Service" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/authentication-component.puml"
+                }
+                securityComponent = component "Authorization and Security Component" "Valida permisos, roles y acceso a recursos protegidos mediante filtros JWT y configuración de seguridad." "Spring Security / JWT Filter" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/authorization-security-component.puml"
+                }
 
-                userManagementComponent = component "User Management Component" "Administra usuarios, credenciales, roles, estado de usuario y datos operativos." "Spring Service / Repository"
-                teamManagementComponent = component "Team Management Component" "Administra equipos, miembros y relaciones entre usuarios." "Spring Service / Repository"
-                projectManagementComponent = component "Project Management Component" "Administra proyectos, miembros del proyecto y documentos asociados." "Spring Service / Repository"
+                userManagementComponent = component "User Management Component" "Administra usuarios, credenciales, roles, estado de usuario y datos operativos." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/user-management-component.puml"
+                }
+                teamManagementComponent = component "Team Management Component" "Administra equipos, miembros y relaciones entre usuarios." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/team-management-component.puml"
+                }
+                projectManagementComponent = component "Project Management Component" "Administra proyectos, miembros del proyecto y documentos asociados." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/project-management-component.puml"
+                }
 
-                taskManagementComponent = component "Task Management Component" "Gestiona ciclo de vida de tareas: creación, edición, eliminación, estado, prioridad, comentarios y asignaciones." "Spring Service / Repository"
-                sprintManagementComponent = component "Sprint Management Component" "Administra sprints y relación de tareas con periodos de trabajo." "Spring Service / Repository"
-                assignmentComponent = component "Assignment Component" "Gestiona responsables y relaciones usuario-tarea." "Spring Service / Repository"
+                taskManagementComponent = component "Task Management Component" "Gestiona ciclo de vida de tareas: creación, edición, eliminación, estado, prioridad, comentarios y asignaciones." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/task-management-component.puml"
+                }
+                sprintManagementComponent = component "Sprint Management Component" "Administra sprints y relación de tareas con periodos de trabajo." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/sprint-management-component.puml"
+                }
+                assignmentComponent = component "Assignment Component" "Gestiona responsables y relaciones usuario-tarea." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/task-management-component.puml"
+                }
 
-                dashboardKpiComponent = component "Dashboard and KPI Component" "Calcula progreso de proyectos, métricas de sprint y desempeño de developers." "Spring Service / Repository"
+                dashboardKpiComponent = component "Dashboard and KPI Component" "Calcula progreso de proyectos, métricas de sprint y desempeño de developers." "Spring Service / Repository" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/dashboard-kpi-component.puml"
+                }
 
-                documentStorageComponent = component "Document Storage Component" "Registra metadatos de documentos y coordina almacenamiento en OCI Object Storage." "Spring Service / OCI SDK"
+                documentStorageComponent = component "Document Storage Component" "Registra metadatos de documentos y coordina almacenamiento en OCI Object Storage." "Spring Service / OCI SDK" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/project-management-component.puml"
+                }
 
-                aiBacklogComponent = component "AI Backlog Generation Component" "Orquesta la generación de tareas sugeridas a partir de documentos mediante Kafka y AI Service." "Spring Service / Kafka Producer-Consumer"
-                vectorEmbeddingComponent = component "Vector Embedding Component" "Genera y actualiza embeddings vectoriales de tareas en Oracle Database 26ai." "Spring Service / Oracle 26ai"
-                duplicateDetectionComponent = component "Semantic Duplicate Detection Component" "Ejecuta detección de duplicados mediante Oracle Vector Search y persiste resultados." "Spring Service / Oracle Vector Search"
+                aiBacklogComponent = component "AI Backlog Generation Component" "Orquesta la generación de tareas sugeridas a partir de documentos mediante Kafka y AI Service." "Spring Service / Kafka Producer-Consumer" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/ai-backlog-generation-component.puml"
+                }
+                vectorEmbeddingComponent = component "Vector Embedding Component" "Genera y actualiza embeddings vectoriales de tareas en Oracle Database 26ai." "Spring Service / Oracle 26ai" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/vector-embedding-component.puml"
+                }
+                duplicateDetectionComponent = component "Semantic Duplicate Detection Component" "Ejecuta detección de duplicados mediante Oracle Vector Search y persiste resultados." "Spring Service / Oracle Vector Search" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/semantic-duplicate-detection-component.puml"
+                }
 
-                messagingComponent = component "Messaging Component" "Publica y consume eventos Kafka relacionados con tareas, generación IA y notificaciones." "Spring Kafka Producer / Consumer"
+                messagingComponent = component "Messaging Component" "Publica y consume eventos Kafka relacionados con tareas, generación IA y notificaciones." "Spring Kafka Producer / Consumer" {
+                    url "https://github.com/Clay2605293/oracle-java-bot-backend/blob/main/docs/diagrams/messaging-component.puml"
+                }
                 persistenceComponent = component "Persistence Component" "Encapsula acceso a datos transaccionales, tablas vectoriales, auditoría e integridad referencial." "Spring Data JPA / Oracle JDBC"
             }
 
