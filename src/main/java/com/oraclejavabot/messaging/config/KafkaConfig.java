@@ -33,7 +33,9 @@ import java.util.Map;
 @EnableKafka
 public class KafkaConfig {
 
-    private static final String BOOTSTRAP = "kafka:29092";
+    // Broker advertises a single listener on kafka:9092. These explicit factory beans
+    // override spring.kafka.bootstrap-servers, so this constant is the effective address.
+    private static final String BOOTSTRAP = "kafka:9092";
     private static final String GROUP_ID = "oracle-java-bot-group";
 
     // =============================

@@ -25,7 +25,9 @@ import java.util.Map;
 @Configuration
 public class AiKafkaConfig {
 
-    private static final String BOOTSTRAP = "kafka:29092";
+    // Broker advertises a single listener on kafka:9092. These explicit factory beans
+    // override spring.kafka.bootstrap-servers, so this constant is the effective address.
+    private static final String BOOTSTRAP = "kafka:9092";
 
     private static final String AI_TASK_RESPONSE_GROUP_ID = "ai-response-group";
     private static final String AI_DUPLICATE_RESPONSE_GROUP_ID = "ai-duplicate-response-group";
