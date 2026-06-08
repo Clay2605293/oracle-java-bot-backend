@@ -1,7 +1,27 @@
 @startuml
 
+class JwtFilter {
+	{field} -SECRET : String
+	{field} -key : SecretKey
+	{method} #doFilterInternal ( request : HttpServletRequest , response : HttpServletResponse , filterChain : FilterChain ) : void
+}
 
 
+class JwtService {
+	{field} -SECRET : String
+	{field} -key : SecretKey
+	{method} +generateToken ( userId : UUID , email : String , rolId : Integer ) : String
+}
+
+
+class SecurityConfig {
+	{method} +filterChain ( http : HttpSecurity ) : SecurityFilterChain
+}
+
+
+
+
+SecurityConfig *--  JwtFilter : jwtFilter
 
 
 @enduml

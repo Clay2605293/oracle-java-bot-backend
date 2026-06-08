@@ -35,7 +35,7 @@ jobs:
         run: chmod +x ./mvnw
 
       - name: Generate PlantUML diagrams
-        run: ./mvnw generate-sources
+        run: ./mvnw -DskipTests process-classes
 
       - name: Commit generated diagrams
         uses: stefanzweifel/git-auto-commit-action@v5

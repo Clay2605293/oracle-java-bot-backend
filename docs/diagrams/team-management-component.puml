@@ -1,7 +1,105 @@
 @startuml
 
+class TeamController {
+	{method} +createTeam ( request : TeamRequestDTO ) : TeamResponseDTO
+	{method} +getTeamById ( teamId : String ) : TeamResponseDTO
+	{method} +getTeams () : List
+}
 
 
+class TeamEntity {
+	{field} +descripcion : String
+	{field} +nombre : String
+	{field} +ownerId : UUID
+	{field} +teamId : UUID
+}
+
+
+class TeamMemberController {
+	{method} +addMember ( teamId : String , userId : String ) : void
+	{method} +getMembers ( teamId : String ) : List
+	{method} +removeMember ( teamId : String , userId : String ) : void
+}
+
+
+class TeamMemberDTO {
+	{field} +nombre : String
+	{field} +teamId : String
+	{field} +userId : String
+}
+
+
+class TeamMemberEntity {
+}
+
+
+class TeamMemberId {
+	{field} +teamId : UUID
+	{field} +userId : UUID
+	{method} +equals ( o : Object ) : boolean
+	{method} +hashCode () : int
+}
+
+
+interface TeamMemberRepository {
+	{method}  {abstract} +deleteByIdUserIdAndIdTeamId ( userId : UUID , teamId : UUID ) : void
+	{method}  {abstract} +existsByIdUserIdAndIdTeamId ( userId : UUID , teamId : UUID ) : boolean
+	{method}  {abstract} +findByIdTeamId ( teamId : UUID ) : List
+}
+
+
+class TeamMemberService {
+	{field} -userRepository : UserRepository
+	{method} +addMember ( teamId : String , userId : String ) : void
+	{method} +getMembers ( teamId : String ) : List
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapToDTO ( entity : TeamMemberEntity ) : TeamMemberDTO
+	{method} +removeMember ( teamId : String , userId : String ) : void
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+interface TeamRepository {
+	{method}  {abstract} +findByOwnerId ( ownerId : UUID ) : List
+}
+
+
+class TeamRequestDTO {
+	{field} +descripcion : String
+	{field} +nombre : String
+	{field} +ownerId : String
+}
+
+
+class TeamResponseDTO {
+	{field} +descripcion : String
+	{field} +nombre : String
+	{field} +ownerId : String
+	{field} +ownerNombre : String
+	{field} +teamId : String
+	{field} +totalMembers : int
+}
+
+
+class TeamService {
+	{field} -userRepository : UserRepository
+	{method} +createTeam ( request : TeamRequestDTO ) : TeamResponseDTO
+	{method} +getTeamById ( teamId : String ) : TeamResponseDTO
+	{method} +getTeams () : List
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapToResponse ( team : TeamEntity ) : TeamResponseDTO
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+
+
+TeamController *--  TeamService : teamService
+TeamMemberController *--  TeamMemberService : service
+TeamMemberEntity -->  TeamMemberId : id
+TeamMemberService *--  TeamMemberRepository : repository
+TeamService *--  TeamMemberRepository : teamMemberRepository
+TeamService *--  TeamRepository : teamRepository
 
 
 @enduml

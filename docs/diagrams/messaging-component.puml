@@ -1,7 +1,247 @@
 @startuml
 
+class AiDuplicateDetectionProducer {
+	{field} -kafkaTemplate : KafkaTemplate
+	{method} +sendDuplicateDetectionRequest ( event : AiDuplicateDetectionRequestEvent ) : void
+}
 
 
+class AiDuplicateDetectionRequestEvent {
+	{field} +projectId : String
+	{field} +runId : String
+	{field} +threshold : Double
+}
+
+
+class AiDuplicateDetectionResponseConsumer {
+	{field} -aiDuplicateDetectionService : AiDuplicateDetectionService
+	{method} +consume ( event : AiDuplicateDetectionResponseEvent ) : void
+}
+
+
+class AiDuplicateDetectionResponseEvent {
+	{field} +errorMessage : String
+	{field} +projectId : String
+	{field} +runId : String
+	{field} +status : String
+}
+
+
+class AiKafkaConfig {
+	{field} {static} -AI_DUPLICATE_RESPONSE_GROUP_ID : String
+	{field} {static} -AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID : String
+	{field} {static} -AI_TASK_EMBEDDING_RESPONSE_GROUP_ID : String
+	{field} {static} -AI_TASK_RESPONSE_GROUP_ID : String
+	{field} {static} -BOOTSTRAP : String
+	{method} +aiConsumerFactory () : ConsumerFactory
+	{method} +aiDuplicateDetectionConsumerFactory () : ConsumerFactory
+	{method} +aiDuplicateDetectionKafkaListenerContainerFactory () : ConcurrentKafkaListenerContainerFactory
+	{method} +aiKafkaListenerContainerFactory () : ConcurrentKafkaListenerContainerFactory
+	{method} +semanticDuplicateDetectionConsumerFactory () : ConsumerFactory
+	{method} +semanticDuplicateDetectionKafkaListenerContainerFactory () : ConcurrentKafkaListenerContainerFactory
+	{method} +taskEmbeddingConsumerFactory () : ConsumerFactory
+	{method} +taskEmbeddingKafkaListenerContainerFactory () : ConcurrentKafkaListenerContainerFactory
+}
+
+
+class AiSemanticDuplicateDetectionProducer {
+	{field} -kafkaTemplate : KafkaTemplate
+	{method} +sendSemanticDuplicateDetectionRequest ( event : AiSemanticDuplicateDetectionRequestEvent ) : void
+}
+
+
+class AiSemanticDuplicateDetectionRequestEvent {
+	{field} +embeddingModel : String
+	{field} +projectId : String
+	{field} +runId : String
+	{field} +threshold : Double
+}
+
+
+class AiSemanticDuplicateDetectionResponseConsumer {
+	{field} -aiSemanticDuplicateDetectionService : AiSemanticDuplicateDetectionService
+	{method} +consume ( event : AiSemanticDuplicateDetectionResponseEvent ) : void
+}
+
+
+class AiSemanticDuplicateDetectionResponseEvent {
+	{field} +embeddingModel : String
+	{field} +errorMessage : String
+	{field} +projectId : String
+	{field} +runId : String
+	{field} +status : String
+}
+
+
+class AiTaskEmbeddingProducer {
+	{field} -kafkaTemplate : KafkaTemplate
+	{method} +sendTaskEmbeddingRequest ( event : AiTaskEmbeddingRequestEvent ) : void
+}
+
+
+class AiTaskEmbeddingRequestEvent {
+	{field} +descripcion : String
+	{field} +embeddingModel : String
+	{field} +projectId : String
+	{field} +taskId : String
+	{field} +titulo : String
+}
+
+
+class AiTaskEmbeddingResponseConsumer {
+	{field} -taskEmbeddingService : TaskEmbeddingService
+	{method} +consume ( event : AiTaskEmbeddingResponseEvent ) : void
+}
+
+
+class AiTaskEmbeddingResponseEvent {
+	{field} +embeddingJson : String
+	{field} +embeddingModel : String
+	{field} +embeddingText : String
+	{field} +errorMessage : String
+	{field} +projectId : String
+	{field} +status : String
+	{field} +taskId : String
+}
+
+
+class AiTaskGenerationRequestEvent {
+	{field} +maxHours : Double
+	{field} +projectDescription : String
+	{field} +projectId : String
+	{field} +projectName : String
+}
+
+
+class AiTaskGenerationResponseEvent {
+	{field} +projectId : String
+}
+
+
+class AiTaskProducer {
+	{field} -kafkaTemplate : KafkaTemplate
+	{method} +sendTaskGenerationRequest ( event : AiTaskGenerationRequestEvent ) : void
+}
+
+
+class AiTaskResponseConsumer {
+	{field} -aiTaskSuggestionService : AiTaskSuggestionService
+	{method} +consume ( event : AiTaskGenerationResponseEvent ) : void
+}
+
+
+class Document {
+	{field} +content : String
+	{field} +type : String
+	{field} +url : String
+}
+
+
+class Duplicate {
+	{field} +reason : String
+	{field} +similarityScore : Double
+	{field} +taskAId : String
+	{field} +taskATitle : String
+	{field} +taskBId : String
+	{field} +taskBTitle : String
+}
+
+
+class Duplicate {
+	{field} +reason : String
+	{field} +similarityScore : Double
+	{field} +taskAId : String
+	{field} +taskATitle : String
+	{field} +taskBId : String
+	{field} +taskBTitle : String
+}
+
+
+class Embedding {
+	{field} +embeddingJson : String
+	{field} +embeddingText : String
+	{field} +taskId : String
+}
+
+
+class KafkaConfig {
+	{field} {static} -BOOTSTRAP : String
+	{field} {static} -GROUP_ID : String
+	{method} +aiDuplicateDetectionRequestTopic () : NewTopic
+	{method} +aiDuplicateDetectionResponseTopic () : NewTopic
+	{method} +aiSemanticDuplicateDetectionRequestTopic () : NewTopic
+	{method} +aiSemanticDuplicateDetectionResponseTopic () : NewTopic
+	{method} +aiTaskEmbeddingRequestTopic () : NewTopic
+	{method} +aiTaskEmbeddingResponseTopic () : NewTopic
+	{method} +aiTaskGenerationRequestTopic () : NewTopic
+	{method} +aiTaskGenerationResponseTopic () : NewTopic
+	{method} +consumerFactory () : ConsumerFactory
+	{method} +kafkaListenerContainerFactory () : ConcurrentKafkaListenerContainerFactory
+	{method} +kafkaTemplate () : KafkaTemplate
+	{method} +producerFactory () : ProducerFactory
+	{method} +taskEventsTopic () : NewTopic
+}
+
+
+class Task {
+	{field} +descripcion : String
+	{field} +tiempoEstimado : Double
+	{field} +titulo : String
+}
+
+
+class Task {
+	{field} +descripcion : String
+	{field} +taskId : String
+	{field} +titulo : String
+}
+
+
+class Task {
+	{field} +descripcion : String
+	{field} +taskId : String
+	{field} +titulo : String
+}
+
+
+class TaskEventConsumer {
+	{field} {static} -logger : Logger
+	{field} -telegramClient : TelegramClient
+	{field} -userRepository : UserRepository
+	{method} -buildMessage ( event : UserAssignedEvent ) : String
+	{method} +handleUserAssigned ( event : UserAssignedEvent ) : void
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -safe ( value : String ) : String
+}
+
+
+class TaskEventProducer {
+	{field} {static} -TASK_EVENTS_TOPIC : String
+	{field} -kafkaTemplate : KafkaTemplate
+	{field} {static} -logger : Logger
+	{method} +sendUserAssignedEvent ( taskId : String , userId : String , taskTitle : String , projectName : String , priority : String , dueDate : String ) : void
+}
+
+
+class UserAssignedEvent {
+	{field} +dueDate : String
+	{field} +priority : String
+	{field} +projectName : String
+	{field} +taskId : String
+	{field} +taskTitle : String
+	{field} +userId : String
+}
+
+
+
+
+AiDuplicateDetectionRequestEvent "1" o-- "0..*"  Task : tasks
+AiDuplicateDetectionResponseEvent "1" o-- "0..*"  Duplicate : duplicates
+AiSemanticDuplicateDetectionRequestEvent "1" o-- "0..*"  Task : tasks
+AiSemanticDuplicateDetectionResponseEvent "1" o-- "0..*"  Duplicate : duplicates
+AiSemanticDuplicateDetectionResponseEvent "1" o-- "0..*"  Embedding : embeddings
+AiTaskGenerationRequestEvent "1" o-- "0..*"  Document : documents
+AiTaskGenerationResponseEvent "1" o-- "0..*"  Task : tasks
 
 
 @enduml

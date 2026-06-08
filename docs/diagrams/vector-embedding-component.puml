@@ -1,7 +1,113 @@
 @startuml
 
+class TaskEmbeddingBackfillResponseDTO {
+	{field} +message : String
+	{field} +projectId : String
+	{field} +tasksSent : Integer
+}
 
 
+class TaskEmbeddingBackfillService {
+	{field} {static} -DEFAULT_EMBEDDING_MODEL : String
+	{field} -projectRepository : ProjectRepository
+	{field} -taskEmbeddingProducer : AiTaskEmbeddingProducer
+	{field} -taskService : TaskService
+	{method} +backfillProjectTaskEmbeddings ( projectId : String ) : TaskEmbeddingBackfillResponseDTO
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -parseId ( value : String , errorMessage : String ) : UUID
+	{method} -parseProjectId ( projectId : String ) : UUID
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+class TaskEmbeddingService {
+	{field} {static} -STATUS_COMPLETED : String
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -parseId ( value : String , errorMessage : String ) : UUID
+	{method} +saveEmbeddingFromAiResponse ( event : AiTaskEmbeddingResponseEvent ) : void
+	{method} -truncate ( value : String , maxLength : int ) : String
+}
+
+
+class TaskEmbeddingStatusResponseDTO {
+	{field} -projectId : String
+	{field} -readyForVectorSearch : boolean
+	{field} -semanticEmbeddings : int
+	{field} -totalTasks : int
+	{field} -vectorEmbeddings : int
+}
+
+
+class TaskEmbeddingStatusService {
+	{field} -entityManager : EntityManager
+	{method} -count ( sql : String , projectId : UUID ) : int
+	{method} +getStatus ( projectId : String ) : TaskEmbeddingStatusResponseDTO
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -parseId ( value : String , errorMessage : String ) : UUID
+	{method} -parseProjectId ( projectId : String ) : UUID
+}
+
+
+class TaskSemanticEmbeddingEntity {
+	{field} +createdAt : LocalDateTime
+	{field} +embeddingJson : String
+	{field} +embeddingModel : String
+	{field} +embeddingText : String
+	{field} +projectId : UUID
+	{field} +taskId : UUID
+	{field} +updatedAt : LocalDateTime
+}
+
+
+interface TaskSemanticEmbeddingRepository {
+	{method}  {abstract} +deleteByProjectId ( projectId : UUID ) : void
+	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
+}
+
+
+class TaskVectorEmbeddingBackfillResponseDTO {
+	{field} +message : String
+	{field} +projectId : String
+	{field} +tasksSent : Integer
+}
+
+
+class TaskVectorEmbeddingBackfillService {
+	{field} {static} -EMBEDDING_MODEL : String
+	{field} -entityManager : EntityManager
+	{method} +backfillProjectTaskVectorEmbeddings ( projectId : String ) : TaskVectorEmbeddingBackfillResponseDTO
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -parseId ( value : String , errorMessage : String ) : UUID
+	{method} -parseProjectId ( projectId : String ) : UUID
+}
+
+
+class TaskVectorEmbeddingEntity {
+	{field} +createdAt : LocalDateTime
+	{field} +embeddingModel : String
+	{field} +embeddingText : String
+	{field} +projectId : UUID
+	{field} +taskId : UUID
+	{field} +updatedAt : LocalDateTime
+}
+
+
+interface TaskVectorEmbeddingRepository {
+	{method}  {abstract} +deleteByProjectId ( projectId : UUID ) : void
+	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
+}
+
+
+class TaskVectorEmbeddingService {
+	{field} {static} -EMBEDDING_MODEL : String
+	{field} -entityManager : EntityManager
+	{method} +upsertTaskVectorEmbedding ( task : TaskEntity ) : void
+}
+
+
+
+
+TaskEmbeddingService *--  TaskSemanticEmbeddingRepository : embeddingRepository
 
 
 @enduml

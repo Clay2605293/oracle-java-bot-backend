@@ -1,7 +1,134 @@
 @startuml
 
+class AiBacklogGenerationRequestDTO {
+	{field} +maxHours : Double
+}
 
 
+class AiBacklogGenerationResponseDTO {
+	{field} +documentsSent : Integer
+	{field} +maxHours : Double
+	{field} +message : String
+	{field} +projectId : String
+}
+
+
+class AiBacklogGenerationService {
+	{field} -aiTaskProducer : AiTaskProducer
+	{field} -projectDocumentRepository : ProjectDocumentRepository
+	{field} -projectRepository : ProjectRepository
+	{method} +generateBacklog ( projectId : String , request : AiBacklogGenerationRequestDTO ) : AiBacklogGenerationResponseDTO
+	{method} -parseUuid ( value : String ) : UUID
+	{method} -toEventDocument ( documentEntity : ProjectDocumentEntity ) : Document
+	{method} -validateMaxHours ( request : AiBacklogGenerationRequestDTO ) : Double
+}
+
+
+class AiController {
+	{field} -aiDuplicateDetectionService : AiDuplicateDetectionService
+	{field} -aiSemanticDuplicateDetectionService : AiSemanticDuplicateDetectionService
+	{field} -aiVectorDuplicateDetectionService : AiVectorDuplicateDetectionService
+	{field} -taskEmbeddingBackfillService : TaskEmbeddingBackfillService
+	{field} -taskEmbeddingStatusService : TaskEmbeddingStatusService
+	{field} -taskVectorEmbeddingBackfillService : TaskVectorEmbeddingBackfillService
+	{method} +approveSuggestion ( aiTaskId : String , request : AiTaskApprovalRequestDTO ) : AiTaskApprovalResponseDTO
+	{method} +backfillProjectTaskEmbeddings ( projectId : String ) : TaskEmbeddingBackfillResponseDTO
+	{method} +backfillProjectTaskVectorEmbeddings ( projectId : String ) : TaskVectorEmbeddingBackfillResponseDTO
+	{method} +clearSuggestionsByProject ( projectId : String ) : AiTaskSuggestionClearResponseDTO
+	{method} +generateBacklog ( projectId : String , request : AiBacklogGenerationRequestDTO ) : AiBacklogGenerationResponseDTO
+	{method} +getDuplicateDetectionResults ( projectId : String , runId : String ) : List
+	{method} +getDuplicateDetectionRuns ( projectId : String ) : List
+	{method} +getLatestDuplicateDetection ( projectId : String ) : AiDuplicateDetectionLatestResponseDTO
+	{method} +getLatestSemanticDuplicateDetection ( projectId : String ) : AiSemanticDuplicateDetectionLatestResponseDTO
+	{method} +getLatestVectorDuplicateDetection ( projectId : String ) : AiVectorDuplicateDetectionLatestResponseDTO
+	{method} +getSemanticDuplicateDetectionResults ( projectId : String , runId : String ) : List
+	{method} +getSemanticDuplicateDetectionRuns ( projectId : String ) : List
+	{method} +getSuggestions ( projectId : String , status : String ) : List
+	{method} +getTaskEmbeddingStatus ( projectId : String ) : TaskEmbeddingStatusResponseDTO
+	{method} +getVectorDuplicateDetectionResults ( projectId : String , runId : String ) : List
+	{method} +getVectorDuplicateDetectionRuns ( projectId : String ) : List
+	{method} +rejectSuggestion ( aiTaskId : String ) : AiTaskSuggestionResponseDTO
+	{method} +startDuplicateDetection ( projectId : String , request : AiDuplicateDetectionRequestDTO ) : AiDuplicateDetectionRunResponseDTO
+	{method} +startSemanticDuplicateDetection ( projectId : String , request : AiDuplicateDetectionRequestDTO ) : AiSemanticDuplicateDetectionRunResponseDTO
+	{method} +startVectorDuplicateDetection ( projectId : String , request : AiDuplicateDetectionRequestDTO ) : AiVectorDuplicateDetectionRunResponseDTO
+}
+
+
+class AiTaskApprovalRequestDTO {
+	{field} +fechaLimite : String
+	{field} +prioridadId : Integer
+	{field} +sprintId : String
+}
+
+
+class AiTaskApprovalResponseDTO {
+	{field} +createdTask : TaskResponseDTO
+}
+
+
+class AiTaskSuggestionClearResponseDTO {
+	{field} +deletedSuggestions : Long
+	{field} +message : String
+	{field} +projectId : String
+}
+
+
+class AiTaskSuggestionEntity {
+	{field} -aiTaskId : UUID
+	{field} +createdAt : LocalDateTime
+	{field} +descripcion : String
+	{field} +projectId : UUID
+	{field} +status : String
+	{field} +tiempoEstimado : Double
+	{field} +titulo : String
+}
+
+
+interface AiTaskSuggestionRepository {
+	{method}  {abstract} +countByProjectId ( projectId : UUID ) : Long
+	{method}  {abstract} +deleteByProjectId ( projectId : UUID ) : void
+	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
+	{method}  {abstract} +findByProjectIdAndStatus ( projectId : UUID , status : String ) : List
+}
+
+
+class AiTaskSuggestionResponseDTO {
+	{field} +aiTaskId : UUID
+	{field} +createdAt : LocalDateTime
+	{field} +descripcion : String
+	{field} +projectId : UUID
+	{field} +status : String
+	{field} +tiempoEstimado : Double
+	{field} +titulo : String
+}
+
+
+class AiTaskSuggestionService {
+	{field} {static} -STATUS_APPROVED : String
+	{field} {static} -STATUS_PENDING : String
+	{field} {static} -STATUS_REJECTED : String
+	{field} -projectRepository : ProjectRepository
+	{field} -taskService : TaskService
+	{method} +approveSuggestion ( aiTaskId : String , request : AiTaskApprovalRequestDTO ) : AiTaskApprovalResponseDTO
+	{method} +clearSuggestionsByProject ( projectId : String ) : AiTaskSuggestionClearResponseDTO
+	{method} +getPendingSuggestionsByProject ( projectId : String ) : List
+	{method} +getSuggestionsByProject ( projectId : String ) : List
+	{method} -parseUuid ( value : String ) : UUID
+	{method} +rejectSuggestion ( aiTaskId : String ) : AiTaskSuggestionResponseDTO
+	{method} +saveSuggestionsFromAiResponse ( event : AiTaskGenerationResponseEvent ) : int
+	{method} -toEntity ( projectUuid : UUID , task : Task ) : AiTaskSuggestionEntity
+	{method} -toResponseDTO ( entity : AiTaskSuggestionEntity ) : AiTaskSuggestionResponseDTO
+	{method} -truncate ( value : String , maxLength : int ) : String
+	{method} -validateApprovalRequest ( request : AiTaskApprovalRequestDTO ) : void
+}
+
+
+
+
+AiController *--  AiBacklogGenerationService : aiBacklogGenerationService
+AiController *--  AiTaskSuggestionService : aiTaskSuggestionService
+AiTaskApprovalResponseDTO -->  AiTaskSuggestionResponseDTO : suggestion
+AiTaskSuggestionService *--  AiTaskSuggestionRepository : suggestionRepository
 
 
 @enduml

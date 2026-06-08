@@ -166,7 +166,7 @@
         <executions>
             <execution>
                 <id>generate-authentication-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -184,7 +184,7 @@
 
             <execution>
                 <id>generate-security-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -202,7 +202,7 @@
 
             <execution>
                 <id>generate-user-management-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -220,7 +220,7 @@
 
             <execution>
                 <id>generate-team-management-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -238,7 +238,7 @@
 
             <execution>
                 <id>generate-sprint-management-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -257,7 +257,7 @@
 
             <execution>
                 <id>generate-project-management-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -275,7 +275,7 @@
 
             <execution>
                 <id>generate-task-management-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -295,7 +295,7 @@
 
             <execution>
                 <id>generate-dashboard-kpi-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -315,7 +315,7 @@
 
             <execution>
                 <id>generate-ai-backlog-generation-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -334,7 +334,7 @@
 
             <execution>
                 <id>generate-vector-embedding-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -353,7 +353,7 @@
 
             <execution>
                 <id>generate-semantic-duplicate-detection-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>
@@ -373,7 +373,7 @@
 
             <execution>
                 <id>generate-messaging-diagram</id>
-                <phase>generate-sources</phase>
+                <phase>process-classes</phase>
                 <goals>
                     <goal>generate</goal>
                 </goals>

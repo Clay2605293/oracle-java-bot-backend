@@ -1,7 +1,64 @@
 @startuml
 
+class AuthController {
+	{method} +login ( request : LoginRequestDTO ) : LoginResponseDTO
+	{method} +register ( request : RegisterRequestDTO ) : void
+}
 
 
+class AuthService {
+	{field} -jwtService : JwtService
+	{field} -passwordEncoder : BCryptPasswordEncoder
+	{field} -userRepository : UserRepository
+	{method} +login ( request : LoginRequestDTO ) : LoginResponseDTO
+	{method} +register ( request : RegisterRequestDTO ) : void
+}
+
+
+class LoginRequestDTO {
+	{field} +email : String
+	{field} +password : String
+}
+
+
+class LoginResponseDTO {
+	{field} -email : String
+	{field} -rolId : Integer
+	{field} -token : String
+	{field} -userId : UUID
+}
+
+
+class RegisterRequestDTO {
+	{field} +apellido : String
+	{field} +email : String
+	{field} +managerEmail : String
+	{field} +password : String
+	{field} +primerNombre : String
+	{field} +rolId : Integer
+	{field} +telefono : String
+	{field} +telegramId : String
+}
+
+
+class UserCredentialEntity {
+	{field} +activo : Integer
+	{field} +credencialId : UUID
+	{field} +passwordHash : String
+	{field} +ultimoLogin : LocalDateTime
+	{field} +user : UserEntity
+}
+
+
+interface UserCredentialRepository {
+	{method}  {abstract} +findByUser ( user : UserEntity ) : Optional
+}
+
+
+
+
+AuthController *--  AuthService : authService
+AuthService *--  UserCredentialRepository : credentialRepository
 
 
 @enduml
