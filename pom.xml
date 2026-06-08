@@ -158,6 +158,241 @@
     <artifactId>spring-boot-maven-plugin</artifactId>
    </plugin>
 
+    <plugin>
+        <groupId>de.elnarion.maven</groupId>
+        <artifactId>plantuml-generator-maven-plugin</artifactId>
+        <version>3.0.1</version>
+
+        <executions>
+            <execution>
+                <id>generate-authentication-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>authentication-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.auth</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-security-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>authorization-security-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.security</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-user-management-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>user-management-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.users</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-team-management-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>team-management-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.teams</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-sprint-management-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>sprint-management-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.sprints</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+
+            <execution>
+                <id>generate-project-management-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>project-management-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.projects</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-task-management-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>task-management-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.tasks</scanPackage>
+                        <scanPackage>com.oraclejavabot.features.taskstatus</scanPackage>
+                        <scanPackage>com.oraclejavabot.features.taskpriorities</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-dashboard-kpi-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>dashboard-kpi-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.kpis</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+
+
+            <execution>
+                <id>generate-ai-backlog-generation-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>ai-backlog-generation-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.ai</scanPackage>
+                    </scanPackages>
+                    <whitelistRegexp>.*(AiController|AiBacklogGeneration.*|AiTaskSuggestion.*|AiTaskApproval.*).*</whitelistRegexp>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-vector-embedding-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>vector-embedding-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.ai</scanPackage>
+                    </scanPackages>
+                    <whitelistRegexp>.*(TaskEmbedding.*|TaskVectorEmbedding.*|TaskSemanticEmbedding.*).*</whitelistRegexp>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+            <execution>
+                <id>generate-semantic-duplicate-detection-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>semantic-duplicate-detection-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.features.ai</scanPackage>
+                    </scanPackages>
+                    <whitelistRegexp>.*(AiDuplicateDetection.*|AiSemanticDuplicate.*|AiVectorDuplicate.*).*</whitelistRegexp>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+
+            <execution>
+                <id>generate-messaging-diagram</id>
+                <phase>generate-sources</phase>
+                <goals>
+                    <goal>generate</goal>
+                </goals>
+                <configuration>
+                    <outputDirectory>${project.basedir}/docs/diagrams</outputDirectory>
+                    <outputFilename>messaging-component.puml</outputFilename>
+                    <scanPackages>
+                        <scanPackage>com.oraclejavabot.messaging</scanPackage>
+                    </scanPackages>
+                    <useShortClassNames>true</useShortClassNames>
+                    <removeFields>false</removeFields>
+                    <removeMethods>false</removeMethods>
+                </configuration>
+            </execution>
+
+
+        </executions>
+    </plugin>
+
   </plugins>
  </build>
 

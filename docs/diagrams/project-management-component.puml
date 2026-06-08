@@ -1,0 +1,201 @@
+@startuml
+
+class ProjectController {
+	{method} +createProject ( teamId : String , request : ProjectRequestDTO ) : ProjectResponseDTO
+	{method} +deleteProject ( projectId : String ) : void
+	{method} +getProjectById ( projectId : String ) : ProjectResponseDTO
+	{method} +getProjectProgress ( projectId : String ) : ProjectProgressResponseDTO
+	{method} +getProjectsByManager ( managerId : String ) : List
+	{method} +getProjectsByTeam ( teamId : String ) : List
+	{method} +updateProject ( projectId : String , request : ProjectRequestDTO ) : ProjectResponseDTO
+}
+
+
+class ProjectDocumentController {
+	{method} +deleteDocument ( documentId : String ) : void
+	{method} +getDocumentsByProject ( projectId : String , documentType : String ) : List
+	{method} +uploadDocument ( projectId : String , documentType : String , file : MultipartFile ) : ProjectDocumentResponseDTO
+}
+
+
+class ProjectDocumentEntity {
+	{field} +contentType : String
+	{field} +createdAt : LocalDateTime
+	{field} -documentId : UUID
+	{field} +documentType : String
+	{field} +fileName : String
+	{field} +fileSizeBytes : Long
+	{field} +fileUrl : String
+	{field} +projectId : UUID
+	{field} +storagePath : String
+}
+
+
+interface ProjectDocumentRepository {
+	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
+	{method}  {abstract} +findByProjectIdAndDocumentType ( projectId : UUID , documentType : String ) : List
+}
+
+
+class ProjectDocumentResponseDTO {
+	{field} +contentType : String
+	{field} +createdAt : LocalDateTime
+	{field} +documentId : UUID
+	{field} +documentType : String
+	{field} +fileName : String
+	{field} +fileSizeBytes : Long
+	{field} +fileUrl : String
+	{field} +projectId : UUID
+	{field} +storagePath : String
+}
+
+
+class ProjectDocumentService {
+	{method} +deleteDocument ( documentId : String ) : void
+	{method} +getDocumentsByProject ( projectId : String ) : List
+	{method} +getDocumentsByProjectAndType ( projectId : String , documentType : String ) : List
+	{method} -normalizeDocumentType ( documentType : String ) : String
+	{method} -parseUuid ( value : String ) : UUID
+	{method} -toResponseDTO ( entity : ProjectDocumentEntity ) : ProjectDocumentResponseDTO
+	{method} +uploadDocument ( projectId : String , documentType : String , file : MultipartFile ) : ProjectDocumentResponseDTO
+}
+
+
+class ProjectEntity {
+	{field} +descripcion : String
+	{field} +fechaFin : LocalDateTime
+	{field} +fechaInicio : LocalDateTime
+	{field} +nombre : String
+	{field} +progreso : Double
+	{field} -projectId : UUID
+	{field} +teamId : UUID
+}
+
+
+class ProjectMemberController {
+	{method} +addMember ( projectId : String , userId : String ) : void
+	{method} +getMembers ( projectId : String ) : List
+	{method} +removeMember ( projectId : String , userId : String ) : void
+}
+
+
+class ProjectMemberDTO {
+	{field} +projectId : String
+	{field} +userId : String
+}
+
+
+class ProjectMemberEntity {
+}
+
+
+class ProjectMemberId {
+	{field} +projectId : UUID
+	{field} +userId : UUID
+}
+
+
+interface ProjectMemberRepository {
+	{method}  {abstract} +existsByIdUserIdAndIdProjectId ( userId : UUID , projectId : UUID ) : boolean
+	{method}  {abstract} +findByIdProjectId ( projectId : UUID ) : List
+}
+
+
+class ProjectMemberService {
+	{method} +addMember ( projectId : String , userId : String ) : void
+	{method} +getMembers ( projectId : String ) : List
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapToDTO ( entity : ProjectMemberEntity ) : ProjectMemberDTO
+	{method} +removeMember ( projectId : String , userId : String ) : void
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+class ProjectProgressResponseDTO {
+	{field} -progress : Double
+	{field} -projectId : String
+}
+
+
+interface ProjectRepository {
+	{method}  {abstract} +countProjectMembers ( projectId : String ) : int
+	{method}  {abstract} +existsUserInProjectTeam ( projectId : String , userId : String ) : int
+	{method}  {abstract} +findByTeamId ( teamId : UUID ) : List
+	{method}  {abstract} +findProjectsByManager ( managerId : String ) : List
+	{method}  {abstract} +findProjectsByUserTeam ( userId : String ) : List
+	{method}  {abstract} +getProjectProgress ( projectId : String ) : Object
+}
+
+
+class ProjectRequestDTO {
+	{field} +descripcion : String
+	{field} +fechaFin : String
+	{field} +fechaInicio : String
+	{field} +nombre : String
+}
+
+
+class ProjectResponseDTO {
+	{field} +descripcion : String
+	{field} +fechaFin : String
+	{field} +fechaInicio : String
+	{field} +nombre : String
+	{field} +progreso : Double
+	{field} +projectId : String
+	{field} +teamId : String
+}
+
+
+class ProjectService {
+	{method} +createProject ( teamId : String , request : ProjectRequestDTO ) : ProjectResponseDTO
+	{method} +deleteProject ( projectId : String ) : void
+	{method} +getProjectById ( projectId : String ) : ProjectResponseDTO
+	{method} +getProjectProgress ( projectId : String ) : ProjectProgressResponseDTO
+	{method} +getProjectsByManager ( managerId : String ) : List
+	{method} +getProjectsByTeam ( teamId : String ) : List
+	{method} +getProjectsByUser ( userId : String ) : List
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapToResponse ( project : ProjectEntity ) : ProjectResponseDTO
+	{method} -parseDate ( date : String ) : LocalDateTime
+	{method} -toString ( date : LocalDateTime ) : String
+	{method} +updateProject ( projectId : String , request : ProjectRequestDTO ) : ProjectResponseDTO
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+class SupabaseStorageService {
+	{field} -bucket : String
+	{field} -publicUrlBase : String
+	{field} -s3Client : S3Client
+	{method} -buildPublicUrl ( storagePath : String ) : String
+	{method} +deleteProjectDocument ( storagePath : String ) : void
+	{method} -sanitizeFileName ( fileName : String ) : String
+	{method} +uploadProjectDocument ( projectId : UUID , file : MultipartFile ) : UploadedFile
+	{method} -validateFile ( file : MultipartFile ) : void
+}
+
+
+class UploadedFile {
+	{field} -contentType : String
+	{field} -fileName : String
+	{field} -fileSizeBytes : Long
+	{field} -fileUrl : String
+	{field} -storagePath : String
+}
+
+
+
+
+ProjectController *--  ProjectService : service
+ProjectDocumentController *--  ProjectDocumentService : projectDocumentService
+ProjectDocumentService *--  ProjectDocumentRepository : documentRepository
+ProjectDocumentService *--  ProjectRepository : projectRepository
+ProjectDocumentService *--  SupabaseStorageService : storageService
+ProjectMemberController *--  ProjectMemberService : service
+ProjectMemberEntity -->  ProjectMemberId : id
+ProjectMemberService *--  ProjectMemberRepository : repository
+ProjectMemberService *--  ProjectRepository : projectRepository
+ProjectService *--  ProjectRepository : repository
+
+
+@enduml

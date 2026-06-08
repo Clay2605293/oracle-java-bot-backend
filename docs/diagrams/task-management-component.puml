@@ -1,0 +1,229 @@
+@startuml
+
+class PriorityController {
+	{method} +createPriority ( request : PriorityRequestDTO ) : PriorityResponseDTO
+	{method} +getPriorities () : List
+}
+
+
+class PriorityEntity {
+	{field} +descripcion : String
+	{field} +nombre : String
+	{field} +orden : Integer
+	{field} +prioridadId : Integer
+}
+
+
+interface PriorityRepository {
+	{method}  {abstract} +existsByNombre ( nombre : String ) : boolean
+}
+
+
+class PriorityRequestDTO {
+	{field} +descripcion : String
+	{field} +nombre : String
+	{field} +orden : Integer
+	{field} +prioridadId : Integer
+}
+
+
+class PriorityResponseDTO {
+	{field} -descripcion : String
+	{field} -nombre : String
+	{field} -orden : Integer
+	{field} -prioridadId : Integer
+}
+
+
+class PriorityService {
+	{method} +createPriority ( request : PriorityRequestDTO ) : PriorityResponseDTO
+	{method} +getPriorities () : List
+}
+
+
+class TaskController {
+	{method} +changeStatus ( taskId : String , estadoId : Integer ) : TaskResponseDTO
+	{method} +createTask ( projectId : String , request : TaskRequestDTO ) : TaskResponseDTO
+	{method} +deleteTask ( taskId : String ) : void
+	{method} +getTaskById ( taskId : String ) : TaskResponseDTO
+	{method} +getTasksByProject ( projectId : String ) : List
+	{method} +updateTask ( taskId : String , request : TaskRequestDTO ) : TaskResponseDTO
+}
+
+
+class TaskEntity {
+	{field} +descripcion : String
+	{field} +estadoId : Integer
+	{field} +fechaCreacion : LocalDateTime
+	{field} +fechaFinalizacion : LocalDateTime
+	{field} +fechaLimite : LocalDateTime
+	{field} +prioridadId : Integer
+	{field} +projectId : UUID
+	{field} +sprintId : UUID
+	{field} -taskId : UUID
+	{field} +tiempoEstimado : Double
+	{field} +tiempoReal : Double
+	{field} +titulo : String
+}
+
+
+interface TaskRepository {
+	{method}  {abstract} +findAssignedTasksByUserAndProject ( userId : String , projectId : String ) : List
+	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
+	{method}  {abstract} +findBySprintId ( sprintId : UUID ) : List
+	{method}  {abstract} +validateSprintInProject ( sprintId : String , projectId : String ) : int
+}
+
+
+class TaskRequestDTO {
+	{field} +descripcion : String
+	{field} +estadoId : Integer
+	{field} +fechaFinalizacion : String
+	{field} +fechaLimite : String
+	{field} +prioridadId : Integer
+	{field} +sprintId : String
+	{field} +tiempoEstimado : Double
+	{field} +tiempoReal : Double
+	{field} +titulo : String
+}
+
+
+class TaskResponseDTO {
+	{field} +descripcion : String
+	{field} +estadoId : Integer
+	{field} +fechaCreacion : String
+	{field} +fechaFinalizacion : String
+	{field} +fechaLimite : String
+	{field} +prioridadId : Integer
+	{field} +projectId : String
+	{field} +sprintId : String
+	{field} +sprintNombre : String
+	{field} +taskId : String
+	{field} +tiempoEstimado : Double
+	{field} +tiempoReal : Double
+	{field} +titulo : String
+}
+
+
+class TaskService {
+	{field} -sprintRepository : SprintRepository
+	{field} -taskVectorEmbeddingService : TaskVectorEmbeddingService
+	{method} +changeStatus ( taskId : String , estadoId : Integer ) : TaskResponseDTO
+	{method} +createTask ( projectId : String , request : TaskRequestDTO ) : TaskResponseDTO
+	{method} +deleteTask ( taskId : String ) : void
+	{method} +getAssignedTasksByUserAndProject ( userId : String , projectId : String ) : List
+	{method} +getTaskById ( taskId : String ) : TaskResponseDTO
+	{method} +getTasksByProject ( projectId : String ) : List
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapToResponse ( task : TaskEntity ) : TaskResponseDTO
+	{method} -requestEmbeddingSafely ( task : TaskEntity ) : void
+	{method} +updateTask ( taskId : String , request : TaskRequestDTO ) : TaskResponseDTO
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+class TaskStatusController {
+	{method} +createTaskStatus ( request : TaskStatusRequestDTO ) : TaskStatusResponseDTO
+	{method} +getTaskStatuses () : List
+}
+
+
+class TaskStatusEntity {
+	{field} +descripcion : String
+	{field} +esActivo : Integer
+	{field} +estadoId : Integer
+	{field} +nombre : String
+}
+
+
+interface TaskStatusRepository {
+	{method}  {abstract} +existsByNombre ( nombre : String ) : boolean
+}
+
+
+class TaskStatusRequestDTO {
+	{field} +descripcion : String
+	{field} +esActivo : Integer
+	{field} +estadoId : Integer
+	{field} +nombre : String
+}
+
+
+class TaskStatusResponseDTO {
+	{field} -descripcion : String
+	{field} -esActivo : Integer
+	{field} -estadoId : Integer
+	{field} -nombre : String
+}
+
+
+class TaskStatusService {
+	{method} +createTaskStatus ( request : TaskStatusRequestDTO ) : TaskStatusResponseDTO
+	{method} +getTaskStatuses () : List
+}
+
+
+class TaskUserController {
+	{method} +assignUser ( taskId : String , userId : String ) : void
+	{method} +getUsers ( taskId : String ) : List
+	{method} +removeUser ( taskId : String , userId : String ) : void
+}
+
+
+class TaskUserDTO {
+	{field} +nombre : String
+	{field} +taskId : String
+	{field} +userId : String
+}
+
+
+class TaskUserEntity {
+}
+
+
+class TaskUserId {
+	{field} +taskId : UUID
+	{field} +userId : UUID
+	{method} +equals ( o : Object ) : boolean
+	{method} +hashCode () : int
+}
+
+
+interface TaskUserRepository {
+	{method}  {abstract} +existsById ( id : TaskUserId ) : boolean
+	{method}  {abstract} +findByIdTaskId ( taskId : UUID ) : List
+}
+
+
+class TaskUserService {
+	{field} {static} -logger : Logger
+	{field} -projectRepository : ProjectRepository
+	{field} -taskEventProducer : TaskEventProducer
+	{field} -userRepository : UserRepository
+	{method} +assignUser ( taskId : String , userId : String ) : void
+	{method} +getUsersByTask ( taskId : String ) : List
+	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapToDTO ( entity : TaskUserEntity ) : TaskUserDTO
+	{method} +removeUser ( taskId : String , userId : String ) : void
+	{method} -uuidToHex ( uuid : UUID ) : String
+}
+
+
+
+
+PriorityController *--  PriorityService : priorityService
+PriorityService *--  PriorityRepository : priorityRepository
+TaskController *--  TaskService : service
+TaskResponseDTO "1" o-- "0..*"  TaskUserDTO : responsables
+TaskService *--  TaskRepository : repository
+TaskService *--  TaskUserService : taskUserService
+TaskStatusController *--  TaskStatusService : taskStatusService
+TaskStatusService *--  TaskStatusRepository : taskStatusRepository
+TaskUserController *--  TaskUserService : service
+TaskUserEntity -->  TaskUserId : id
+TaskUserService *--  PriorityRepository : priorityRepository
+TaskUserService *--  TaskRepository : taskRepository
+TaskUserService *--  TaskUserRepository : taskUserRepository
+
+
+@enduml

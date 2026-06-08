@@ -1,0 +1,189 @@
+@startuml
+
+enum SkillCategory {
+	{field} +AI
+	{field} +BACKEND
+	{field} +CLOUD
+	{field} +DATABASE
+	{field} +DEVOPS
+	{field} +FRONTEND
+	{field} +QA
+}
+
+
+class SkillCategoryOptionDTO {
+	{field} -cardType : String
+	{field} -description : String
+	{field} -name : String
+	{method} +cardType () : String
+	{method} +code () : SkillCategory
+	{method} +description () : String
+	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +hashCode () : int
+	{method} +name () : String
+	{method} +toString () : String
+}
+
+
+class UserController {
+	{method} +createUser ( request : UserRequestDTO ) : UserResponseDTO
+	{method} +deleteUser ( userId : UUID ) : UserOperationResponseDTO
+	{method} +getUsers () : List
+	{method} +updateUser ( userId : UUID , request : UserUpdateRequestDTO ) : UserOperationResponseDTO
+}
+
+
+class UserDependencyRepository {
+	{field} -jdbcTemplate : JdbcTemplate
+	{method} +hasActiveDirectReports ( userId : UUID ) : boolean
+	{method} +hasAssignedTasks ( userId : UUID ) : boolean
+	{method} -toOracleRawHex ( uuid : UUID ) : String
+}
+
+
+class UserEntity {
+	{field} +apellido : String
+	{field} +email : String
+	{field} +estadoId : Integer
+	{field} +managerId : UUID
+	{field} +primerNombre : String
+	{field} +rolId : Integer
+	{field} +telefono : String
+	{field} +telegramChatId : String
+	{field} +telegramId : String
+	{field} +userId : UUID
+}
+
+
+class UserGraphQLResolver {
+	{method} +searchUserSkillProfiles ( text : String ) : List
+	{method} +skillCategories () : List
+	{method} +userSkillProfileById ( id : String ) : UserSkillProfileDTO
+	{method} +usersByPrimarySkillCategory ( category : SkillCategory ) : List
+	{method} +usersSkillProfiles () : List
+}
+
+
+class UserOperationResponseDTO {
+	{field} -email : String
+	{field} -estadoId : Integer
+	{field} -message : String
+	{field} -userId : String
+}
+
+
+interface UserRepository {
+	{method}  {abstract} +existsByEmail ( email : String ) : boolean
+	{method}  {abstract} +existsByEmailAndUserIdNot ( email : String , userId : UUID ) : boolean
+	{method}  {abstract} +existsByTelegramId ( telegramId : String ) : boolean
+	{method}  {abstract} +existsByTelegramIdAndUserIdNot ( telegramId : String , userId : UUID ) : boolean
+	{method}  {abstract} +findByEmail ( email : String ) : Optional
+	{method}  {abstract} +findByEstadoIdOrderByPrimerNombreAscApellidoAsc ( estadoId : Integer ) : List
+	{method}  {abstract} +findByTelegramId ( telegramId : String ) : Optional
+	{method}  {abstract} +findByTelegramIdIgnoreCase ( telegramId : String ) : Optional
+}
+
+
+class UserRequestDTO {
+	{field} +apellido : String
+	{field} +email : String
+	{field} +primerNombre : String
+	{field} +telefono : String
+	{field} +telegramId : String
+}
+
+
+class UserResponseDTO {
+	{field} +email : String
+	{field} +message : String
+	{field} +telegramId : String
+}
+
+
+class UserService {
+	{field} {static} -ESTADO_ACTIVO : int
+	{field} {static} -ESTADO_INACTIVO : int
+	{field} -userCredentialRepository : UserCredentialRepository
+	{method} +createUser ( request : UserRequestDTO ) : UserResponseDTO
+	{method} +deactivateUser ( userId : UUID ) : UserOperationResponseDTO
+	{method} +findByTelegramId ( telegramId : String ) : Optional
+	{method} +findByTelegramIdFlexible ( telegramId : String ) : Optional
+	{method} +getSkillCategories () : List
+	{method} +getUserSkillProfileById ( userIdHex : String ) : Optional
+	{method} +getUsers () : List
+	{method} +getUsersByPrimarySkillCategory ( category : SkillCategory ) : List
+	{method} +getUsersSkillProfiles () : List
+	{method} +searchUserSkillProfiles ( text : String ) : List
+	{method} -syncCredentialStatus ( user : UserEntity ) : void
+	{method} +updateUser ( userId : UUID , request : UserUpdateRequestDTO ) : UserOperationResponseDTO
+	{method} -validateManagerRules ( userId : UUID , request : UserUpdateRequestDTO ) : void
+	{method} -validateUniqueEmailForUpdate ( email : String , userId : UUID ) : void
+	{method} -validateUniqueTelegramForUpdate ( telegramId : String , userId : UUID ) : void
+}
+
+
+class UserSkillProfileDTO {
+	{field} -cardType : String
+	{field} -email : String
+	{field} -firstName : String
+	{field} -id : String
+	{field} -lastName : String
+	{field} -primarySkillCode : String
+	{field} -primarySkillLevel : String
+	{field} -primarySkillName : String
+	{field} -primarySkillYears : Double
+	{method} +cardType () : String
+	{method} +email () : String
+	{method} +equals ( paramObject1 : Object ) : boolean
+	{method} +firstName () : String
+	{method} +hashCode () : int
+	{method} +id () : String
+	{method} +lastName () : String
+	{method} +primarySkillCategory () : SkillCategory
+	{method} +primarySkillCode () : String
+	{method} +primarySkillLevel () : String
+	{method} +primarySkillName () : String
+	{method} +primarySkillYears () : Double
+	{method} +toString () : String
+}
+
+
+class UserSkillProfileRepository {
+	{field} -jdbcTemplate : JdbcTemplate
+	{method} +findAllPrimarySkillProfiles () : List
+	{method} +findByPrimarySkillCategory ( category : SkillCategory ) : List
+	{method} +findByUserId ( userIdHex : String ) : Optional
+	{method} +findSkillCategories () : List
+	{method} -getNullableDouble ( rs : ResultSet , columnName : String ) : Double
+	{method} -mapRow ( rs : ResultSet , rowNum : int ) : UserSkillProfileDTO
+	{method} -mapSkillCategoryOptionRow ( rs : ResultSet , rowNum : int ) : SkillCategoryOptionDTO
+	{method} -normalizeSearchText ( text : String ) : String
+	{method} +searchSkillProfiles ( text : String ) : List
+}
+
+
+class UserUpdateRequestDTO {
+	{field} +apellido : String
+	{field} +email : String
+	{field} +estadoId : Integer
+	{field} +managerId : UUID
+	{field} +primerNombre : String
+	{field} +rolId : Integer
+	{field} +telefono : String
+	{field} +telegramChatId : String
+	{field} +telegramId : String
+}
+
+
+
+
+SkillCategoryOptionDTO *--  SkillCategory : code
+UserController *--  UserService : userService
+UserGraphQLResolver *--  UserService : userService
+UserService *--  UserDependencyRepository : userDependencyRepository
+UserService *--  UserRepository : userRepository
+UserService *--  UserSkillProfileRepository : userSkillProfileRepository
+UserSkillProfileDTO *--  SkillCategory : primarySkillCategory
+
+
+@enduml
