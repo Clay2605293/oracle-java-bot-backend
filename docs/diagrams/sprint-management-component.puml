@@ -1,64 +1,7 @@
 @startuml
 
-class SprintController {
-	{method} +createSprint ( projectId : String , request : SprintRequestDTO ) : SprintResponseDTO
-	{method} +deleteSprint ( sprintId : String ) : void
-	{method} +getSprint ( sprintId : String ) : SprintResponseDTO
-	{method} +getSprints ( projectId : String ) : List
-	{method} +updateSprint ( sprintId : String , request : SprintRequestDTO ) : SprintResponseDTO
-}
 
 
-class SprintEntity {
-	{field} +fechaFin : LocalDateTime
-	{field} +fechaInicio : LocalDateTime
-	{field} +nombre : String
-	{field} +projectId : UUID
-	{field} -sprintId : UUID
-}
-
-
-interface SprintRepository {
-	{method}  {abstract} +countOverlappingSprints ( projectId : String , fechaInicio : LocalDateTime , fechaFin : LocalDateTime ) : int
-	{method}  {abstract} +countTasksBySprint ( sprintId : String ) : int
-	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
-}
-
-
-class SprintRequestDTO {
-	{field} +fechaFin : String
-	{field} +fechaInicio : String
-	{field} +nombre : String
-}
-
-
-class SprintResponseDTO {
-	{field} +fechaFin : String
-	{field} +fechaInicio : String
-	{field} +nombre : String
-	{field} +projectId : String
-	{field} +sprintId : String
-}
-
-
-class SprintService {
-	{method} +createSprint ( projectId : String , request : SprintRequestDTO ) : SprintResponseDTO
-	{method} +deleteSprint ( sprintId : String ) : void
-	{method} +getSprintById ( sprintId : String ) : SprintResponseDTO
-	{method} +getSprintsByProject ( projectId : String ) : List
-	{method} -hexToUuid ( hex : String ) : UUID
-	{method} -mapToResponse ( sprint : SprintEntity ) : SprintResponseDTO
-	{method} -parseDate ( date : String ) : LocalDateTime
-	{method} -toString ( date : LocalDateTime ) : String
-	{method} +updateSprint ( sprintId : String , request : SprintRequestDTO ) : SprintResponseDTO
-	{method} -uuidToHex ( uuid : UUID ) : String
-}
-
-
-
-
-SprintController *--  SprintService : service
-SprintService *--  SprintRepository : repository
 
 
 @enduml
