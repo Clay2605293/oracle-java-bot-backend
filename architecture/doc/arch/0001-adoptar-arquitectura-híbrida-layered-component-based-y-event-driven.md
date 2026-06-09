@@ -1,4 +1,4 @@
-# 1. Adoptar arquitectura híbrida layered, component-based y event-driven
+# 1. Adoptar arquitectura híbrida layered, component-based y event-driven (prueba commits)
 
 Date: 2026-05-28
 
