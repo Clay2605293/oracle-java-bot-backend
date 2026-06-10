@@ -84,8 +84,6 @@ public class TaskService {
 
         TaskEntity saved = repository.save(task);
 
-        requestEmbeddingSafely(saved);
-
         return mapToResponse(saved);
     }
 
