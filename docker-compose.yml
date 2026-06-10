@@ -9,6 +9,8 @@ services:
       - "8080:8080"
     env_file:
       - .env
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
     volumes:
       - ./wallet:/opt/oracle/wallet
     depends_on:

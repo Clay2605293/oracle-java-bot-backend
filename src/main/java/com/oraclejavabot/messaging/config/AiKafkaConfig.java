@@ -6,6 +6,7 @@ import com.oraclejavabot.messaging.event.AiTaskGenerationResponseEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -25,14 +26,16 @@ import java.util.Map;
 @Configuration
 public class AiKafkaConfig {
 
-    // Broker advertises a single listener on kafka:9092. These explicit factory beans
-    // override spring.kafka.bootstrap-servers, so this constant is the effective address.
-    private static final String BOOTSTRAP = "kafka:9092";
-
     private static final String AI_TASK_RESPONSE_GROUP_ID = "ai-response-group";
     private static final String AI_DUPLICATE_RESPONSE_GROUP_ID = "ai-duplicate-response-group";
     private static final String AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID = "ai-semantic-duplicate-response-group";
     private static final String AI_TASK_EMBEDDING_RESPONSE_GROUP_ID = "ai-task-embedding-response-group";
+
+    private final String bootstrapServers;
+
+    public AiKafkaConfig(@Value("${spring.kafka.bootstrap-servers}") String bootstrapServers) {
+        this.bootstrapServers = bootstrapServers;
+    }
 
     @Bean
     public ConsumerFactory<String, AiTaskGenerationResponseEvent> aiConsumerFactory() {
@@ -44,7 +47,7 @@ public class AiKafkaConfig {
 
         Map<String, Object> config = new HashMap<>();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_TASK_RESPONSE_GROUP_ID);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
@@ -77,7 +80,7 @@ public class AiKafkaConfig {
 
         Map<String, Object> config = new HashMap<>();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_DUPLICATE_RESPONSE_GROUP_ID);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
@@ -111,7 +114,7 @@ public class AiKafkaConfig {
 
         Map<String, Object> config = new HashMap<>();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
@@ -145,7 +148,7 @@ public class AiKafkaConfig {
 
         Map<String, Object> config = new HashMap<>();
 
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP);
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, AI_TASK_EMBEDDING_RESPONSE_GROUP_ID);
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 
