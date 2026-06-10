@@ -32,7 +32,7 @@ class AiKafkaConfig {
 	{field} {static} -AI_SEMANTIC_DUPLICATE_RESPONSE_GROUP_ID : String
 	{field} {static} -AI_TASK_EMBEDDING_RESPONSE_GROUP_ID : String
 	{field} {static} -AI_TASK_RESPONSE_GROUP_ID : String
-	{field} {static} -BOOTSTRAP : String
+	{field} -bootstrapServers : String
 	{method} +aiConsumerFactory () : ConsumerFactory
 	{method} +aiDuplicateDetectionConsumerFactory () : ConsumerFactory
 	{method} +aiDuplicateDetectionKafkaListenerContainerFactory () : ConcurrentKafkaListenerContainerFactory
@@ -165,8 +165,8 @@ class Embedding {
 
 
 class KafkaConfig {
-	{field} {static} -BOOTSTRAP : String
 	{field} {static} -GROUP_ID : String
+	{field} -bootstrapServers : String
 	{method} +aiDuplicateDetectionRequestTopic () : NewTopic
 	{method} +aiDuplicateDetectionResponseTopic () : NewTopic
 	{method} +aiSemanticDuplicateDetectionRequestTopic () : NewTopic
