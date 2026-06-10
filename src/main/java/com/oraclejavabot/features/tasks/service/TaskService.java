@@ -8,13 +8,12 @@ import com.oraclejavabot.features.tasks.repository.TaskRepository;
 import com.oraclejavabot.features.sprints.repository.SprintRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-
 
 @Service
 public class TaskService {
@@ -33,7 +32,7 @@ public class TaskService {
         this.repository = repository;
         this.sprintRepository = sprintRepository;
         this.taskVectorEmbeddingService = taskVectorEmbeddingService;
-        this.taskUserService = taskUserService; 
+        this.taskUserService = taskUserService;
     }
 
     public TaskResponseDTO createTask(String projectId, TaskRequestDTO request) {
@@ -93,7 +92,7 @@ public class TaskService {
     public List<TaskResponseDTO> getTasksByProject(String projectId) {
         return repository.findByProjectId(hexToUuid(projectId))
                 .stream()
-                .map(this::mapToResponse)
+                .map(this::mapToLightResponse)
                 .collect(Collectors.toList());
     }
 
@@ -111,6 +110,7 @@ public class TaskService {
         return mapToResponse(task);
     }
 
+    @Transactional(timeout = 10)
     public TaskResponseDTO updateTask(String taskId, TaskRequestDTO request) {
 
         TaskEntity task = repository.findById(hexToUuid(taskId))
@@ -122,12 +122,13 @@ public class TaskService {
         System.out.println("TaskId: " + taskId);
 
         // TITULO / DESCRIPCION
-        if (request.getTitulo() != null) {
+        // Solo regenerar embedding si realmente cambió el texto.
+        if (request.getTitulo() != null && !request.getTitulo().equals(task.getTitulo())) {
             task.setTitulo(request.getTitulo());
             shouldRegenerateEmbedding = true;
         }
 
-        if (request.getDescripcion() != null) {
+        if (request.getDescripcion() != null && !request.getDescripcion().equals(task.getDescripcion())) {
             task.setDescripcion(request.getDescripcion());
             shouldRegenerateEmbedding = true;
         }
@@ -216,7 +217,8 @@ public class TaskService {
             requestEmbeddingSafely(updated);
         }
 
-        return mapToResponse(updated);
+        // Importante: respuesta ligera para no cargar responsables después del update.
+        return mapToLightResponse(updated);
     }
 
     public void deleteTask(String taskId) {
@@ -230,6 +232,7 @@ public class TaskService {
         repository.delete(task);
     }
 
+    @Transactional(timeout = 10)
     public TaskResponseDTO changeStatus(String taskId, Integer estadoId) {
 
         TaskEntity task = repository.findById(hexToUuid(taskId))
@@ -245,7 +248,7 @@ public class TaskService {
 
         TaskEntity updated = repository.save(task);
 
-        return mapToResponse(updated);
+        return mapToLightResponse(updated);
     }
 
     private void requestEmbeddingSafely(TaskEntity task) {
@@ -275,13 +278,40 @@ public class TaskService {
 
     private TaskResponseDTO mapToResponse(TaskEntity task) {
 
+        TaskResponseDTO dto = mapBaseFields(task, true);
+
+        dto.setResponsables(
+                taskUserService.getUsersByTask(uuidToHex(task.getTaskId()))
+        );
+
+        return dto;
+    }
+
+    private TaskResponseDTO mapToLightResponse(TaskEntity task) {
+
+        TaskResponseDTO dto = mapBaseFields(task, false);
+
+        // Respuesta ligera: no consultar USUARIO_A_TAREA ni USUARIO.
+        dto.setResponsables(List.of());
+
+        return dto;
+    }
+
+    private TaskResponseDTO mapBaseFields(TaskEntity task, boolean includeSprintName) {
+
         TaskResponseDTO dto = new TaskResponseDTO();
 
         dto.setTaskId(uuidToHex(task.getTaskId()));
         dto.setTitulo(task.getTitulo());
         dto.setDescripcion(task.getDescripcion());
-        dto.setFechaCreacion(task.getFechaCreacion().toString());
-        dto.setFechaLimite(task.getFechaLimite().toString());
+
+        if (task.getFechaCreacion() != null) {
+            dto.setFechaCreacion(task.getFechaCreacion().toString());
+        }
+
+        if (task.getFechaLimite() != null) {
+            dto.setFechaLimite(task.getFechaLimite().toString());
+        }
 
         if (task.getFechaFinalizacion() != null) {
             dto.setFechaFinalizacion(task.getFechaFinalizacion().toString());
@@ -289,7 +319,10 @@ public class TaskService {
 
         dto.setEstadoId(task.getEstadoId());
         dto.setPrioridadId(task.getPrioridadId());
-        dto.setProjectId(uuidToHex(task.getProjectId()));
+
+        if (task.getProjectId() != null) {
+            dto.setProjectId(uuidToHex(task.getProjectId()));
+        }
 
         if (task.getSprintId() != null) {
 
@@ -297,19 +330,17 @@ public class TaskService {
 
             dto.setSprintId(uuidToHex(sprintId));
 
-            sprintRepository.findById(sprintId)
-                    .ifPresentOrElse(
-                            sprint -> dto.setSprintNombre(sprint.getNombre()),
-                            () -> dto.setSprintNombre("—")
-                    );
+            if (includeSprintName) {
+                sprintRepository.findById(sprintId)
+                        .ifPresentOrElse(
+                                sprint -> dto.setSprintNombre(sprint.getNombre()),
+                                () -> dto.setSprintNombre("—")
+                        );
+            }
         }
 
         dto.setTiempoEstimado(task.getTiempoEstimado());
         dto.setTiempoReal(task.getTiempoReal());
-
-        dto.setResponsables(
-                taskUserService.getUsersByTask(uuidToHex(task.getTaskId()))
-        );
 
         return dto;
     }
@@ -321,7 +352,7 @@ public class TaskService {
                         "$1-$2-$3-$4-$5"
                 )
         );
-    }   
+    }
 
     private String uuidToHex(UUID uuid) {
         return uuid.toString().replace("-", "").toUpperCase();

@@ -1,10 +1,13 @@
 package com.oraclejavabot.features.tasks.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@DynamicUpdate
 @Table(name = "TAREA")
 public class TaskEntity {
 

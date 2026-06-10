@@ -5,7 +5,7 @@
   "description" : "Modelo C4 de arquitectura objetivo para Oracle Java Bot.",
   "documentation" : { },
   "id" : 1,
-  "lastModifiedDate" : "2026-06-08T20:42:47Z",
+  "lastModifiedDate" : "2026-06-10T00:21:08Z",
   "model" : {
     "deploymentNodes" : [ {
       "children" : [ {
@@ -17,7 +17,7 @@
               "id" : "190",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "0d125d99-3bb8-4e86-8f48-921a18dfdf47"
+                "structurizr.dsl.identifier" : "e5fc606e-6cf6-4c5a-828e-d55eba2bb6bb"
               },
               "relationships" : [ {
                 "description" : "Enruta tráfico hacia la versión activa del backend",
@@ -45,7 +45,7 @@
               "id" : "191",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "9bb2cd20-cb5e-4fce-bd24-cbae0e3d3bfc"
+                "structurizr.dsl.identifier" : "f316d2b8-1c18-4226-9b60-133675c16aee"
               },
               "relationships" : [ {
                 "description" : "Puede consultar estado operativo del servicio IA",
@@ -153,7 +153,7 @@
               "id" : "193",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "2917f4d6-acba-4ea5-8ad3-e878176cca6c"
+                "structurizr.dsl.identifier" : "934fb6e8-155e-4e02-b7e8-a80309e81145"
               },
               "relationships" : [ {
                 "description" : "Consulta y actualiza información de proyectos y tareas",
@@ -205,7 +205,7 @@
               "id" : "195",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "19fa42b9-f2d1-4799-aa97-0df1442ad109"
+                "structurizr.dsl.identifier" : "a5f36083-34c3-4ce4-9f6a-ca6a00f33e31"
               },
               "relationships" : [ {
                 "description" : "Consume solicitudes de generación de backlog y publica resultados",
@@ -264,7 +264,7 @@
               "id" : "198",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "5245bee1-ae07-4317-ad13-6b7cca7a1dc2"
+                "structurizr.dsl.identifier" : "65c5e1a2-9dc0-413f-9c9d-d0c7676c670b"
               },
               "relationships" : [ {
                 "description" : "Entrega resultados de generación de backlog",
@@ -337,7 +337,7 @@
               "id" : "206",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "a9631498-8c62-4ebe-8784-2764576a0363"
+                "structurizr.dsl.identifier" : "01fd55d2-d49d-449e-bf28-f5c52619e5ea"
               },
               "tags" : "Container Instance"
             } ],
@@ -347,7 +347,7 @@
             "instances" : "1",
             "name" : "Worker Node FD1",
             "properties" : {
-              "structurizr.dsl.identifier" : "fe75ef72-cf65-4be0-ab28-c807e17aa93a"
+              "structurizr.dsl.identifier" : "eb6f67ec-5a86-4295-af34-cd7aa500f08d"
             },
             "tags" : "Element,Deployment Node",
             "technology" : "OKE Worker Node"
@@ -358,7 +358,7 @@
           "instances" : "1",
           "name" : "Fault Domain 1",
           "properties" : {
-            "structurizr.dsl.identifier" : "85f49dea-15ee-4e15-b547-37f70150d4bb"
+            "structurizr.dsl.identifier" : "1e2495e1-68eb-4356-9934-b0381bf89530"
           },
           "tags" : "Element,Deployment Node",
           "technology" : "OCI Fault Domain"
@@ -370,7 +370,7 @@
               "id" : "211",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "a358f4b0-aac1-4e86-b082-45a350704c04"
+                "structurizr.dsl.identifier" : "84aee92c-daad-422a-9cb6-008934965e69"
               },
               "relationships" : [ {
                 "description" : "Enruta tráfico hacia la versión activa del backend",
@@ -398,7 +398,7 @@
               "id" : "213",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "1f0bf089-6133-4293-b51b-a7c8caf0336c"
+                "structurizr.dsl.identifier" : "a759b891-21e0-4e04-909c-d2d676171500"
               },
               "relationships" : [ {
                 "description" : "Puede consultar estado operativo del servicio IA",
@@ -506,7 +506,7 @@
               "id" : "222",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "219d7d82-36cb-4189-9c55-da59c5254d9a"
+                "structurizr.dsl.identifier" : "ba6fe9dd-3beb-405e-875f-c75b5a8baa84"
               },
               "relationships" : [ {
                 "description" : "Consulta y actualiza información de proyectos y tareas",
@@ -558,7 +558,7 @@
               "id" : "226",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "f391aa98-68c6-44f7-9a2d-65b1382eb544"
+                "structurizr.dsl.identifier" : "6410393a-92c8-4b86-973f-6b36818285d0"
               },
               "relationships" : [ {
                 "description" : "Consume solicitudes de generación de backlog y publica resultados",
@@ -617,7 +617,7 @@
               "id" : "234",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "da8df4ed-1ed0-4af1-82f6-20baa4f0e388"
+                "structurizr.dsl.identifier" : "3ea95edf-98f8-4fbf-8db9-dd7346b3d468"
               },
               "relationships" : [ {
                 "description" : "Entrega resultados de generación de backlog",
@@ -690,7 +690,7 @@
               "id" : "250",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "438ae27d-8e4b-4ab9-90e2-6de7ca6b0429"
+                "structurizr.dsl.identifier" : "658ee711-2be2-43fe-907e-ecfd1a61c5e0"
               },
               "tags" : "Container Instance"
             } ],
@@ -700,7 +700,7 @@
             "instances" : "1",
             "name" : "Worker Node FD2",
             "properties" : {
-              "structurizr.dsl.identifier" : "0439b323-1a7d-4d54-b69b-c93e78abdf41"
+              "structurizr.dsl.identifier" : "f3d25f06-3a52-4940-8d1b-189ba8a70066"
             },
             "tags" : "Element,Deployment Node",
             "technology" : "OKE Worker Node"
@@ -711,7 +711,7 @@
           "instances" : "1",
           "name" : "Fault Domain 2",
           "properties" : {
-            "structurizr.dsl.identifier" : "0f809748-5fa5-4cf7-803c-d35cc58d62a0"
+            "structurizr.dsl.identifier" : "d99a7d7c-5b58-4325-bd6d-47d90a7875cb"
           },
           "tags" : "Element,Deployment Node",
           "technology" : "OCI Fault Domain"
@@ -723,7 +723,7 @@
               "id" : "255",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "8d919696-3754-429d-ba12-89a7d7fe2434"
+                "structurizr.dsl.identifier" : "da10e012-5346-46c6-841a-26ee4ab5a929"
               },
               "relationships" : [ {
                 "description" : "Enruta tráfico hacia la versión activa del backend",
@@ -751,7 +751,7 @@
               "id" : "258",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "574052da-0d57-4487-ab37-10b8db273c78"
+                "structurizr.dsl.identifier" : "fdce1e3f-aea3-435d-8029-fb4de1f4f2d5"
               },
               "relationships" : [ {
                 "description" : "Puede consultar estado operativo del servicio IA",
@@ -859,7 +859,7 @@
               "id" : "274",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "5bd6766d-9333-4ad2-81c1-e889451e6c63"
+                "structurizr.dsl.identifier" : "ae9f113a-06ff-40fd-b4c4-8f1d63b4740d"
               },
               "relationships" : [ {
                 "description" : "Consulta y actualiza información de proyectos y tareas",
@@ -911,7 +911,7 @@
               "id" : "280",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "149ee94f-8718-4622-86ed-56a4ecef09b1"
+                "structurizr.dsl.identifier" : "8dcea235-e708-44f9-8eaa-6060d22a453e"
               },
               "relationships" : [ {
                 "description" : "Consume solicitudes de generación de backlog y publica resultados",
@@ -970,7 +970,7 @@
               "id" : "293",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "e0b6cfb1-b3f9-48bc-bc23-de88a23fd737"
+                "structurizr.dsl.identifier" : "bf03680a-76ce-446a-9285-7d4b536cf04e"
               },
               "relationships" : [ {
                 "description" : "Entrega resultados de generación de backlog",
@@ -1043,7 +1043,7 @@
               "id" : "317",
               "instanceId" : 1,
               "properties" : {
-                "structurizr.dsl.identifier" : "7539f815-b5d2-4de8-83e4-905d6a2a96dd"
+                "structurizr.dsl.identifier" : "0e65a99c-0a09-4af8-90ba-03dced40b041"
               },
               "tags" : "Container Instance"
             } ],
@@ -1053,7 +1053,7 @@
             "instances" : "1",
             "name" : "Worker Node FD3",
             "properties" : {
-              "structurizr.dsl.identifier" : "c8315dfd-5844-421d-98cf-e2cd64326ee4"
+              "structurizr.dsl.identifier" : "d7d2660a-0dc6-40ff-a266-fcf959e1da65"
             },
             "tags" : "Element,Deployment Node",
             "technology" : "OKE Worker Node"
@@ -1064,7 +1064,7 @@
           "instances" : "1",
           "name" : "Fault Domain 3",
           "properties" : {
-            "structurizr.dsl.identifier" : "535d6eb7-0bed-4c58-a273-9d382c7ca8fb"
+            "structurizr.dsl.identifier" : "572df64a-23a3-4c28-83b1-32ca24752b69"
           },
           "tags" : "Element,Deployment Node",
           "technology" : "OCI Fault Domain"
@@ -1075,7 +1075,7 @@
         "instances" : "1",
         "name" : "OKE Cluster",
         "properties" : {
-          "structurizr.dsl.identifier" : "1030101f-7cfc-4561-9c3d-a77f81508372"
+          "structurizr.dsl.identifier" : "a13153bd-885c-4e0d-ad70-bae388bbcad5"
         },
         "tags" : "Element,Deployment Node,Oracle Cloud",
         "technology" : "OCI Kubernetes Engine"
@@ -1086,7 +1086,7 @@
           "id" : "322",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "52bb5bfb-f353-4579-9f8c-0d996f2dece5"
+            "structurizr.dsl.identifier" : "8cb8d9f5-33f1-4ce2-8112-9d8d44966a28"
           },
           "tags" : "Container Instance"
         } ],
@@ -1096,7 +1096,7 @@
         "instances" : "1",
         "name" : "Oracle Database 26ai Service",
         "properties" : {
-          "structurizr.dsl.identifier" : "328930bb-a9f9-4ad9-8502-c281a2a9a08c"
+          "structurizr.dsl.identifier" : "4654d238-719b-4d3f-8307-028ca6344c05"
         },
         "tags" : "Element,Deployment Node,Database",
         "technology" : "Oracle Database 26ai"
@@ -1107,7 +1107,7 @@
           "id" : "327",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "73d67f35-e788-4aa9-97dc-926ae700995c"
+            "structurizr.dsl.identifier" : "7ec2dcf6-7e70-4838-9411-6eb3b399fa1c"
           },
           "tags" : "Container Instance"
         } ],
@@ -1117,7 +1117,7 @@
         "instances" : "1",
         "name" : "OCI Object Storage Service",
         "properties" : {
-          "structurizr.dsl.identifier" : "4ab2b661-1eff-4802-b0b4-124f0d9a03e6"
+          "structurizr.dsl.identifier" : "4e250cba-d74e-4e9d-8ea0-1062b5746613"
         },
         "tags" : "Element,Deployment Node,Storage",
         "technology" : "OCI Object Storage"
@@ -1128,7 +1128,7 @@
           "id" : "335",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "c0d78327-02b3-4210-8b8f-31d3aac91ce6"
+            "structurizr.dsl.identifier" : "d8a8cb4f-a78f-464c-ad7e-3b8caeb4a258"
           },
           "relationships" : [ {
             "description" : "Promueve tráfico entre backend-blue y backend-green",
@@ -1166,7 +1166,7 @@
         "instances" : "1",
         "name" : "OCI DevOps Service",
         "properties" : {
-          "structurizr.dsl.identifier" : "d6ca5892-9e53-4df2-9643-f5da4ea02aef"
+          "structurizr.dsl.identifier" : "44d563c3-a84d-4683-8992-5b511df18c5f"
         },
         "tags" : "Element,Deployment Node,DevOps",
         "technology" : "OCI DevOps"
@@ -1177,14 +1177,14 @@
         "instances" : "1",
         "name" : "OCI Container Registry",
         "properties" : {
-          "structurizr.dsl.identifier" : "de97a87c-98ea-49b8-91ca-ec38e691a316"
+          "structurizr.dsl.identifier" : "a2a3bf28-dfd7-4609-8a7b-cb5bf8997489"
         },
         "softwareSystemInstances" : [ {
           "environment" : "Produccion",
           "id" : "340",
           "instanceId" : 1,
           "properties" : {
-            "structurizr.dsl.identifier" : "25f7f16a-2a51-4943-9a23-faab1ba2a047"
+            "structurizr.dsl.identifier" : "94467422-c079-4234-a40f-66eed43bd685"
           },
           "softwareSystemId" : "52",
           "tags" : "Software System Instance"
@@ -1217,7 +1217,7 @@
       "instances" : "1",
       "name" : "OCI Región Querétaro",
       "properties" : {
-        "structurizr.dsl.identifier" : "4af35071-c3f1-4e44-8e41-5237625f43b3"
+        "structurizr.dsl.identifier" : "ac29941e-9a06-4ddf-a66f-18977b83cab1"
       },
       "tags" : "Element,Deployment Node,Oracle Cloud",
       "technology" : "Oracle Cloud Infrastructure"
@@ -2434,12 +2434,12 @@
       "description" : "Sistema cloud-native para gestión de proyectos, tareas, KPIs, notificaciones, generación de backlog asistida por IA y detección semántica de duplicados.",
       "documentation" : {
         "decisions" : [ {
-          "content" : "# 1. Adoptar arquitectura híbrida layered, component-based y event-driven\n\nDate: 2026-05-28\n\n## Status\n\nAccepted\n\n## Context\n\nOracle Java Bot es un sistema cloud-native orientado a mejorar la gestión de proyectos, tareas, visibilidad operativa, notificaciones y soporte de IA para equipos de desarrollo Java.\n\nEl sistema no se limita a operaciones CRUD. Además de gestionar usuarios, equipos, proyectos, sprints y tareas, debe soportar flujos asíncronos como generación de backlog con IA, notificaciones por Telegram, procesamiento de documentos y detección semántica de duplicados mediante Oracle Database 26ai.\n\nLa arquitectura debe ser mantenible, trazable, escalable y viable dentro del alcance académico del proyecto. También debe reflejar la estructura real de los repositorios existentes:\n\n- `oracle-java-bot-backend`\n- `oracle-java-bot-frontend`\n- `oracle-java-bot-ai-service`\n- `oracle-java-bot-testing`\n\nEl backend actual está organizado por features y capas internas, con paquetes como `auth`, `security`, `users`, `teams`, `projects`, `tasks`, `sprints`, `kpis`, `ai`, `bot` y `messaging`. Además, existen producers, consumers y eventos Kafka para desacoplar flujos asíncronos.\n\n## Decision\n\nSe adopta una arquitectura híbrida compuesta por los siguientes estilos:\n\n1. **Layered Architecture**, aplicada dentro del backend Spring Boot mediante separación entre controllers, services, repositories, DTOs y models.\n\n2. **Component-Based Architecture**, aplicada en la organización funcional del backend por capacidades del dominio: autenticación, seguridad, usuarios, equipos, proyectos, tareas, sprints, KPIs, IA, mensajería y persistencia.\n\n3. **Event-Driven Architecture**, aplicada en los flujos asíncronos que utilizan Kafka, especialmente generación de backlog con IA, eventos de tarea y notificaciones.\n\n4. **Microservices Architecture parcial**, aplicada únicamente a servicios independientes como AI Service y Telegram Bot Service. El sistema completo no se declara como microservicios puros, ya que el backend Spring Boot sigue actuando como núcleo modular del producto.\n\n## Consequences\n\n### Positivas\n\n- La arquitectura refleja mejor la realidad del sistema y evita afirmar que todo el producto es microservicios puros.\n- La separación por capas facilita mantenibilidad, pruebas unitarias y evolución del backend.\n- La separación por componentes permite trazabilidad entre requisitos, componentes, código y pruebas.\n- Kafka desacopla operaciones asíncronas y reduce dependencia temporal entre backend, AI Service y Telegram Bot Service.\n- La arquitectura permite evolucionar progresivamente hacia servicios más independientes sin reescribir todo el sistema.\n\n### Negativas\n\n- El sistema requiere disciplina para evitar que el backend modular se convierta en un monolito desordenado.\n- Kafka introduce complejidad operativa adicional.\n- La separación parcial de servicios exige definir contratos claros entre backend, AI Service y Telegram Bot Service.\n- La arquitectura híbrida requiere documentación explícita para evitar confusión entre estilos.\n\n### Alternativas consideradas\n\n#### Monolito tradicional\n\nSe descartó porque concentraría demasiadas responsabilidades en un único despliegue y dificultaría la evolución independiente de IA, Telegram y procesamiento asíncrono.\n\n#### Microservicios puros\n\nSe descartó como estrategia inicial porque no se cuentan con los recursos económicos para desplegar una base de datos independiente por servicio. Además, aumentaría la complejidad de despliegue, observabilidad, contratos, versionamiento y operación. Para el alcance académico y estado actual del producto, sería sobredimensionado.\n\n#### Arquitectura únicamente layered\n\nSe descartó porque no representa adecuadamente los flujos asíncronos y distribuidos del sistema, especialmente Kafka, AI Service y Telegram Bot Service.\n\n### Resultado\n\nOracle Java Bot utilizará una arquitectura híbrida layered, component-based y event-driven, con microservicios parciales para capacidades que justifican independencia operativa. Esta decisión permite balancear mantenibilidad, escalabilidad, trazabilidad y viabilidad de implementación.",
+          "content" : "# 1. Adoptar arquitectura híbrida layered, component-based y event-driven (prueba commits)\n\nDate: 2026-05-28\n\n## Status\n\nAccepted\n\n## Context\n\nOracle Java Bot es un sistema cloud-native orientado a mejorar la gestión de proyectos, tareas, visibilidad operativa, notificaciones y soporte de IA para equipos de desarrollo Java.\n\nEl sistema no se limita a operaciones CRUD. Además de gestionar usuarios, equipos, proyectos, sprints y tareas, debe soportar flujos asíncronos como generación de backlog con IA, notificaciones por Telegram, procesamiento de documentos y detección semántica de duplicados mediante Oracle Database 26ai.\n\nLa arquitectura debe ser mantenible, trazable, escalable y viable dentro del alcance académico del proyecto. También debe reflejar la estructura real de los repositorios existentes:\n\n- `oracle-java-bot-backend`\n- `oracle-java-bot-frontend`\n- `oracle-java-bot-ai-service`\n- `oracle-java-bot-testing`\n\nEl backend actual está organizado por features y capas internas, con paquetes como `auth`, `security`, `users`, `teams`, `projects`, `tasks`, `sprints`, `kpis`, `ai`, `bot` y `messaging`. Además, existen producers, consumers y eventos Kafka para desacoplar flujos asíncronos.\n\n## Decision\n\nSe adopta una arquitectura híbrida compuesta por los siguientes estilos:\n\n1. **Layered Architecture**, aplicada dentro del backend Spring Boot mediante separación entre controllers, services, repositories, DTOs y models.\n\n2. **Component-Based Architecture**, aplicada en la organización funcional del backend por capacidades del dominio: autenticación, seguridad, usuarios, equipos, proyectos, tareas, sprints, KPIs, IA, mensajería y persistencia.\n\n3. **Event-Driven Architecture**, aplicada en los flujos asíncronos que utilizan Kafka, especialmente generación de backlog con IA, eventos de tarea y notificaciones.\n\n4. **Microservices Architecture parcial**, aplicada únicamente a servicios independientes como AI Service y Telegram Bot Service. El sistema completo no se declara como microservicios puros, ya que el backend Spring Boot sigue actuando como núcleo modular del producto.\n\n## Consequences\n\n### Positivas\n\n- La arquitectura refleja mejor la realidad del sistema y evita afirmar que todo el producto es microservicios puros.\n- La separación por capas facilita mantenibilidad, pruebas unitarias y evolución del backend.\n- La separación por componentes permite trazabilidad entre requisitos, componentes, código y pruebas.\n- Kafka desacopla operaciones asíncronas y reduce dependencia temporal entre backend, AI Service y Telegram Bot Service.\n- La arquitectura permite evolucionar progresivamente hacia servicios más independientes sin reescribir todo el sistema.\n\n### Negativas\n\n- El sistema requiere disciplina para evitar que el backend modular se convierta en un monolito desordenado.\n- Kafka introduce complejidad operativa adicional.\n- La separación parcial de servicios exige definir contratos claros entre backend, AI Service y Telegram Bot Service.\n- La arquitectura híbrida requiere documentación explícita para evitar confusión entre estilos.\n\n### Alternativas consideradas\n\n#### Monolito tradicional\n\nSe descartó porque concentraría demasiadas responsabilidades en un único despliegue y dificultaría la evolución independiente de IA, Telegram y procesamiento asíncrono.\n\n#### Microservicios puros\n\nSe descartó como estrategia inicial porque no se cuentan con los recursos económicos para desplegar una base de datos independiente por servicio. Además, aumentaría la complejidad de despliegue, observabilidad, contratos, versionamiento y operación. Para el alcance académico y estado actual del producto, sería sobredimensionado.\n\n#### Arquitectura únicamente layered\n\nSe descartó porque no representa adecuadamente los flujos asíncronos y distribuidos del sistema, especialmente Kafka, AI Service y Telegram Bot Service.\n\n### Resultado\n\nOracle Java Bot utilizará una arquitectura híbrida layered, component-based y event-driven, con microservicios parciales para capacidades que justifican independencia operativa. Esta decisión permite balancear mantenibilidad, escalabilidad, trazabilidad y viabilidad de implementación.",
           "date" : "2026-05-28T00:00:00Z",
           "format" : "Markdown",
           "id" : "1",
           "status" : "Accepted",
-          "title" : "Adoptar arquitectura híbrida layered, component-based y event-driven"
+          "title" : "Adoptar arquitectura híbrida layered, component-based y event-driven (prueba commits)"
         }, {
           "content" : "# 2. Desplegar en OKE con tres Fault Domains\n\nDate: 2026-05-28\n\n## Status\n\nAccepted\n\n## Context\n\nOracle Java Bot debe operar como una solución cloud-native en Oracle Cloud Infrastructure. El sistema requiere disponibilidad, escalabilidad horizontal, separación de responsabilidades operativas y capacidad de despliegue controlado.\n\nLa arquitectura objetivo debe representar un ambiente de producción en la OCI Región Querétaro, utilizando OCI Kubernetes Engine (OKE) como plataforma principal para ejecutar servicios contenerizados. Además, el sistema debe distribuir sus componentes críticos en tres Fault Domains para reducir el impacto de fallas físicas o lógicas dentro del Availability Domain.\n\nLos servicios críticos incluyen:\n\n* Spring Boot Backend\n* Java/Spring Boot Telegram Bot Service\n* Python/FastAPI AI Service\n* Kafka Cluster autogestionado\n* Zookeeper Ensemble\n* Nginx / Ingress Controller\n\nOracle Database 26ai y OCI Object Storage se mantienen como servicios administrados externos al cluster, ya que no deben ejecutarse como pods dentro de Kubernetes.\n\nLa arquitectura debe representar el estado objetivo de producción del sistema, alineado con prácticas cloud-native empresariales y con la evolución prevista del proyecto.\n\n## Decision\n\nSe adopta OCI Kubernetes Engine (OKE) como plataforma objetivo de producción para Oracle Java Bot, desplegado en la OCI Región Querétaro y distribuido en tres Fault Domains.\n\nLa arquitectura de despliegue considera:\n\n1. Un cluster OKE de producción.\n2. Worker nodes distribuidos en Fault Domain 1, Fault Domain 2 y Fault Domain 3.\n3. Réplicas del backend Spring Boot en los tres Fault Domains.\n4. Réplicas del Telegram Bot Service en los tres Fault Domains utilizando webhook en lugar de long polling.\n5. Réplicas del AI Service en los tres Fault Domains.\n6. Kafka autogestionado con brokers distribuidos entre los tres Fault Domains.\n7. Zookeeper distribuido entre los tres Fault Domains para coordinación de Kafka.\n8. OCI Load Balancer como punto de entrada público.\n9. Nginx / Ingress Controller para enrutar tráfico hacia los servicios internos.\n10. Oracle Database 26ai como servicio administrado para persistencia transaccional y vector search.\n11. OCI Object Storage como servicio administrado para almacenamiento de documentos de proyecto.\n12. OCI Container Registry para almacenar imágenes versionadas de los servicios.\n\n## Consequences\n\n### Positivas\n\n* Mejora la disponibilidad al distribuir servicios críticos entre tres Fault Domains.\n* Permite escalabilidad horizontal del backend, AI Service y Telegram Bot Service.\n* Reduce el riesgo de interrupción completa ante la falla de un nodo o Fault Domain.\n* Facilita estrategias de despliegue como Blue/Green y futuras estrategias Rolling Update o Canary Deployment.\n* Alinea el sistema con una arquitectura cloud-native más cercana a un entorno empresarial real.\n* Permite separar claramente la capa de cómputo de los servicios administrados de datos y almacenamiento.\n\n### Negativas\n\n* Aumenta la complejidad operativa frente a un despliegue simple basado en OCI Compute y Podman.\n* Kafka autogestionado en Kubernetes requiere monitoreo, persistencia, configuración de red y estrategia de recuperación.\n* El equipo debe administrar manifests, réplicas, secretos, configuración y health checks.\n* Parte de la arquitectura representa el estado objetivo del producto y no necesariamente la implementación actual completa.\n* Incrementa la necesidad de observabilidad y monitoreo para detectar problemas de infraestructura distribuida.\n\n### Alternativas consideradas\n\n#### OCI Compute con Podman\n\nSe consideró mantener el despliegue en una instancia OCI Compute utilizando Podman. Esta opción es más simple y coincide mejor con el estado actual del proyecto. Sin embargo, no permite representar adecuadamente alta disponibilidad, distribución en múltiples Fault Domains ni escalabilidad horizontal robusta.\n\n#### Kubernetes local o Docker Compose\n\nSe descartó porque no cumple los requisitos esperados para un ambiente de producción empresarial. No proporciona integración nativa con OCI ni soporta adecuadamente estrategias de disponibilidad basadas en Fault Domains.\n\n#### Servicios administrados para todo el runtime\n\nSe consideró reemplazar Kafka por un servicio administrado como OCI Streaming para reducir la carga operativa. Esta alternativa fue descartada porque el sistema ya utiliza Kafka y se decidió mantener compatibilidad con los flujos existentes, reduciendo el impacto de migración.\n\n### Resultado\n\nOracle Java Bot tendrá como arquitectura objetivo de producción un despliegue en OCI Kubernetes Engine dentro de la OCI Región Querétaro, distribuido en tres Fault Domains. Los servicios críticos se replicarán para soportar disponibilidad y escalabilidad, mientras que Oracle Database 26ai y OCI Object Storage permanecerán como servicios administrados externos al cluster.\n",
           "date" : "2026-05-28T00:00:00Z",
