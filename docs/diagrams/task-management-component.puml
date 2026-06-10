@@ -115,6 +115,8 @@ class TaskService {
 	{method} +getTaskById ( taskId : String ) : TaskResponseDTO
 	{method} +getTasksByProject ( projectId : String ) : List
 	{method} -hexToUuid ( hex : String ) : UUID
+	{method} -mapBaseFields ( task : TaskEntity , includeSprintName : boolean ) : TaskResponseDTO
+	{method} -mapToLightResponse ( task : TaskEntity ) : TaskResponseDTO
 	{method} -mapToResponse ( task : TaskEntity ) : TaskResponseDTO
 	{method} -requestEmbeddingSafely ( task : TaskEntity ) : void
 	{method} +updateTask ( taskId : String , request : TaskRequestDTO ) : TaskResponseDTO
