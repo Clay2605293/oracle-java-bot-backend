@@ -27,6 +27,27 @@ public class JwtFilter extends OncePerRequestFilter {
     private final SecretKey key = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+
+        return path.equals("/")
+                || path.equals("/index.html")
+                || path.equals("/favicon.ico")
+                || path.equals("/logo.svg")
+                || path.equals("/api/health")
+                || path.startsWith("/auth/")
+                || path.startsWith("/assets/")
+                || path.endsWith(".svg")
+                || path.endsWith(".css")
+                || path.endsWith(".js")
+                || path.endsWith(".png")
+                || path.endsWith(".jpg")
+                || path.endsWith(".jpeg")
+                || path.endsWith(".webp")
+                || path.endsWith(".ico");
+    }
+
+    @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain)
@@ -36,44 +57,44 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-
-            String token = authHeader.substring(7);
-
-            try {
-                Claims claims = Jwts.parserBuilder()
-                        .setSigningKey(key)
-                        .build()
-                        .parseClaimsJws(token)
-                        .getBody();
-
-                String email = claims.getSubject();
-
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                email,
-                                null,
-                                List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                        );
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                System.out.println("✅ JWT válido para: " + email);
-
-            } catch (Exception e) {
-                System.out.println("⚠ Token inválido: " + e.getMessage());
-
-                SecurityContextHolder.clearContext();
-
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"error\":\"Unauthorized\"}");
-
-                return;
-            }
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        filterChain.doFilter(request, response);
+        String token = authHeader.substring(7);
+
+        try {
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+
+            String email = claims.getSubject();
+
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            List.of(new SimpleGrantedAuthority("ROLE_USER"))
+                    );
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            System.out.println("✅ JWT válido para: " + email);
+
+            filterChain.doFilter(request, response);
+
+        } catch (Exception e) {
+            System.out.println("⚠ Token inválido: " + e.getMessage());
+
+            SecurityContextHolder.clearContext();
+
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\":\"Unauthorized\"}");
+        }
     }
 }

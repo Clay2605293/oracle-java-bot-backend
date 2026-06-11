@@ -25,7 +25,6 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
 
-            // 🔥 IMPORTANTE
             .cors(Customizer.withDefaults())
 
             .sessionManagement(session -> session
@@ -33,7 +32,35 @@ public class SecurityConfig {
             )
 
             .authorizeHttpRequests(auth -> auth
+
+                // Login / auth
                 .requestMatchers("/auth/**").permitAll()
+
+                // Health checks para blue/green, NGINX, scripts, etc.
+                .requestMatchers("/api/health").permitAll()
+
+                // Frontend SPA y archivos estáticos
+                .requestMatchers(
+                    "/",
+                    "/index.html",
+                    "/favicon.ico",
+                    "/logo.svg",
+                    "/assets/**",
+                    "/*.svg",
+                    "/*.css",
+                    "/*.js",
+                    "/*.png",
+                    "/*.jpg",
+                    "/*.jpeg",
+                    "/*.webp",
+                    "/*.ico"
+                ).permitAll()
+
+                // APIs protegidas
+                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/graphql").authenticated()
+
+                // Rutas del frontend tipo /tareas, /equipos, /dashboard, etc.
                 .anyRequest().permitAll()
             )
 

@@ -4,6 +4,7 @@ class JwtFilter {
 	{field} -SECRET : String
 	{field} -key : SecretKey
 	{method} #doFilterInternal ( request : HttpServletRequest , response : HttpServletResponse , filterChain : FilterChain ) : void
+	{method} #shouldNotFilter ( request : HttpServletRequest ) : boolean
 }
 
 
