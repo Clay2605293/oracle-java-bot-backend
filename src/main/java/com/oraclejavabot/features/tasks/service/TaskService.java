@@ -212,11 +212,13 @@ public class TaskService {
         TaskEntity updated = repository.save(task);
 
         if (shouldRegenerateEmbedding) {
-            requestEmbeddingSafely(updated);
+            System.out.println(
+                    "ℹ️ Embedding regeneration skipped during synchronous task update: "
+                            + uuidToHex(updated.getTaskId())
+            );
         }
 
-        // Importante: respuesta ligera para no cargar responsables después del update.
-        return mapToLightResponse(updated);
+return mapToLightResponse(updated);
     }
 
     public void deleteTask(String taskId) {
