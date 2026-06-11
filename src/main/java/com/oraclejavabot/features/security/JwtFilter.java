@@ -41,7 +41,6 @@ public class JwtFilter extends OncePerRequestFilter {
             String token = authHeader.substring(7);
 
             try {
-
                 Claims claims = Jwts.parserBuilder()
                         .setSigningKey(key)
                         .build()
@@ -62,15 +61,19 @@ public class JwtFilter extends OncePerRequestFilter {
                 System.out.println("✅ JWT válido para: " + email);
 
             } catch (Exception e) {
-                // 🔥 CAMBIO CLAVE
                 System.out.println("⚠ Token inválido: " + e.getMessage());
 
-                // NO bloquear
                 SecurityContextHolder.clearContext();
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write("{\"error\":\"Unauthorized\"}");
+
+                return;
             }
         }
 
-        // 🔥 SIEMPRE continuar
         filterChain.doFilter(request, response);
     }
 }
