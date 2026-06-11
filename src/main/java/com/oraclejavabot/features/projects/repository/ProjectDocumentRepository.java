@@ -11,4 +11,6 @@ public interface ProjectDocumentRepository extends JpaRepository<ProjectDocument
     List<ProjectDocumentEntity> findByProjectId(UUID projectId);
 
     List<ProjectDocumentEntity> findByProjectIdAndDocumentType(UUID projectId, String documentType);
+
+    List<ProjectDocumentEntity> findByProjectIdAndDocumentIdIn(UUID projectId, List<UUID> documentIds);
 }
