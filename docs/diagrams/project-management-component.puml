@@ -33,6 +33,7 @@ class ProjectDocumentEntity {
 
 interface ProjectDocumentRepository {
 	{method}  {abstract} +findByProjectId ( projectId : UUID ) : List
+	{method}  {abstract} +findByProjectIdAndDocumentIdIn ( projectId : UUID , documentIds : List ) : List
 	{method}  {abstract} +findByProjectIdAndDocumentType ( projectId : UUID , documentType : String ) : List
 }
 

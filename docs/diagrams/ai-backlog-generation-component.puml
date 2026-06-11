@@ -1,6 +1,7 @@
 @startuml
 
 class AiBacklogGenerationRequestDTO {
+	{field} +documentIds : List
 	{field} +maxHours : Double
 }
 
@@ -18,8 +19,9 @@ class AiBacklogGenerationService {
 	{field} -projectDocumentRepository : ProjectDocumentRepository
 	{field} -projectRepository : ProjectRepository
 	{method} +generateBacklog ( projectId : String , request : AiBacklogGenerationRequestDTO ) : AiBacklogGenerationResponseDTO
-	{method} -parseUuid ( value : String ) : UUID
+	{method} -parseUuid ( value : String , errorPrefix : String ) : UUID
 	{method} -toEventDocument ( documentEntity : ProjectDocumentEntity ) : Document
+	{method} -validateAndParseDocumentIds ( request : AiBacklogGenerationRequestDTO ) : List
 	{method} -validateMaxHours ( request : AiBacklogGenerationRequestDTO ) : Double
 }
 
