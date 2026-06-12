@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.oraclejavabot.features.tasks.dto.TaskAssignmentDTO;
+
 @RestController
 @RequestMapping("/api")
 public class TaskUserController {
@@ -41,5 +43,16 @@ public class TaskUserController {
     public void removeUser(@PathVariable String taskId,
                            @PathVariable String userId) {
         service.removeUser(taskId, userId);
+    }
+
+    // =============================
+    // GET TASKS BY DEVELOPERS AND SPRINTS
+    // =============================
+    @GetMapping("/task-assignments")
+    public List<TaskAssignmentDTO> getTasksByDevelopersAndSprints(
+            @RequestParam List<String> developerIds,
+            @RequestParam List<String> sprintIds
+    ) {
+        return service.getTasksByDevelopersAndSprints(developerIds, sprintIds);
     }
 }

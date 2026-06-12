@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.oraclejavabot.features.tasks.dto.TaskAssignmentDTO;
+import java.math.BigDecimal;
+
 @Service
 public class TaskUserService {
 
@@ -169,4 +172,81 @@ public class TaskUserService {
     private String uuidToHex(UUID uuid) {
         return uuid.toString().replace("-", "").toUpperCase();
     }
+
+
+    // =============================
+        // GET TASKS BY DEVELOPERS AND SPRINTS
+        // =============================
+        public List<TaskAssignmentDTO> getTasksByDevelopersAndSprints(
+                List<String> developerIds,
+                List<String> sprintIds
+        ) {
+        if (developerIds == null || developerIds.isEmpty()) {
+                throw new IllegalArgumentException("developerIds is required");
+        }
+
+        if (sprintIds == null || sprintIds.isEmpty()) {
+                throw new IllegalArgumentException("sprintIds is required");
+        }
+
+        List<UUID> developerUUIDs = developerIds.stream()
+                .map(this::hexToUuid)
+                .collect(Collectors.toList());
+
+        List<UUID> sprintUUIDs = sprintIds.stream()
+                .map(this::hexToUuid)
+                .collect(Collectors.toList());
+
+        return taskUserRepository
+                .findAssignmentsByDevelopersAndSprintsRaw(developerUUIDs, sprintUUIDs)
+                .stream()
+                .map(this::mapAssignmentRowToDTO)
+                .collect(Collectors.toList());
+        }
+
+        private TaskAssignmentDTO mapAssignmentRowToDTO(Object[] row) {
+        return new TaskAssignmentDTO(
+                (String) row[0],
+                (String) row[1],
+                (String) row[2],
+                (String) row[3],
+                (String) row[4],
+                toDouble(row[5]),
+                toDouble(row[6]),
+                toInteger(row[7]),
+                toInteger(row[8])
+        );
+        }
+
+        private Double toDouble(Object value) {
+        if (value == null) {
+                return null;
+        }
+
+        if (value instanceof BigDecimal bigDecimal) {
+                return bigDecimal.doubleValue();
+        }
+
+        if (value instanceof Number number) {
+                return number.doubleValue();
+        }
+
+        return Double.valueOf(value.toString());
+        }
+
+        private Integer toInteger(Object value) {
+        if (value == null) {
+                return null;
+        }
+
+        if (value instanceof BigDecimal bigDecimal) {
+                return bigDecimal.intValue();
+        }
+
+        if (value instanceof Number number) {
+                return number.intValue();
+        }
+
+        return Integer.valueOf(value.toString());
+        }
 }
